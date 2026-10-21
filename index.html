@@ -1,582 +1,405 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="fr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#101214">
-<title>MOTO TRACK | PISTA HR 110cc</title>
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<title>PISTA RIVALS</title>
 <style>
-:root {
-  --bg:#0d0f11; --panel:#181b1e; --line:#30353a;
-  --text:#f5f6f7; --muted:#9da5ac; --lime:#d8ff3e;
-  --red:#ff6868; --orange:#ffb34d;
-}
-*{box-sizing:border-box}
-body {
-  margin:0;background:var(--bg);color:var(--text);
-  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;
-  padding-bottom:90px;
-}
-button,input,select{font:inherit}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;background:#08090c;color:white;font-family:-apple-system,BlinkMacSystemFont,Arial;overflow:hidden;touch-action:none}
+#game{position:fixed;inset:0}
+canvas{display:block;width:100%;height:100%}
+.panel{background:#101116dd;border:1px solid #ffffff24;border-radius:17px;padding:12px;backdrop-filter:blur(12px)}
+#hud{position:absolute;top:env(safe-area-inset-top,10px);left:12px;right:12px;display:flex;justify-content:space-between;align-items:flex-start;pointer-events:none}
+#speed{font-size:32px;font-weight:900;letter-spacing:-1px}
+.small{font-size:10px;color:#aaa;letter-spacing:2px}
+#mission{position:absolute;top:100px;left:50%;transform:translateX(-50%);width:min(330px,88%);text-align:center}
+#controls{position:absolute;bottom:calc(18px + env(safe-area-inset-bottom));left:12px;right:12px;display:flex;justify-content:space-between;align-items:end;gap:8px}
+.group{display:flex;gap:8px;align-items:center}
+.ctrl{width:64px;height:64px;border-radius:19px;background:#15161ddd;border:1px solid #ffffff38;color:white;font-size:25px;font-weight:bold;touch-action:none}
+.ctrl:active,.active{background:#a47b40!important}
+.pedal{width:70px;height:76px;font-size:13px}
+#menu{position:absolute;inset:0;background:linear-gradient(#050609bb,#050609ee);display:flex;align-items:center;justify-content:center;padding:20px;overflow:auto}
+#menuCard{width:min(440px,100%);text-align:center;padding:24px 18px}
+h1{font-size:36px;letter-spacing:3px;margin:4px 0}
+.gold{color:#d4b078}
 button{cursor:pointer}
-.app{max-width:800px;margin:auto;padding:15px}
-header{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:18px}
-.logo{background:var(--lime);color:#101214;padding:13px;border-radius:14px;font-weight:900}
-.brand{display:flex;align-items:center;gap:10px}
-.brand h1{font-size:17px;margin:0;letter-spacing:1px}
-.brand p{font-size:10px;color:var(--muted);margin:4px 0 0}
-.badge{font-size:10px;color:var(--lime);border:1px solid #414c25;padding:7px 9px;border-radius:30px}
-.hero{padding:20px;border:1px solid #353a3e;border-radius:22px;background:linear-gradient(135deg,#252a2e,#151719);margin-bottom:13px}
-.eyebrow{font-size:10px;color:var(--lime);letter-spacing:2px;font-weight:bold}
-.hero h2{margin:9px 0;font-size:25px}
-.hero p{font-size:12px;line-height:1.8;color:var(--muted);margin:0}
-.card{background:var(--panel);border:1px solid var(--line);padding:15px;border-radius:18px;margin-bottom:12px}
-h3{font-size:15px;margin:0 0 13px}
-.stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin:12px 0}
-.stat{background:var(--panel);border:1px solid var(--line);padding:13px;border-radius:15px;min-width:0}
-.label{font-size:11px;color:var(--muted);margin-bottom:8px}
-.value{font-size:22px;font-weight:800;overflow-wrap:anywhere}
-.unit{font-size:10px;color:var(--muted);font-weight:400}
-.lime{color:var(--lime)}
-.section{display:flex;justify-content:space-between;align-items:center;margin:20px 2px 10px}
-.section h3{margin:0}
-.small{font-size:11px;color:var(--muted)}
-#map{height:43vh;min-height:300px;max-height:500px;border-radius:17px;z-index:1}
-.mapbox{position:relative;background:#222;border-radius:18px;border:1px solid var(--line);padding:5px}
-.mapbuttons{position:absolute;top:13px;left:13px;z-index:500;display:flex;flex-direction:column;gap:7px}
-.mapbuttons button{background:#171a1e;color:white;border:1px solid #444;border-radius:11px;padding:10px;font-size:11px}
-.btn{border:0;border-radius:13px;padding:13px 10px;font-weight:800;font-size:12px;min-height:44px}
-.primary{background:var(--lime);color:#15170c}
-.secondary{background:#272c30;color:white;border:1px solid #3a4045}
-.danger{background:#351d1e;color:#ffaaaa;border:1px solid #603033}
-.buttons{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin:12px 0}
-.full{grid-column:1/-1}
-.status{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted)}
-.dot{width:8px;height:8px;background:#777;border-radius:50%}
-.dot.live{background:var(--lime)}
-.dot.park{background:var(--orange)}
-.notice{background:#292d1e;border:1px solid #464d2b;color:#e8f7b2;padding:12px;border-radius:13px;font-size:12px;line-height:1.8;margin-bottom:12px}
-.field{display:flex;flex-direction:column;gap:7px;margin-bottom:13px}
-.field label{font-size:12px;color:var(--muted)}
-.field input,.field select{background:#101214;color:white;border:1px solid var(--line);border-radius:11px;padding:12px;width:100%}
-.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.list{display:flex;flex-direction:column;gap:8px}
-.item{display:flex;align-items:center;gap:10px;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:11px}
-.itemicon{background:#292e32;border-radius:11px;padding:10px;font-size:17px}
-.itemmain{flex:1;min-width:0}
-.itemmain strong{font-size:12px;display:block}
-.itemmain p{font-size:11px;color:var(--muted);line-height:1.6;margin:5px 0 0;overflow-wrap:anywhere}
-.mini{background:#292e32;color:white;border:1px solid #41464b;border-radius:9px;padding:8px;font-size:11px}
-.empty{padding:22px;text-align:center;border:1px dashed #40464b;border-radius:13px;color:var(--muted);font-size:12px;line-height:1.8}
-.page{display:none}.page.active{display:block}
-nav{position:fixed;bottom:0;left:0;right:0;z-index:1500;background:#121416f5;border-top:1px solid var(--line);display:grid;grid-template-columns:repeat(4,1fr);padding:9px 5px calc(9px + env(safe-area-inset-bottom));max-width:800px;margin:auto}
-nav button{background:transparent;color:#929ba2;border:0;padding:7px 1px;font-size:10px;border-radius:10px}
-nav button span{display:block;font-size:19px;margin-bottom:4px}
-nav button.active{color:var(--lime);background:#d8ff3e0c}
-.toast{display:none;position:fixed;top:15px;left:15px;right:15px;z-index:3000;background:#f4f5f6;color:#111;padding:13px;border-radius:12px;font-size:13px;max-width:500px;margin:auto;box-shadow:0 5px 25px #0008}
-hr{border:0;border-top:1px solid var(--line);margin:14px 0}
-@media(min-width:650px){.stats{grid-template-columns:repeat(4,1fr)}}
+.action{background:#d2ad70;color:#111;border:0;border-radius:14px;padding:15px 18px;font-weight:900;width:100%;font-size:15px;margin-top:10px}
+.choice{background:#18191f;color:white;border:1px solid #ffffff30;border-radius:12px;padding:12px;width:48%;font-weight:bold}
+.row{display:flex;gap:8px;justify-content:center;margin:14px 0}
+#toast{position:absolute;top:44%;left:50%;transform:translate(-50%,-50%);font-size:22px;font-weight:900;text-align:center;text-shadow:0 2px 12px black;pointer-events:none;width:90%}
+#mapLabel{font-size:11px;color:#d5b47b}
+#help{font-size:11px;color:#aaa;line-height:1.6;margin-top:14px}
+#pause{position:absolute;top:80px;right:12px;width:42px;height:42px;border-radius:13px;background:#171820dd;color:white;border:1px solid #ffffff30}
+@media(min-width:700px){.ctrl{width:75px;height:75px}}
 </style>
 </head>
 <body>
-<div class="app">
-<header>
-  <div class="brand">
-    <div class="logo">MT</div>
-    <div><h1>MOTO TRACK</h1><p>PISTA HR · 110cc GARAGE LOG</p></div>
-  </div>
-  <span class="badge">● MY MOTORCYCLE</span>
-</header>
-
-<section id="home" class="page active">
-  <div class="hero">
-    <div class="eyebrow">YOUR RIDE. YOUR RECORD.</div>
-    <h2>PISTA HR <span class="lime">110cc</span></h2>
-    <p>كراس دراجتك الرقمي: جولات حرة، أماكنك المفضلة، التوقفات ومصاريف البنزين.</p>
-  </div>
-
-  <div class="stats">
-    <div class="stat"><div class="label">المسافة المسجلة</div><div class="value" id="totalKm">0.0 <span class="unit">كم</span></div></div>
-    <div class="stat"><div class="label">البنزين المتوقع</div><div class="value" id="totalLitres">0.00 <span class="unit">لتر</span></div></div>
-    <div class="stat"><div class="label">التكلفة المتوقعة</div><div class="value lime" id="totalMoney">0.00 <span class="unit">د.ت</span></div></div>
-    <div class="stat"><div class="label">التوقفات المسجلة</div><div class="value" id="totalStops">0</div></div>
-  </div>
-
-  <div class="section"><h3>الخريطة الحية</h3><span id="gpsStatus" class="small">GPS غير متصل</span></div>
-  <div class="mapbox">
-    <div id="map"></div>
-    <div class="mapbuttons">
-      <button onclick="locate()">◎ موقعي</button>
-      <button onclick="addMode()">＋ إضافة مكان</button>
-    </div>
-  </div>
-  <p class="small">فعّل «إضافة مكان»، ثم اضغط على موقعه في الخريطة لحفظه.</p>
-
-  <div class="buttons">
-    <button class="btn primary full" id="start" onclick="startRide()">▶ ابدأ جولة حرة</button>
-    <button class="btn secondary" id="park" onclick="parkRide()" disabled>▣ PARK · توقف</button>
-    <button class="btn secondary" id="resume" onclick="resumeRide()" disabled>▶ RESUME</button>
-    <button class="btn danger full" id="saveRide" onclick="saveRide()" disabled>حفظ الجلسة في الكراس</button>
-  </div>
-
-  <div class="card">
-    <div class="status"><span id="dot" class="dot"></span><span id="rideStatus">لا توجد جولة نشطة</span><span id="clock" style="margin-right:auto">00:00:00</span></div>
-    <hr>
-    <div class="grid2">
-      <div><div class="label">السرعة الحالية</div><div class="value" id="speed">0.0 <span class="unit">كم/س</span></div></div>
-      <div><div class="label">متوسط السرعة</div><div class="value" id="average">0.0 <span class="unit">كم/س</span></div></div>
-    </div>
-  </div>
-  <div id="parkNotice" class="notice" style="display:none">
-    🛵 <strong>قبل الابتعاد عن الدراجة:</strong><br>
-    أطفئ المحرك، استعمل الحامل، ثبّت الدراجة، وأغلقها وأزل المفتاح. تأكد بنفسك من تأمينها قبل المغادرة.
-  </div>
-</section>
-
-<section id="places" class="page">
-  <div class="section"><h3>أماكني المحفوظة</h3><button class="btn primary" onclick="addMode()">＋ إضافة</button></div>
-  <div class="notice">احفظ محطات البنزين والمقاهي والميكانيكيين وأي مكان تحب ترجع له.</div>
-  <div class="field"><label>فلترة الأماكن</label>
-    <select id="filter" onchange="renderPlaces()">
-      <option value="all">كل الأماكن</option><option value="fuel">بنزين</option>
-      <option value="rest">راحة / مقهى</option><option value="repair">ميكانيكي</option><option value="other">أماكن أخرى</option>
-    </select>
-  </div>
-  <div id="placesList" class="list"></div>
-</section>
-
-<section id="history" class="page">
-  <div class="section"><h3>كراس الرحلات</h3><span class="small" id="tripCount">0 جلسة</span></div>
-  <div class="stats">
-    <div class="stat"><div class="label">مجموع المسافة</div><div class="value" id="historyKm">0.0</div></div>
-    <div class="stat"><div class="label">متوسط السرعة</div><div class="value" id="historyAvg">0.0</div></div>
-  </div>
-  <div id="historyList" class="list"></div>
-</section>
-
-<section id="settings" class="page">
-  <div class="section"><h3>إعدادات PISTA HR</h3></div>
-  <div class="card">
-    <div class="field"><label>استهلاك البنزين (لتر / 100 كم)</label><input id="consumption" type="number" min="0.1" step="0.1" value="4.3"></div>
-    <div class="field"><label>سعر اللتر (د.ت)</label><input id="fuelPrice" type="number" min="0" step="0.01" value="2.6"></div>
-    <div class="notice">الإعداد المبدئي: 4.3 لتر لكل 100 كم، أي حوالي 11.17 د.ت لكل 100 كم. يمكنك تعديل الرقم حسب الاستهلاك الحقيقي.</div>
-    <button class="btn primary" onclick="saveSettings()">حفظ الإعدادات</button>
-  </div>
-  <div class="card">
-    <h3>حفظ نسخة احتياطية</h3>
-    <p class="small">بياناتك محفوظة في هذا المتصفح. صدّر نسخة احتياطية قبل تغيير الجهاز أو مسح بيانات Safari.</p>
-    <button class="btn secondary" onclick="exportBackup()">⬇ تصدير بياناتي</button>
-    <hr>
-    <label class="btn secondary" for="importFile">⬆ استيراد نسخة</label>
-    <input id="importFile" type="file" accept=".json,application/json" style="display:none" onchange="importBackup(event)">
-    <hr>
-    <button class="btn danger" onclick="clearData()">مسح جميع البيانات</button>
-  </div>
-  <div class="card">
-    <h3>معلومات مهمة</h3>
-    <p class="small" style="line-height:2">
-      • الخريطة تحتاج إلى الإنترنت.<br>
-      • اسمح للموقع باستخدام GPS.<br>
-      • قد يوقف iPhone تحديث GPS في الخلفية أو عند قفل الشاشة.<br>
-      • الاستهلاك والتكلفة تقديريان وليسا قياسًا مباشرًا.<br>
-      • لا تستخدم الشاشة أثناء القيادة.
-    </p>
-  </div>
-</section>
+<div id="game"></div>
+<div id="hud" style="display:none">
+ <div class="panel"><div class="small">JASSR PISTA</div><div id="speed">0 <span style="font-size:12px">KM/H</span></div><div id="gear" class="small">READY</div></div>
+ <div class="panel" style="text-align:right"><div id="mode" class="small">FREE RIDE</div><div id="mapLabel">KÉLIBIA</div><div id="progress">MISSION 0/0</div></div>
 </div>
+<button id="pause" style="display:none" onclick="togglePause()">Ⅱ</button>
+<div id="mission" class="panel" style="display:none"><div id="missionTitle" class="gold" style="font-weight:900">EXPLORATION</div><div id="missionText" style="font-size:12px;margin-top:5px">Explore the city</div></div>
+<div id="toast"></div>
+<div id="controls" style="display:none">
+ <div class="group">
+  <button class="ctrl" id="left">◀</button>
+  <button class="ctrl" id="right">▶</button>
+ </div>
+ <div class="group">
+  <button class="ctrl pedal" id="brake">BRAKE</button>
+  <button class="ctrl pedal" id="gas">GAS</button>
+ </div>
+</div>
+<div id="menu">
+ <div id="menuCard" class="panel">
+  <div class="small gold">KÉLIBIA • TUNISIA</div>
+  <h1>PISTA <span class="gold">RIVALS</span></h1>
+  <p style="color:#aaa;font-size:13px">YOUR CITY. YOUR RIDE. YOUR RIVAL.</p>
+  <div style="margin:22px 0;background:#08090c;border-radius:16px;padding:20px">
+   <div style="font-size:48px">🏍️</div>
+   <div style="font-weight:900">JASSR PISTA <span class="gold">VS</span> YASSMINE PISTA</div>
+   <div class="small" style="margin-top:8px">BLACK • BRONZE • BROWN</div>
+  </div>
+  <div class="row">
+   <button class="choice" onclick="selectRider('JASSR')">JASSR</button>
+   <button class="choice" onclick="selectRider('YASSMINE')">YASSMINE</button>
+  </div>
+  <div class="small">CHOOSE YOUR CHALLENGE</div>
+  <button class="action" onclick="startGame('free')">01 — FREE RIDE</button>
+  <button class="action" onclick="startGame('tower')">02 — FORT KÉLIBIA</button>
+  <button class="action" onclick="startGame('school')">03 — LYCÉE LB7HAAR</button>
+  <button class="action" onclick="startGame('etude')">04 — ETUDE TIME ATTACK</button>
+  <button class="action" onclick="startGame('cafe')">05 — TENNIS CAFÉ CHALLENGE</button>
+  <button class="action" onclick="startGame('rival')">06 — RIVAL DUEL</button>
+  <div id="help">Touch controls • Landscape recommended • Safari 3D<br>Reach checkpoints in order. Respect the challenge rules.</div>
+ </div>
+</div>
+<script type="module">
+import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js';
 
-<nav>
-  <button class="active" data-page="home" onclick="showPage('home',this)"><span>⌖</span>الخريطة</button>
-  <button data-page="places" onclick="showPage('places',this)"><span>⚑</span>أماكني</button>
-  <button data-page="history" onclick="showPage('history',this)"><span>◷</span>السجل</button>
-  <button data-page="settings" onclick="showPage('settings',this)"><span>⚙</span>الإعدادات</button>
-</nav>
-<div id="toast" class="toast"></div>
-
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-<script>
-const KEY = "motoTrackPistaHR110";
-const DEFAULT = {
-  settings:{consumption:4.3,fuelPrice:2.6},
-  places:[],trips:[],active:null
-};
-let db=loadData(),map,placeLayer,routeLine,watchId=null;
-let currentPosition=null,addingPlace=false,meMarker=null,timer=null;
-
-function loadData(){
-  try {
-    const saved=JSON.parse(localStorage.getItem(KEY)||"null");
-    if(saved) return {...DEFAULT,...saved,settings:{...DEFAULT.settings,...saved.settings}};
-  } catch(e){}
-  return JSON.parse(JSON.stringify(DEFAULT));
+const $=id=>document.getElementById(id);
+let scene,camera,renderer,player,rival,clock;
+let running=false,paused=false,selected='JASSR',gameMode='free';
+let speed=0,heading=0,steer=0,gas=0,brake=0;
+let position=new THREE.Vector3(0,0,0),aiPosition=new THREE.Vector3(4,0,-14);
+let checkpoints=[],checkpointIndex=0,elapsed=0,score=0,finished=false;
+let objects=[],roadWidth=15,roadLength=1200,worldGroup;
+const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+const mat=(color,roughness=.8,metalness=0)=>new THREE.MeshStandardMaterial({color,roughness,metalness});
+const black=mat('#101114',.32,.5), bronze=mat('#a77d43',.34,.55), brown=mat('#80583c'), rubber=mat('#17181b'), white=mat('#dedbd2'), green=mat('#31553b');
+function box(parent,w,h,d,m,x,y,z){
+ const o=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),m);
+ o.position.set(x,y,z);parent.add(o);return o;
 }
-function persist(){localStorage.setItem(KEY,JSON.stringify(db))}
-function el(id){return document.getElementById(id)}
-function n(v){return Number.isFinite(Number(v))?Number(v):0}
-function fmt(v,d=1){return n(v).toLocaleString("en-US",{minimumFractionDigits:d,maximumFractionDigits:d})}
-function escapeHTML(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
-function toast(message){
-  const t=el("toast");t.textContent=message;t.style.display="block";
-  clearTimeout(timer);timer=setTimeout(()=>t.style.display="none",3200);
+function cyl(parent,r1,r2,len,m,x,y,z,rx=0){
+ const o=new THREE.Mesh(new THREE.CylinderGeometry(r1,r2,len,16),m);
+ o.position.set(x,y,z);o.rotation.x=rx;parent.add(o);return o;
 }
-function showPage(id,button){
-  document.querySelectorAll(".page").forEach(p=>p.classList.toggle("active",p.id===id));
-  document.querySelectorAll("nav button").forEach(b=>b.classList.toggle("active",b.dataset.page===id));
-  if(id==="places")renderPlaces();
-  if(id==="history")renderHistory();
-  if(id==="home"&&map)setTimeout(()=>map.invalidateSize(),150);
+function buildScooter(name){
+ const root=new THREE.Group();
+ const body=new THREE.Group();root.add(body);
+ // Both scooters use the same body and paint scheme.
+ cyl(body,.43,.43,.20,rubber,0,.43,0,Math.PI/2);
+ cyl(body,.43,.43,.20,rubber,0,.43,-1.12,Math.PI/2);
+ for(const z of [0,-1.12]){
+  const rim=cyl(body,.24,.24,.205,bronze,0,.43,z,Math.PI/2);
+  const hub=cyl(body,.07,.07,.22,black,0,.43,z,Math.PI/2);
+ }
+ box(body,.62,.46,.86,black,0,.91,-.48);
+ box(body,.54,.42,.55,bronze,0,1.08,-.26);
+ box(body,.60,.12,.48,black,0,1.28,-.31);
+ box(body,.56,.13,.60,brown,0,1.19,.22);
+ box(body,.50,.06,.26,brown,0,1.28,.27);
+ box(body,.40,.17,.34,black,0,.68,-.89);
+ box(body,.43,.10,.35,black,0,.65,.08);
+ // Front fairing and headlight
+ box(body,.67,.60,.25,black,0,1.17,-.80);
+ box(body,.42,.39,.07,bronze,0,1.18,-.945);
+ box(body,.30,.25,.075,white,0,1.19,-.994);
+ box(body,.12,.13,.08,black,0,1.19,-1.04);
+ for(const x of [-.29,.29]){
+  box(body,.10,.33,.10,white,x,1.03,-.94);
+  cyl(body,.035,.035,.12,black,x,1.49,-.20,Math.PI/2);
+  box(body,.06,.055,.70,black,x*1.4,1.47,-.05);
+  box(body,.17,.08,.23,brown,x*1.45,1.43,.18);
+  const mirror=new THREE.Group();mirror.position.set(x*1.45,1.49,-.08);body.add(mirror);
+  box(mirror,.22,.30,.09,black,0,.16,-.17);
+  box(mirror,.15,.22,.025,mat('#33363d',.2,.2),0,.16,-.215);
+ }
+ // windshield
+ const screen=new THREE.Mesh(new THREE.BoxGeometry(.67,.40,.045),mat('#747b82',.22,.4));
+ screen.position.set(0,1.67,-.53);screen.rotation.x=-.16;body.add(screen);
+ // Side panels with bronze detail
+ for(const s of [-1,1]){
+  const side=box(body,.06,.48,.55,black,s*.32,.76,-.30);
+  side.rotation.z=s*.08;
+  box(body,.025,.24,.35,bronze,s*.36,.76,-.33).rotation.z=s*.08;
+  cyl(body,.045,.045,.28,black,s*.36,.53,-.44,Math.PI/2);
+ }
+ // rider silhouette
+ const riderGroup=new THREE.Group();body.add(riderGroup);
+ cyl(riderGroup,.17,.17,.36,black,0,1.45,.15);
+ const head=new THREE.Mesh(new THREE.SphereGeometry(.15,16,12),black);
+ head.position.set(0,1.72,.05);riderGroup.add(head);
+ const visor=box(riderGroup,.20,.07,.06,bronze,0,1.73,-.08);
+ // small windscreen logo text via canvas texture
+ const c=document.createElement('canvas');c.width=256;c.height=64;
+ const ctx=c.getContext('2d');ctx.fillStyle='#f5f1e8';ctx.font='bold 32px Arial';ctx.textAlign='center';ctx.fillText(name,128,42);
+ const texture=new THREE.CanvasTexture(c);
+ const label=new THREE.Mesh(new THREE.PlaneGeometry(.40,.10),new THREE.MeshBasicMaterial({map:texture,transparent:true}));
+ label.position.set(0,1.37,-.965);body.add(label);
+ root.userData.body=body;
+ root.userData.rider=riderGroup;
+ scene.add(root);return root;
 }
-function initMap(){
-  if(!window.L){el("map").innerHTML="تعذّر تحميل الخريطة. تحقق من الإنترنت.";return}
-  map=L.map("map").setView([36.8065,10.1815],12);
-  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{
-    maxZoom:19,attribution:"© OpenStreetMap contributors"
-  }).addTo(map);
-  placeLayer=L.layerGroup().addTo(map);
-  routeLine=L.polyline([],{color:"#d8ff3e",weight:5}).addTo(map);
-  map.on("click",e=>{
-    if(!addingPlace)return;
-    addPlaceAt(e.latlng.lat,e.latlng.lng);
-    addingPlace=false;
-  });
-  refreshMarkers();
-  if(db.active?.points?.length){
-    routeLine.setLatLngs(db.active.points.map(p=>[p.lat,p.lng]));
+function building(x,z,w,d,h,color){
+ const g=new THREE.Group();
+ box(g,w,h,d,mat(color),0,h/2,0);
+ for(let yy=1;yy<h-0.5;yy+=1.1){
+  for(let xx=-w/2+.5;xx<w/2-.2;xx+=1.0){
+   box(g,.35,.42,.035,mat('#8da0a4'),xx,yy,d/2+.02);
   }
+ }
+ g.position.set(x,0,z);worldGroup.add(g);objects.push(g);return g;
 }
-function locate(){
-  if(!navigator.geolocation){toast("GPS غير مدعوم في هذا المتصفح");return}
-  toast("جارٍ تحديد موقعك...");
-  navigator.geolocation.getCurrentPosition(pos=>{
-    currentPosition={
-      lat:pos.coords.latitude,lng:pos.coords.longitude,
-      accuracy:pos.coords.accuracy,speed:pos.coords.speed
-    };
-    map.setView([currentPosition.lat,currentPosition.lng],16);
-    drawMe();
-    el("gpsStatus").textContent="GPS متصل ±"+Math.round(pos.coords.accuracy)+"م";
-  },gpsError,{enableHighAccuracy:true,timeout:15000,maximumAge:5000});
+function tree(x,z){
+ const g=new THREE.Group();
+ cyl(g,.12,.17,1.5,brown,0,.75,0);
+ const crown=new THREE.Mesh(new THREE.SphereGeometry(.8,9,7),green);
+ crown.position.y=1.8;g.add(crown);
+ g.position.set(x,0,z);worldGroup.add(g);objects.push(g);
 }
-function gpsError(error){
-  const messages={
-    1:"اسمح للموقع بالوصول إلى GPS.",
-    2:"إشارة GPS غير متوفرة.",
-    3:"انتهت مهلة GPS. حاول مجددًا."
-  };
-  toast(messages[error.code]||"تعذر تحديد الموقع");
+function sign(text,x,z,color='#b38a4e'){
+ const c=document.createElement('canvas');c.width=512;c.height=128;
+ const ctx=c.getContext('2d');ctx.fillStyle='#101116';ctx.fillRect(0,0,512,128);
+ ctx.strokeStyle=color;ctx.lineWidth=5;ctx.strokeRect(5,5,502,118);
+ ctx.fillStyle='#f2e7d3';ctx.font='bold 36px Arial';ctx.textAlign='center';ctx.fillText(text,256,77);
+ const tex=new THREE.CanvasTexture(c);
+ const m=new THREE.Mesh(new THREE.PlaneGeometry(7,1.8),new THREE.MeshBasicMaterial({map:tex}));
+ m.position.set(x,3,z);worldGroup.add(m);objects.push(m);
 }
-function drawMe(){
-  if(!map||!currentPosition)return;
-  if(!meMarker){
-    meMarker=L.circleMarker([currentPosition.lat,currentPosition.lng],{
-      radius:8,color:"#fff",weight:3,fillColor:"#318bff",fillOpacity:1
-    }).addTo(map);
-  }else meMarker.setLatLng([currentPosition.lat,currentPosition.lng]);
+function gate(x,z,n){
+ const g=new THREE.Group();
+ for(const s of [-1,1]){
+  const p=new THREE.Mesh(new THREE.BoxGeometry(.16,2.8,.16),bronze);p.position.set(s*2,1.4,0);g.add(p);
+ }
+ const top=new THREE.Mesh(new THREE.BoxGeometry(4.15,.16,.16),bronze);top.position.y=2.8;g.add(top);
+ const c=document.createElement('canvas');c.width=256;c.height=128;
+ const ctx=c.getContext('2d');ctx.fillStyle='#fff';ctx.font='bold 70px Arial';ctx.textAlign='center';ctx.fillText(String(n),128,88);
+ const label=new THREE.Mesh(new THREE.PlaneGeometry(1,.5),new THREE.MeshBasicMaterial({map:new THREE.CanvasTexture(c),transparent:true}));
+ label.position.set(0,2.35,.1);g.add(label);
+ g.position.set(x,0,z);worldGroup.add(g);checkpoints.push({x,z,object:g,done:false});
 }
-function addMode(){
-  addingPlace=!addingPlace;
-  if(addingPlace){
-    showPage("home",document.querySelector('[data-page="home"]'));
-    toast("اضغط على الموقع الذي تريد حفظه في الخريطة");
-  }else toast("تم إلغاء إضافة المكان");
-}
-function addPlaceAt(lat,lng){
-  const name=prompt("اسم المكان:","مكاني المفضل");
-  if(!name||!name.trim())return;
-  const type=(prompt("نوع المكان: fuel أو rest أو repair أو other","other")||"other").toLowerCase().trim();
-  const types={
-    fuel:{icon:"⛽",label:"بنزين"},
-    rest:{icon:"☕",label:"راحة / مقهى"},
-    repair:{icon:"🔧",label:"ميكانيكي"},
-    other:{icon:"📍",label:"مكان خاص"}
-  };
-  const info=types[type]||types.other;
-  db.places.push({
-    id:makeId(),name:name.trim(),type:types[type]?type:"other",
-    icon:info.icon,label:info.label,lat,lng,favorite:false,
-    createdAt:Date.now()
-  });
-  persist();refreshMarkers();renderPlaces();updateStats();
-  toast("تم حفظ المكان");
-}
-function makeId(){return Date.now().toString(36)+Math.random().toString(36).slice(2,8)}
-function refreshMarkers(){
-  if(!placeLayer)return;
-  placeLayer.clearLayers();
-  db.places.forEach(p=>{
-    const icon=L.divIcon({
-      className:"",
-      html:`<div style="background:#191d20;border:2px solid #d8ff3e;border-radius:10px;padding:5px;font-size:17px">${p.icon||"📍"}</div>`,
-      iconSize:[34,34],iconAnchor:[17,17]
-    });
-    L.marker([p.lat,p.lng],{icon}).addTo(placeLayer)
-      .bindPopup(`<b>${escapeHTML(p.name)}</b><br>${escapeHTML(p.label)}<br><button onclick="focusPlace('${p.id}')">عرض المكان</button>`);
-  });
-  [...db.trips,...(db.active?[db.active]:[])].forEach(t=>{
-    (t.stops||[]).forEach(s=>{
-      if(s.lat==null||s.lng==null)return;
-      L.circleMarker([s.lat,s.lng],{
-        radius:7,color:"#151515",weight:2,fillColor:"#ffb34d",fillOpacity:1
-      }).addTo(placeLayer).bindPopup("توقف محفوظ");
-    });
-  });
-}
-function focusPlace(id){
-  const p=db.places.find(x=>x.id===id);
-  if(!p)return;
-  showPage("home",document.querySelector('[data-page="home"]'));
-  map.setView([p.lat,p.lng],17);
-}
-function renderPlaces(){
-  const filter=el("filter").value;
-  const items=db.places.filter(p=>filter==="all"||p.type===filter);
-  el("placesList").innerHTML=items.length?items.map(p=>`
-    <div class="item">
-      <div class="itemicon">${p.icon||"📍"}</div>
-      <div class="itemmain">
-        <strong>${escapeHTML(p.name)}</strong>
-        <p>${escapeHTML(p.label)} · ${p.lat.toFixed(5)}, ${p.lng.toFixed(5)}</p>
-      </div>
-      <button class="mini" onclick="focusPlace('${p.id}')">خريطة</button>
-      <button class="mini" onclick="deletePlace('${p.id}')">×</button>
-    </div>`).join(""):'<div class="empty">لا توجد أماكن محفوظة.<br>أضف مكانًا من الخريطة.</div>';
-}
-function deletePlace(id){
-  if(!confirm("حذف هذا المكان؟"))return;
-  db.places=db.places.filter(p=>p.id!==id);
-  persist();renderPlaces();refreshMarkers();updateStats();
-}
-function distance(a,b){
-  const R=6371000,toRad=x=>x*Math.PI/180;
-  const dLat=toRad(b.lat-a.lat),dLon=toRad(b.lng-a.lng);
-  const x=Math.sin(dLat/2)**2+
-    Math.cos(toRad(a.lat))*Math.cos(toRad(b.lat))*Math.sin(dLon/2)**2;
-  return 2*R*Math.asin(Math.sqrt(x));
-}
-function stats(t){
-  const km=n(t.distanceKm),driveMs=n(t.driveMs);
-  const average=driveMs>0?km/(driveMs/3600000):0;
-  const litres=km*n(db.settings.consumption)/100;
-  return {km,driveMs,average,litres,cost:litres*n(db.settings.fuelPrice)};
-}
-function startRide(){
-  if(db.active){toast("هناك جولة نشطة بالفعل");return}
-  db.active={
-    id:makeId(),startedAt:Date.now(),lastResumeAt:Date.now(),
-    parked:false,driveMs:0,distanceKm:0,points:[],stops:[],
-    lastPoint:null,maxSpeed:0
-  };
-  persist();startGPS();updateRideUI();
-  toast("بدأ تسجيل الجولة الحرة");
-}
-function startGPS(){
-  if(!navigator.geolocation){toast("GPS غير مدعوم");return}
-  stopGPS();
-  watchId=navigator.geolocation.watchPosition(onPosition,gpsError,{
-    enableHighAccuracy:true,maximumAge:2000,timeout:15000
-  });
-}
-function stopGPS(){
-  if(watchId!==null){
-    navigator.geolocation.clearWatch(watchId);
-    watchId=null;
+function makeWorld(){
+ worldGroup=new THREE.Group();scene.add(worldGroup);objects=[];checkpoints=[];
+ scene.background=new THREE.Color('#9db7c7');
+ scene.fog=new THREE.Fog('#a8b9c0',70,270);
+ const ground=new THREE.Mesh(new THREE.PlaneGeometry(500,1400),mat('#777b75'));
+ ground.rotation.x=-Math.PI/2;ground.position.z=-450;worldGroup.add(ground);
+ // Long town road and markings
+ box(worldGroup,roadWidth,.12,roadLength,mat('#34363a'),0,.03,-450);
+ for(let z=100;z>-1100;z-=12)box(worldGroup,.13,.025,5,mat('#d9d2bd'),0,.10,z);
+ for(const s of [-1,1]){
+  box(worldGroup,.18,.04,roadLength,white,s*roadWidth/2,.10,-450);
+  for(let z=80;z>-1000;z-=24){
+   building(s* (12+Math.random()*4),z,5+Math.random()*5,5+Math.random()*5,4+Math.random()*9,
+    ['#d1c7b2','#b6b5ad','#d8d1c3','#aaa9a2'][Math.floor(Math.random()*4)]);
+   if(z%48===0)tree(s*20,z-8);
   }
+ }
+ // coastal sea and promenade
+ box(worldGroup,160,.2,1400,mat('#397f9a',.4),-100,.0,-450);
+ box(worldGroup,20,.25,1400,mat('#c8bda5'),-19,.1,-450);
+ sign('KELIBIA • CAP BON',-10,-25);
+ // Fortress landmark
+ const fort=new THREE.Group();
+ for(let i=0;i<4;i++){
+  const wall=box(fort,15,7,1.2,mat('#b9aa8c'),0,3.5,i%2?7:-7);
+  wall.position.x=i<2?0:(i===2?-7:7);wall.rotation.y=i<2?0:Math.PI/2;
+ }
+ for(const x of [-5,5])for(const z of [-5,5]){
+  const tower=box(fort,2,10,2,mat('#998b71'),x,5,z);
+  box(fort,2.5,.6,2.5,mat('#776951'),x,10,z);
+ }
+ fort.position.set(-10,0,-80);worldGroup.add(fort);objects.push(fort);
+ sign('FORT DE KELIBIA',-10,-67);
+ // School and Etude area
+ building(14,-180,15,12,9,'#d2c8b6');sign('LYCEE LB7HAAR',14,-173);
+ building(-14,-290,12,10,6,'#c4b69f');sign('ETUDE • STUDY ZONE',-14,-282);
+ // Tennis cafe
+ const court=box(worldGroup,13,.12,22,mat('#3b7657'),18,.1,-400);
+ for(const x of [12,24])box(worldGroup,.09,.04,22,white,x,.18,-400);
+ for(const z of [-411,-389])box(worldGroup,12,.04,.09,white,18,.18,z);
+ box(worldGroup,.10,.04,12,white,18,.18,-400);
+ building(31,-400,9,8,4,'#c7b9a2');sign('TENNIS CAFE',30,-393);
+ // Challenge checkpoints
+ if(gameMode!=='free'){
+  const coords=gameMode==='tower'?[[-5,-18],[-13,-48],[-7,-72],[0,-100]]:
+   gameMode==='school'?[[0,-120],[12,-160],[17,-185],[0,-215]]:
+   gameMode==='etude'?[[0,-90],[-10,-160],[-10,-240],[0,-310]]:
+   gameMode==='cafe'?[[0,-330],[10,-370],[20,-400],[10,-430]]:
+   [[0,-30],[0,-100],[0,-200],[0,-300]];
+  coords.forEach((p,i)=>gate(p[0],p[1],i+1));
+ }
+ // decorative street lamps
+ for(let z=70;z>-700;z-=32){
+  for(const s of [-1,1]){
+   cyl(worldGroup,.07,.07,4,black,s*9,2,z);
+   box(worldGroup,.8,.1,.15,bronze,s*9,4,z);
+  }
+ }
 }
-function onPosition(pos){
-  currentPosition={
-    lat:pos.coords.latitude,lng:pos.coords.longitude,
-    accuracy:pos.coords.accuracy,speed:pos.coords.speed
-  };
-  el("gpsStatus").textContent="GPS متصل ±"+Math.round(pos.coords.accuracy)+"م";
-  drawMe();
-  if(!db.active||db.active.parked)return;
-  const t=db.active,now=Date.now();
-  const point={lat:currentPosition.lat,lng:currentPosition.lng,at:now,accuracy:currentPosition.accuracy};
-  if(t.lastPoint){
-    const metres=distance(t.lastPoint,point);
-    const seconds=(now-t.lastPoint.at)/1000;
-    const accuracy=Math.max(currentPosition.accuracy,t.lastPoint.accuracy||0);
-    if(metres>2&&metres<250&&seconds>0&&metres/seconds<55&&accuracy<100){
-      t.distanceKm+=metres/1000;
+function init(){
+ scene=new THREE.Scene();
+ camera=new THREE.PerspectiveCamera(65,innerWidth/innerHeight,.1,1500);
+ renderer=new THREE.WebGLRenderer({antialias:true,alpha:false,powerPreference:'high-performance'});
+ renderer.setPixelRatio(Math.min(devicePixelRatio,1.5));
+ renderer.setSize(innerWidth,innerHeight);
+ renderer.shadowMap.enabled=false;
+ renderer.outputColorSpace=THREE.SRGBColorSpace;
+ $('game').appendChild(renderer.domElement);
+ scene.add(new THREE.HemisphereLight(0xe5edff,0x555044,2));
+ const sun=new THREE.DirectionalLight(0xffe5bd,2.4);sun.position.set(-30,60,30);scene.add(sun);
+ clock=new THREE.Clock();
+}
+function selectRider(n){selected=n;document.querySelectorAll('.choice').forEach(b=>b.classList.toggle('active',b.textContent===n));}
+window.startGame=function(mode){
+ gameMode=mode;running=true;paused=false;finished=false;speed=0;heading=0;steer=0;gas=0;brake=0;elapsed=0;score=0;checkpointIndex=0;
+ $('menu').style.display='none';$('hud').style.display='flex';$('controls').style.display='flex';$('pause').style.display='block';$('mission').style.display='block';
+ if(player)scene.remove(player);if(rival)scene.remove(rival);
+ makeWorld();
+ player=buildScooter(selected);rival=buildScooter(selected==='JASSR'?'YASSMINE':'JASSR');
+ position.set(0,0,0);aiPosition.set(3,0,-12);
+ player.position.copy(position);rival.position.copy(aiPosition);
+ const names={free:['FREE RIDE','Explore Kelibia. Ride safely and discover the landmarks.'],tower:['FORT KELIBIA','Pass all 4 gates in order. Stay on the route.'],school:['LYCEE LB7HAAR','Reach the school gates without skipping checkpoints.'],etude:['ETUDE TIME ATTACK','Reach your study destination before the timer expires.'],cafe:['TENNIS CAFE','Navigate the tennis checkpoints accurately.'],rival:['RIVAL DUEL','Complete the course and beat your rival.']};
+ $('mode').textContent=names[mode][0];$('missionTitle').textContent=names[mode][0];$('missionText').textContent=names[mode][1];
+ $('toast').textContent='3';let n=3;
+ const countdown=setInterval(()=>{if(!running||paused){clearInterval(countdown);return}n--;if(n>0)$('toast').textContent=n;else{$('toast').textContent='GO!';setTimeout(()=>$('toast').textContent='',700);clearInterval(countdown)}},700);
+}
+window.togglePause=function(){
+ if(!running)return;paused=!paused;$('pause').textContent=paused?'▶':'Ⅱ';
+ $('toast').textContent=paused?'PAUSED':'';
+ if(!paused)clock.getDelta();
+}
+function bindHold(id,fn){
+ const el=$(id);
+ el.addEventListener('pointerdown',e=>{e.preventDefault();el.setPointerCapture(e.pointerId);fn(true);});
+ ['pointerup','pointercancel','lostpointercapture'].forEach(ev=>el.addEventListener(ev,e=>fn(false)));
+}
+bindHold('left',v=>steer=v?-1:(steer<0?0:steer));
+bindHold('right',v=>steer=v?1:(steer>0?0:steer));
+bindHold('gas',v=>gas=v?1:0);
+bindHold('brake',v=>brake=v?1:0);
+let tiltEnabled=false,lastTilt=0;
+window.addEventListener('deviceorientation',e=>{
+ if(!tiltEnabled||e.gamma===null)return;
+ if(Math.abs(e.gamma)>5)steer=clamp(e.gamma/22,-1,1);
+ else if(!$('left').matches(':active')&&!$('right').matches(':active'))steer=0;
+});
+async function enableTilt(){
+ try{
+  if(typeof DeviceOrientationEvent!=='undefined'&&typeof DeviceOrientationEvent.requestPermission==='function'){
+   const r=await DeviceOrientationEvent.requestPermission();if(r!=='granted')throw Error();
+  }
+  tiltEnabled=true;$('toast').textContent='TILT ENABLED';setTimeout(()=>$('toast').textContent='',900);
+ }catch(e){tiltEnabled=false;$('toast').textContent='USE TOUCH CONTROLS';setTimeout(()=>$('toast').textContent='',1200)}
+}
+$('help').insertAdjacentHTML('beforeend','<br><button id="tiltButton" style="margin-top:10px;background:#202127;color:white;border:1px solid #444;border-radius:10px;padding:10px">ENABLE TILT CONTROL</button>');
+$('tiltButton').addEventListener('click',enableTilt);
+function update(dt){
+ if(!running||paused||finished)return;
+ elapsed+=dt;
+ const maxSpeed=gameMode==='rival'?75:65;
+ if(gas)speed+=23*dt;
+ else speed-=5*dt;
+ if(brake)speed-=36*dt;
+ speed=clamp(speed,0,maxSpeed);
+ const v=speed/3.6;
+ heading-=steer*dt*(.65+v*.035);
+ const forwardX=Math.sin(heading),forwardZ=-Math.cos(heading);
+ position.x+=forwardX*v*dt;
+ position.z+=forwardZ*v*dt;
+ // Keep the scooter inside the playable road; leaving it costs speed.
+ if(Math.abs(position.x)>roadWidth/2-1){
+  speed=Math.max(0,speed-18*dt);
+  position.x=clamp(position.x,-roadWidth/2+1,roadWidth/2-1);
+ }
+ player.position.copy(position);player.rotation.y=heading;
+ player.userData.body.rotation.z=-steer*.10*Math.min(1,v/8);
+ // AI follows the route and adapts speed near corners.
+ const targetX=gameMode==='free'?Math.sin(elapsed*.2)*3:(Math.sin(-aiPosition.z*.045)*3);
+ const dx=targetX-aiPosition.x;
+ aiPosition.x+=clamp(dx,-1,1)*dt*2.3;
+ aiPosition.z-=Math.max(6,v*.90)*dt;
+ rival.position.copy(aiPosition);
+ rival.rotation.y=Math.atan2(targetX-aiPosition.x,1)*.25;
+ rival.userData.body.rotation.z=clamp(dx,-1,1)*-.07;
+ // Follow camera
+ const desired=new THREE.Vector3(
+  position.x-forwardX*7+Math.cos(heading)*2,
+  4.0,
+  position.z-forwardZ*7+Math.sin(heading)*2
+ );
+ camera.position.lerp(desired,1-Math.exp(-4*dt));
+ camera.lookAt(position.x+forwardX*4,1.1,position.z+forwardZ*4);
+ // Checkpoints must be passed in order.
+ if(checkpoints.length&&!finished){
+  const cp=checkpoints[checkpointIndex];
+  if(cp){
+   const distance=Math.hypot(position.x-cp.x,position.z-cp.z);
+   if(distance<4.2){
+    cp.done=true;cp.object.children.forEach(o=>{if(o.material&&o.material.color)o.material.color.set('#36d982')});
+    checkpointIndex++;score+=100;
+    $('progress').textContent=`MISSION ${checkpointIndex}/${checkpoints.length} • ${score} PTS`;
+    $('toast').textContent='CHECKPOINT +100';setTimeout(()=>$('toast').textContent='',500);
+    if(checkpointIndex===checkpoints.length){
+     finished=true;speed=0;$('toast').textContent='CHALLENGE COMPLETE • '+score+' PTS';
+     $('missionText').textContent='Completed in '+elapsed.toFixed(1)+' seconds.';
     }
+   }
   }
-  t.points.push({lat:point.lat,lng:point.lng,at:now});
-  if(t.points.length>10000)t.points=t.points.filter((p,i)=>i%2===0);
-  t.lastPoint=point;
-  if(Number.isFinite(pos.coords.speed)&&pos.coords.speed>=0){
-    t.maxSpeed=Math.max(t.maxSpeed,pos.coords.speed*3.6);
+ }
+ // In free ride, award discovery points near landmarks.
+ if(gameMode==='free'){
+  const places=[[-10,-80,'FORT DISCOVERED'],[14,-180,'LYCEE LB7HAAR DISCOVERED'],[-14,-290,'ETUDE ZONE DISCOVERED'],[25,-400,'TENNIS CAFE DISCOVERED']];
+  for(const p of places){
+   const key='found'+p[2];
+   if(!window[key]&&Math.hypot(position.x-p[0],position.z-p[1])<9){
+    window[key]=true;score+=100;$('toast').textContent=p[2]+' +100';setTimeout(()=>$('toast').textContent='',900);
+   }
   }
-  routeLine.addLatLng([point.lat,point.lng]);
-  persist();updateRideUI();updateStats();
+ }
+ $('speed').innerHTML=Math.round(speed)+' <span style="font-size:12px">KM/H</span>';
+ $('gear').textContent=speed<1?'READY':speed<20?'GEAR 1':speed<40?'GEAR 2':'GEAR 3';
+ $('mapLabel').textContent=position.z>-90?'KÉLIBIA':position.z>-210?'LYCEE LB7HAAR':position.z>-330?'ETUDE':position.z>-450?'TENNIS CAFÉ':'KÉLIBIA COAST';
+ if(gameMode==='etude'&&elapsed>100&&!finished){finished=true;speed=0;$('toast').textContent='TIME UP';}
 }
-function parkRide(){
-  const t=db.active;
-  if(!t||t.parked)return;
-  if(t.lastResumeAt)t.driveMs+=Date.now()-t.lastResumeAt;
-  t.parked=true;t.parkedAt=Date.now();t.lastPoint=null;
-  if(currentPosition){
-    t.stops.push({
-      lat:currentPosition.lat,lng:currentPosition.lng,
-      at:Date.now(),durationMin:0
-    });
-  }
-  persist();stopGPS();
-  el("parkNotice").style.display="block";
-  refreshMarkers();updateRideUI();
-  const safe=confirm(
-    "PARK — تم تسجيل التوقف.\n\n"+
-    "أطفئ المحرك، استعمل الحامل وثبّت الدراجة، وأغلقها وأزل المفتاح.\n\n"+
-    "هل تأكدت من تأمين الدراجة؟"
-  );
-  if(!safe)toast("تأكد من تأمين الدراجة قبل الابتعاد.");
+function animate(){
+ requestAnimationFrame(animate);
+ const dt=Math.min(clock.getDelta(),.04);
+ update(dt);
+ if(renderer&&scene&&camera)renderer.render(scene,camera);
 }
-function resumeRide(){
-  const t=db.active;
-  if(!t||!t.parked)return;
-  if(t.stops.length){
-    const s=t.stops[t.stops.length-1];
-    s.durationMin=(Date.now()-s.at)/60000;
-  }
-  t.parked=false;t.parkedAt=null;t.lastResumeAt=Date.now();t.lastPoint=null;
-  persist();el("parkNotice").style.display="none";
-  startGPS();updateRideUI();refreshMarkers();
-  toast("استؤنف تسجيل الجولة");
-}
-function saveRide(){
-  const t=db.active;
-  if(!t)return;
-  if(!confirm("حفظ الجلسة الحالية في الكراس؟"))return;
-  if(!t.parked&&t.lastResumeAt)t.driveMs+=Date.now()-t.lastResumeAt;
-  if(t.parked&&t.stops.length){
-    t.stops[t.stops.length-1].durationMin=(Date.now()-t.stops[t.stops.length-1].at)/60000;
-  }
-  t.endedAt=Date.now();
-  t.date=new Date(t.startedAt).toLocaleString("ar-TN");
-  db.trips.unshift(t);db.active=null;
-  persist();stopGPS();routeLine.setLatLngs([]);
-  el("parkNotice").style.display="none";
-  updateRideUI();updateStats();refreshMarkers();
-  toast("تم حفظ الجلسة في كراس الدراجة");
-}
-function duration(ms){
-  let s=Math.max(0,Math.floor(ms/1000));
-  const h=Math.floor(s/3600),m=Math.floor(s%3600/60),r=s%60;
-  return [h,m,r].map(v=>String(v).padStart(2,"0")).join(":");
-}
-function updateRideUI(){
-  const t=db.active;
-  el("start").disabled=!!t;
-  el("park").disabled=!t||t.parked;
-  el("resume").disabled=!t||!t.parked;
-  el("saveRide").disabled=!t;
-  el("dot").className="dot "+(t?(t.parked?"park":"live"):"");
-  el("rideStatus").textContent=!t?"لا توجد جولة نشطة":t.parked?"توقف مسجل — PARK":"جولة حرة قيد التسجيل";
-  const speed=currentPosition&&Number.isFinite(currentPosition.speed)&&(!t||!t.parked)
-    ?currentPosition.speed*3.6:0;
-  el("speed").innerHTML=fmt(speed)+" <span class='unit'>كم/س</span>";
-  const s=t?stats(t):{average:0};
-  el("average").innerHTML=fmt(s.average)+" <span class='unit'>كم/س</span>";
-  let ms=t?(t.driveMs+(!t.parked&&t.lastResumeAt?Date.now()-t.lastResumeAt:0)):0;
-  el("clock").textContent=duration(ms);
-}
-function updateStats(){
-  const all=[...db.trips,...(db.active?[db.active]:[])];
-  let km=0,litres=0,cost=0,stops=0;
-  all.forEach(t=>{
-    const s=stats(t);km+=s.km;litres+=s.litres;cost+=s.cost;stops+=(t.stops||[]).length;
-  });
-  el("totalKm").innerHTML=fmt(km)+" <span class='unit'>كم</span>";
-  el("totalLitres").innerHTML=fmt(litres,2)+" <span class='unit'>لتر</span>";
-  el("totalMoney").innerHTML=fmt(cost,2)+" <span class='unit'>د.ت</span>";
-  el("totalStops").textContent=stops;
-  const histKm=db.trips.reduce((a,t)=>a+stats(t).km,0);
-  const time=db.trips.reduce((a,t)=>a+n(t.driveMs),0);
-  el("historyKm").textContent=fmt(histKm)+" كم";
-  el("historyAvg").textContent=fmt(time?histKm/(time/3600000):0)+" كم/س";
-}
-function renderHistory(){
-  el("tripCount").textContent=db.trips.length+" جلسة";
-  el("historyList").innerHTML=db.trips.length?db.trips.map(t=>{
-    const s=stats(t);
-    return `<div class="item">
-      <div class="itemicon">🏍️</div>
-      <div class="itemmain">
-        <strong>${escapeHTML(t.date||new Date(t.startedAt).toLocaleString("ar-TN"))}</strong>
-        <p>${fmt(s.km)} كم · قيادة ${duration(s.driveMs)} · متوسط ${fmt(s.average)} كم/س<br>
-        ${(t.stops||[]).length} توقف · ${fmt(s.litres,2)} لتر · ${fmt(s.cost,2)} د.ت</p>
-      </div>
-      <button class="mini" onclick="viewTrip('${t.id}')">عرض</button>
-      <button class="mini" onclick="deleteTrip('${t.id}')">×</button>
-    </div>`;
-  }).join(""):'<div class="empty">لا توجد جلسات محفوظة بعد.<br>ابدأ جولة ثم احفظها لتظهر هنا.</div>';
-}
-function viewTrip(id){
-  const t=db.trips.find(x=>x.id===id);
-  if(!t)return;
-  showPage("home",document.querySelector('[data-page="home"]'));
-  if(t.points?.length){
-    routeLine.setLatLngs(t.points.map(p=>[p.lat,p.lng]));
-    map.fitBounds(routeLine.getBounds(),{padding:[25,25]});
-    toast("مسار الرحلة ظاهر على الخريطة");
-  }
-}
-function deleteTrip(id){
-  if(!confirm("حذف هذه الجلسة من السجل؟"))return;
-  db.trips=db.trips.filter(t=>t.id!==id);
-  persist();renderHistory();updateStats();refreshMarkers();
-}
-function saveSettings(){
-  const consumption=n(el("consumption").value);
-  const fuelPrice=n(el("fuelPrice").value);
-  if(consumption<=0||fuelPrice<0){toast("تحقق من الأرقام المدخلة");return}
-  db.settings={consumption,fuelPrice};
-  persist();updateStats();renderHistory();toast("تم حفظ إعدادات الدراجة");
-}
-function exportBackup(){
-  const blob=new Blob([JSON.stringify(db,null,2)],{type:"application/json"});
-  const url=URL.createObjectURL(blob),a=document.createElement("a");
-  a.href=url;a.download="moto-track-backup.json";a.click();
-  URL.revokeObjectURL(url);
-}
-function importBackup(event){
-  const file=event.target.files[0];if(!file)return;
-  const reader=new FileReader();
-  reader.onload=()=>{
-    try{
-      const data=JSON.parse(reader.result);
-      if(!data.settings||!Array.isArray(data.places)||!Array.isArray(data.trips))throw Error();
-      if(!confirm("استبدال البيانات الحالية بالنسخة الاحتياطية؟"))return;
-      db={...DEFAULT,...data,settings:{...DEFAULT.settings,...data.settings}};
-      persist();
-      el("consumption").value=db.settings.consumption;
-      el("fuelPrice").value=db.settings.fuelPrice;
-      refreshMarkers();renderPlaces();renderHistory();updateStats();updateRideUI();
-      toast("تم استيراد النسخة الاحتياطية");
-    }catch(e){toast("ملف النسخة الاحتياطية غير صالح")}
-    event.target.value="";
-  };
-  reader.readAsText(file);
-}
-function clearData(){
-  if(!confirm("هل تريد حذف كل الأماكن والرحلات والإعدادات؟"))return;
-  if(!confirm("تأكيد أخير: لا يمكن التراجع عن الحذف."))return;
-  stopGPS();db=JSON.parse(JSON.stringify(DEFAULT));persist();
-  el("consumption").value=4.3;el("fuelPrice").value=2.6;
-  routeLine.setLatLngs([]);refreshMarkers();renderPlaces();renderHistory();updateStats();updateRideUI();
-  el("parkNotice").style.display="none";toast("تم مسح البيانات");
-}
-
-el("consumption").value=db.settings.consumption;
-el("fuelPrice").value=db.settings.fuelPrice;
-initMap();renderPlaces();renderHistory();updateStats();updateRideUI();
-if(db.active){
-  el("parkNotice").style.display=db.active.parked?"block":"none";
-  if(!db.active.parked)startGPS();
-  else toast("لديك جولة متوقفة. اضغط RESUME للمتابعة.");
-}
-setInterval(()=>{if(db.active)updateRideUI()},1000);
-window.addEventListener("beforeunload",()=>{try{persist()}catch(e){}});
+window.addEventListener('resize',()=>{
+ if(!camera||!renderer)return;
+ camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight);
+});
+window.addEventListener('keydown',e=>{
+ if(e.key==='ArrowLeft'||e.key==='a')steer=-1;
+ if(e.key==='ArrowRight'||e.key==='d')steer=1;
+ if(e.key==='ArrowUp'||e.key==='w')gas=1;
+ if(e.key==='ArrowDown'||e.key==='s')brake=1;
+ if(e.key==='Escape')togglePause();
+});
+window.addEventListener('keyup',e=>{
+ if(['ArrowLeft','a','ArrowRight','d'].includes(e.key))steer=0;
+ if(['ArrowUp','w'].includes(e.key))gas=0;
+ if(['ArrowDown','s'].includes(e.key))brake=0;
+});
+init();animate();
 </script>
 </body>
 </html>
