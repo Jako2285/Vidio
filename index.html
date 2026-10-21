@@ -3,403 +3,633 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="theme-color" content="#08090b">
 <title>PISTA RIVALS</title>
 <style>
+:root{
+  --bg:#08090b;--gold:#c6a16b;--gold2:#f0d4a1;--muted:#999a9f;
+  --panel:#121318;--line:#ffffff20;--red:#c44738;
+}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-body{margin:0;background:#08090c;color:white;font-family:-apple-system,BlinkMacSystemFont,Arial;overflow:hidden;touch-action:none}
-#game{position:fixed;inset:0}
-canvas{display:block;width:100%;height:100%}
-.panel{background:#101116dd;border:1px solid #ffffff24;border-radius:17px;padding:12px;backdrop-filter:blur(12px)}
-#hud{position:absolute;top:env(safe-area-inset-top,10px);left:12px;right:12px;display:flex;justify-content:space-between;align-items:flex-start;pointer-events:none}
-#speed{font-size:32px;font-weight:900;letter-spacing:-1px}
-.small{font-size:10px;color:#aaa;letter-spacing:2px}
-#mission{position:absolute;top:100px;left:50%;transform:translateX(-50%);width:min(330px,88%);text-align:center}
-#controls{position:absolute;bottom:calc(18px + env(safe-area-inset-bottom));left:12px;right:12px;display:flex;justify-content:space-between;align-items:end;gap:8px}
-.group{display:flex;gap:8px;align-items:center}
-.ctrl{width:64px;height:64px;border-radius:19px;background:#15161ddd;border:1px solid #ffffff38;color:white;font-size:25px;font-weight:bold;touch-action:none}
-.ctrl:active,.active{background:#a47b40!important}
-.pedal{width:70px;height:76px;font-size:13px}
-#menu{position:absolute;inset:0;background:linear-gradient(#050609bb,#050609ee);display:flex;align-items:center;justify-content:center;padding:20px;overflow:auto}
-#menuCard{width:min(440px,100%);text-align:center;padding:24px 18px}
-h1{font-size:36px;letter-spacing:3px;margin:4px 0}
-.gold{color:#d4b078}
-button{cursor:pointer}
-.action{background:#d2ad70;color:#111;border:0;border-radius:14px;padding:15px 18px;font-weight:900;width:100%;font-size:15px;margin-top:10px}
-.choice{background:#18191f;color:white;border:1px solid #ffffff30;border-radius:12px;padding:12px;width:48%;font-weight:bold}
-.row{display:flex;gap:8px;justify-content:center;margin:14px 0}
-#toast{position:absolute;top:44%;left:50%;transform:translate(-50%,-50%);font-size:22px;font-weight:900;text-align:center;text-shadow:0 2px 12px black;pointer-events:none;width:90%}
-#mapLabel{font-size:11px;color:#d5b47b}
-#help{font-size:11px;color:#aaa;line-height:1.6;margin-top:14px}
-#pause{position:absolute;top:80px;right:12px;width:42px;height:42px;border-radius:13px;background:#171820dd;color:white;border:1px solid #ffffff30}
-@media(min-width:700px){.ctrl{width:75px;height:75px}}
+html,body{margin:0;width:100%;height:100%;overflow:hidden;background:var(--bg);color:#f8f6f0;font-family:Arial,Helvetica,sans-serif;touch-action:pan-y}
+button{font:inherit;cursor:pointer;color:inherit}
+#app{position:fixed;inset:0;overflow:hidden;background:#090a0c}
+#world{position:absolute;inset:0;width:100%;height:100%;display:block}
+#shade{position:absolute;inset:0;pointer-events:none;background:linear-gradient(180deg,#050608a8,transparent 35%,#0607093b 65%,#050608df)}
+.screen{position:absolute;inset:0;display:none;overflow-y:auto;overscroll-behavior:contain}
+.screen.active{display:block}
+#home{background:linear-gradient(180deg,#05060930,#06070917 35%,#07080bfa 100%);overflow:hidden}
+.topbar{position:absolute;top:max(20px,env(safe-area-inset-top));left:22px;right:22px;display:flex;justify-content:space-between;align-items:center;z-index:4}
+.brand-mini{font-size:11px;letter-spacing:4px;color:#e9d5b2;font-weight:800}
+.iconbtn{width:43px;height:43px;border-radius:50%;border:1px solid #ffffff3b;background:#0a0b0dbd;display:grid;place-items:center;font-size:18px}
+.hero{position:absolute;top:17%;left:7%;right:7%;text-align:center;z-index:2;pointer-events:none}
+.eyebrow{font-size:9px;letter-spacing:5px;color:var(--gold2);font-weight:bold}
+h1{font-size:clamp(37px,11vw,68px);line-height:.93;letter-spacing:-2px;margin:14px 0 8px;font-weight:1000;text-shadow:0 8px 32px #000}
+h1 span{color:var(--gold)}
+.subtitle{font-size:9px;letter-spacing:3px;color:#c3c0b9}
+.hero-line{width:40px;height:2px;background:var(--gold);margin:18px auto}
+.home-bottom{position:absolute;bottom:max(24px,env(safe-area-inset-bottom));left:22px;right:22px;z-index:3}
+.rider-label{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.rider-label strong{font-size:17px;letter-spacing:1.5px}
+.rider-label small{display:block;color:#a7a7a7;font-size:9px;letter-spacing:2px;margin-top:5px}
+.gold{color:var(--gold2)}
+.primary{width:100%;height:56px;border:0;border-radius:5px;background:linear-gradient(110deg,#e4c18b,#b88b50);color:#111;font-weight:900;letter-spacing:2px;font-size:12px;box-shadow:0 8px 30px #0007}
+.secondary{width:100%;height:49px;background:#111217d9;border:1px solid #ffffff30;border-radius:5px;font-weight:bold;font-size:11px;letter-spacing:1.5px}
+.home-actions{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:9px}
+.footer{font-size:8px;letter-spacing:2px;color:#777;text-align:center;margin-top:15px}
+.page{padding:max(24px,env(safe-area-inset-top)) 20px max(25px,env(safe-area-inset-bottom));background:linear-gradient(180deg,#101116f5,#08090bf9)}
+.page-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:27px}
+.page-head h2{margin:0;font-size:24px;letter-spacing:1px}
+.back{border:1px solid #ffffff30;background:#15161b;border-radius:50%;width:43px;height:43px;font-size:21px}
+.kicker{color:var(--gold);font-size:9px;letter-spacing:3px;font-weight:bold}
+.muted{color:var(--muted);font-size:12px;line-height:1.6}
+.rider-card{border:1px solid var(--line);background:#14151a;border-radius:8px;overflow:hidden;margin-bottom:12px}
+.rider-preview{height:195px;position:relative;display:grid;place-items:center;background:radial-gradient(ellipse at 50% 70%,#51422f77,transparent 55%),linear-gradient(135deg,#1b1c21,#090a0d)}
+.rider-preview canvas{width:100%;height:100%;display:block}
+.rider-info{padding:16px;display:flex;justify-content:space-between;align-items:center}
+.rider-info h3{margin:0;font-size:17px;letter-spacing:1px}
+.rider-info p{margin:6px 0 0;color:#999;font-size:10px}
+.selectbtn{padding:11px 14px;border:1px solid var(--gold);background:transparent;color:var(--gold2);font-size:9px;font-weight:bold;letter-spacing:1px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:11px}
+.mode-card{min-height:172px;text-align:left;padding:0;background:#14151a;border:1px solid #ffffff20;border-radius:6px;overflow:hidden;position:relative}
+.mode-art{height:105px;position:relative;overflow:hidden;background:linear-gradient(145deg,#28313a,#0a0c0f)}
+.mode-art:before{content:"";position:absolute;width:170%;height:50px;background:#d0b08024;transform:rotate(-24deg);top:42%;left:-25%}
+.mode-art:after{content:"";position:absolute;width:4px;height:100%;left:50%;top:0;background:repeating-linear-gradient(180deg,#e4c797 0 13px,transparent 13px 25px);transform:perspective(50px) rotateX(20deg);opacity:.45}
+.mode-number{position:absolute;top:9px;left:10px;font-size:9px;letter-spacing:2px;color:var(--gold2)}
+.mode-emoji{position:absolute;right:12px;bottom:7px;font-size:35px;filter:drop-shadow(0 4px 7px #000)}
+.mode-copy{padding:12px}
+.mode-copy strong{font-size:11px;letter-spacing:.5px}
+.mode-copy p{font-size:9px;line-height:1.4;color:#999;margin:6px 0 0}
+.mode-card:active{border-color:var(--gold)}
+#garage{background:#08090b}
+.garage-stage{height:47vh;min-height:280px;max-height:430px;position:relative;background:radial-gradient(ellipse at center,#4c403080,#121317 56%,#08090b)}
+#garageCanvas{width:100%;height:100%;display:block}
+.garage-hint{position:absolute;bottom:12px;left:0;right:0;text-align:center;color:#aaa;font-size:9px;letter-spacing:2px;pointer-events:none}
+.specs{display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid var(--line);border-bottom:1px solid var(--line);margin:20px 0}
+.spec{text-align:center;padding:15px 4px}
+.spec strong{font-size:15px;display:block}
+.spec span{font-size:8px;color:#999;letter-spacing:1.5px;display:block;margin-top:6px}
+#race{overflow:hidden;background:#08090b}
+#raceHud{position:absolute;top:max(15px,env(safe-area-inset-top));left:13px;right:13px;display:flex;justify-content:space-between;align-items:flex-start;pointer-events:none}
+.hudbox{background:#0b0c0ec9;border:1px solid #ffffff25;padding:10px 13px;min-width:100px;backdrop-filter:blur(8px)}
+.hudlabel{font-size:8px;letter-spacing:2px;color:#b6b1a6}
+#speed{font-size:34px;font-weight:900;line-height:1.2}
+#speed span{font-size:9px;letter-spacing:1px;color:#aaa}
+#raceStatus{font-size:12px;font-weight:bold;margin-top:6px}
+#missionHud{position:absolute;top:105px;left:50%;transform:translateX(-50%);width:min(310px,85%);text-align:center;background:#0b0c0dcc;border:1px solid #ffffff22;padding:12px 14px;pointer-events:none}
+#missionName{font-size:10px;letter-spacing:2px;color:var(--gold2);font-weight:bold}
+#missionDescription{font-size:10px;color:#c4c1bb;margin-top:6px;line-height:1.4}
+#raceProgress{height:3px;background:#ffffff22;margin-top:10px}
+#raceProgressFill{height:100%;width:0;background:var(--gold)}
+#raceControls{position:absolute;bottom:max(20px,env(safe-area-inset-bottom));left:16px;right:16px;display:flex;align-items:flex-end;justify-content:space-between;pointer-events:none}
+.control-group{display:flex;gap:9px;align-items:flex-end;pointer-events:auto}
+.control{width:61px;height:61px;border:1px solid #ffffff44;background:#111319d9;border-radius:50%;font-size:21px;font-weight:bold;touch-action:none;user-select:none}
+.control:active,.control.pressed{background:#b28a50;color:#111}
+.control.pedal{height:69px;width:68px;border-radius:17px;font-size:10px;letter-spacing:1px}
+#pauseRace{position:absolute;top:max(76px,calc(env(safe-area-inset-top) + 65px));right:14px;width:40px;height:40px;border:1px solid #ffffff30;background:#101116d9;border-radius:50%}
+#raceMessage{position:absolute;left:8%;right:8%;top:44%;text-align:center;font-size:25px;line-height:1.3;font-weight:900;text-shadow:0 3px 20px #000;pointer-events:none}
+#raceMessage small{display:block;font-size:11px;letter-spacing:2px;color:var(--gold2);margin-top:9px}
+.overlay{position:absolute;inset:0;display:none;align-items:center;justify-content:center;padding:24px;background:#050609bd;backdrop-filter:blur(9px);z-index:8}
+.overlay.show{display:flex}
+.modal{width:min(370px,100%);padding:25px 20px;background:#131419;border:1px solid #ffffff30;text-align:center}
+.modal h2{font-size:26px;letter-spacing:2px;margin:8px 0 10px}
+.modal p{font-size:12px;line-height:1.7;color:#aaa}
+.modal .primary,.modal .secondary{margin-top:9px}
+#toast{position:absolute;top:32%;left:10%;right:10%;text-align:center;font-size:13px;letter-spacing:1.5px;font-weight:bold;pointer-events:none;text-shadow:0 2px 12px #000}
+@media(min-width:700px){
+ .home-bottom{max-width:460px;left:50%;right:auto;width:460px;transform:translateX(-50%)}
+ .hero{top:12%}
+ .grid{grid-template-columns:repeat(3,1fr)}
+ .mode-card{min-height:200px}
+ .mode-art{height:125px}
+}
 </style>
 </head>
 <body>
-<div id="game"></div>
-<div id="hud" style="display:none">
- <div class="panel"><div class="small">JASSR PISTA</div><div id="speed">0 <span style="font-size:12px">KM/H</span></div><div id="gear" class="small">READY</div></div>
- <div class="panel" style="text-align:right"><div id="mode" class="small">FREE RIDE</div><div id="mapLabel">KÉLIBIA</div><div id="progress">MISSION 0/0</div></div>
-</div>
-<button id="pause" style="display:none" onclick="togglePause()">Ⅱ</button>
-<div id="mission" class="panel" style="display:none"><div id="missionTitle" class="gold" style="font-weight:900">EXPLORATION</div><div id="missionText" style="font-size:12px;margin-top:5px">Explore the city</div></div>
-<div id="toast"></div>
-<div id="controls" style="display:none">
- <div class="group">
-  <button class="ctrl" id="left">◀</button>
-  <button class="ctrl" id="right">▶</button>
+<div id="app">
+<canvas id="world"></canvas><div id="shade"></div>
+
+<section id="home" class="screen active">
+ <div class="topbar"><div class="brand-mini">PR<span class="gold"> / </span>STUDIO</div><button class="iconbtn" onclick="showScreen('modes')" aria-label="Missions">☰</button></div>
+ <div class="hero">
+  <div class="eyebrow">KÉLIBIA • CAP BON</div>
+  <h1>PISTA<br><span>RIVALS</span></h1>
+  <div class="subtitle">YOUR CITY. YOUR RIDE. YOUR RULES.</div>
+  <div class="hero-line"></div>
  </div>
- <div class="group">
-  <button class="ctrl pedal" id="brake">BRAKE</button>
-  <button class="ctrl pedal" id="gas">GAS</button>
+ <div class="home-bottom">
+  <div class="rider-label"><div><strong id="homeRider">JASSR PISTA</strong><small>URBAN SCOOTER SERIES</small></div><button class="iconbtn" onclick="showScreen('garage')" aria-label="Garage">↗</button></div>
+  <button class="primary" onclick="startRace('free')">START YOUR RIDE &nbsp; ›</button>
+  <div class="home-actions"><button class="secondary" onclick="showScreen('modes')">MISSIONS</button><button class="secondary" onclick="showScreen('garage')">GARAGE</button></div>
+  <div class="footer">UNOFFICIAL PERSONAL GAME • MADE FOR JASSR & YASSMINE</div>
  </div>
-</div>
-<div id="menu">
- <div id="menuCard" class="panel">
-  <div class="small gold">KÉLIBIA • TUNISIA</div>
-  <h1>PISTA <span class="gold">RIVALS</span></h1>
-  <p style="color:#aaa;font-size:13px">YOUR CITY. YOUR RIDE. YOUR RIVAL.</p>
-  <div style="margin:22px 0;background:#08090c;border-radius:16px;padding:20px">
-   <div style="font-size:48px">🏍️</div>
-   <div style="font-weight:900">JASSR PISTA <span class="gold">VS</span> YASSMINE PISTA</div>
-   <div class="small" style="margin-top:8px">BLACK • BRONZE • BROWN</div>
-  </div>
-  <div class="row">
-   <button class="choice" onclick="selectRider('JASSR')">JASSR</button>
-   <button class="choice" onclick="selectRider('YASSMINE')">YASSMINE</button>
-  </div>
-  <div class="small">CHOOSE YOUR CHALLENGE</div>
-  <button class="action" onclick="startGame('free')">01 — FREE RIDE</button>
-  <button class="action" onclick="startGame('tower')">02 — FORT KÉLIBIA</button>
-  <button class="action" onclick="startGame('school')">03 — LYCÉE LB7HAAR</button>
-  <button class="action" onclick="startGame('etude')">04 — ETUDE TIME ATTACK</button>
-  <button class="action" onclick="startGame('cafe')">05 — TENNIS CAFÉ CHALLENGE</button>
-  <button class="action" onclick="startGame('rival')">06 — RIVAL DUEL</button>
-  <div id="help">Touch controls • Landscape recommended • Safari 3D<br>Reach checkpoints in order. Respect the challenge rules.</div>
+</section>
+
+<section id="modes" class="screen page">
+ <div class="page-head"><div><div class="kicker">SELECT YOUR DESTINATION</div><h2>MISSIONS</h2></div><button class="back" onclick="showScreen('home')">×</button></div>
+ <p class="muted">Chaque mission possède un objectif spécifique. Respecte les points de passage et termine le parcours.</p>
+ <div class="grid">
+  <button class="mode-card" onclick="startRace('free')"><div class="mode-art"><span class="mode-number">01 / EXPLORE</span><span class="mode-emoji">🌊</span></div><div class="mode-copy"><strong>FREE RIDE</strong><p>Explore la côte et découvre les lieux.</p></div></button>
+  <button class="mode-card" onclick="startRace('tower')"><div class="mode-art" style="background:linear-gradient(145deg,#75634c,#1c1c1b)"><span class="mode-number">02 / LANDMARK</span><span class="mode-emoji">🏰</span></div><div class="mode-copy"><strong>FORT KÉLIBIA</strong><p>Traverse les quatre portes du parcours.</p></div></button>
+  <button class="mode-card" onclick="startRace('school')"><div class="mode-art" style="background:linear-gradient(145deg,#5b6568,#17191d)"><span class="mode-number">03 / SCHOOL</span><span class="mode-emoji">🏫</span></div><div class="mode-copy"><strong>LYCÉE LB7HAAR</strong><p>Rejoins le lycée en suivant les checkpoints.</p></div></button>
+  <button class="mode-card" onclick="startRace('etude')"><div class="mode-art" style="background:linear-gradient(145deg,#645e4e,#17181b)"><span class="mode-number">04 / TIME TRIAL</span><span class="mode-emoji">📚</span></div><div class="mode-copy"><strong>ÉTUDE TIME ATTACK</strong><p>Atteins le centre d'étude avant la fin du temps.</p></div></button>
+  <button class="mode-card" onclick="startRace('cafe')"><div class="mode-art" style="background:linear-gradient(145deg,#3d7457,#111c18)"><span class="mode-number">05 / PRECISION</span><span class="mode-emoji">🎾</span></div><div class="mode-copy"><strong>TENNIS CAFÉ</strong><p>Traverse les portes sans en manquer une.</p></div></button>
+  <button class="mode-card" onclick="startRace('rival')"><div class="mode-art" style="background:linear-gradient(145deg,#5b3d31,#121113)"><span class="mode-number">06 / HEAD TO HEAD</span><span class="mode-emoji">🏍️</span></div><div class="mode-copy"><strong>RIVAL DUEL</strong><p>Affronte la deuxième Pista contrôlée par l'IA.</p></div></button>
  </div>
+ <div style="margin-top:20px"><button class="secondary" onclick="showScreen('home')">BACK TO HOME</button></div>
+</section>
+
+<section id="garage" class="screen">
+ <div class="topbar"><button class="iconbtn" onclick="showScreen('home')">‹</button><div class="brand-mini">PISTA <span class="gold">GARAGE</span></div><button class="iconbtn" onclick="rotateGarage()">⟳</button></div>
+ <div class="garage-stage"><canvas id="garageCanvas"></canvas><div class="garage-hint">DRAG TO ROTATE • PERSONAL GARAGE</div></div>
+ <div style="padding:12px 22px 30px">
+  <div class="kicker">YOUR MACHINE</div><h2 id="garageName" style="font-size:27px;letter-spacing:1px;margin:7px 0">JASSR PISTA</h2>
+  <p class="muted">Black body • bronze details • brown seat. Both riders use the same base scooter design.</p>
+  <div class="specs"><div class="spec"><strong>3D</strong><span>VIEW</span></div><div class="spec"><strong>URBAN</strong><span>CLASS</span></div><div class="spec"><strong>01</strong><span>EDITION</span></div></div>
+  <div class="grid"><button class="secondary" onclick="chooseRider('JASSR')">JASSR PISTA</button><button class="secondary" onclick="chooseRider('YASSMINE')">YASSMINE PISTA</button></div>
+  <button class="primary" style="margin-top:12px" onclick="showScreen('modes')">CHOOSE A MISSION ›</button>
+ </div>
+</section>
+
+<section id="race" class="screen">
+ <div id="raceHud">
+  <div class="hudbox"><div class="hudlabel">SPEED</div><div id="speed">0 <span>KM/H</span></div><div id="raceStatus">READY</div></div>
+  <div class="hudbox" style="text-align:right"><div class="hudlabel" id="raceModeLabel">FREE RIDE</div><div id="raceTimer" style="font-size:20px;font-weight:900;margin-top:7px">00:00</div><div id="positionLabel" style="font-size:9px;color:#c9ad7b;margin-top:5px">JASSR PISTA</div></div>
+ </div>
+ <button id="pauseRace" onclick="togglePause()">Ⅱ</button>
+ <div id="missionHud"><div id="missionName">FREE RIDE</div><div id="missionDescription">Explore the coast.</div><div id="raceProgress"><div id="raceProgressFill"></div></div></div>
+ <div id="raceMessage"></div>
+ <div id="raceControls">
+  <div class="control-group"><button class="control" id="left">‹</button><button class="control" id="right">›</button></div>
+  <div class="control-group"><button class="control pedal" id="brake">BRAKE</button><button class="control pedal" id="gas">GAS</button></div>
+ </div>
+ <div class="overlay" id="raceOverlay"><div class="modal"><div class="kicker" id="resultKicker">RACE REPORT</div><h2 id="resultTitle">MISSION COMPLETE</h2><p id="resultText"></p><button class="primary" onclick="restartRace()">RETRY MISSION</button><button class="secondary" onclick="showScreen('modes')">CHANGE MISSION</button><button class="secondary" onclick="showScreen('home')">MAIN MENU</button></div></div>
+</section>
 </div>
+
 <script type="module">
 import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js';
 
 const $=id=>document.getElementById(id);
-let scene,camera,renderer,player,rival,clock;
-let running=false,paused=false,selected='JASSR',gameMode='free';
-let speed=0,heading=0,steer=0,gas=0,brake=0;
-let position=new THREE.Vector3(0,0,0),aiPosition=new THREE.Vector3(4,0,-14);
-let checkpoints=[],checkpointIndex=0,elapsed=0,score=0,finished=false;
-let objects=[],roadWidth=15,roadLength=1200,worldGroup;
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
-const mat=(color,roughness=.8,metalness=0)=>new THREE.MeshStandardMaterial({color,roughness,metalness});
-const black=mat('#101114',.32,.5), bronze=mat('#a77d43',.34,.55), brown=mat('#80583c'), rubber=mat('#17181b'), white=mat('#dedbd2'), green=mat('#31553b');
-function box(parent,w,h,d,m,x,y,z){
- const o=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),m);
- o.position.set(x,y,z);parent.add(o);return o;
+const clock=new THREE.Clock();
+let renderer,scene,camera,worldGroup,player,rival,garageRenderer,garageScene,garageCamera,garageBike;
+let screen='home',riderName='JASSR',mode='free',running=false,paused=false,finished=false;
+let speed=0,steer=0,gas=0,brake=0,heading=0,elapsed=0,score=0,cpIndex=0;
+let px=0,pz=0,aiX=3,aiZ=-12,garageAngle=0,dragging=false,dragX=0;
+let gates=[],discoveries={},roadWidth=14,tiltEnabled=false,lastGamma=null;
+const input={left:false,right:false,gas:false,brake:false};
+const missionData={
+ free:{name:'FREE RIDE',desc:'Explore the coast and discover the landmarks.',time:0,goal:0},
+ tower:{name:'FORT KÉLIBIA',desc:'Traverse four checkpoints in order.',time:0,goal:4},
+ school:{name:'LYCÉE LB7HAAR',desc:'Follow the route to the school.',time:0,goal:4},
+ etude:{name:'ÉTUDE TIME ATTACK',desc:'Reach the study destination within 75 seconds.',time:75,goal:4},
+ cafe:{name:'TENNIS CAFÉ',desc:'Complete the precision gates.',time:0,goal:4},
+ rival:{name:'RIVAL DUEL',desc:'Complete four gates and beat your rival.',time:0,goal:4}
+};
+const materials={
+ black:new THREE.MeshStandardMaterial({color:'#111216',roughness:.32,metalness:.45}),
+ bronze:new THREE.MeshStandardMaterial({color:'#a77e49',roughness:.35,metalness:.48}),
+ brown:new THREE.MeshStandardMaterial({color:'#805a3e',roughness:.65}),
+ rubber:new THREE.MeshStandardMaterial({color:'#17181b',roughness:.8}),
+ silver:new THREE.MeshStandardMaterial({color:'#aeb6bc',roughness:.25,metalness:.7}),
+ glass:new THREE.MeshStandardMaterial({color:'#64727b',roughness:.2,metalness:.25,transparent:true,opacity:.78}),
+ road:new THREE.MeshStandardMaterial({color:'#303238',roughness:.94}),
+ line:new THREE.MeshStandardMaterial({color:'#d9d0bd',roughness:.8}),
+ grass:new THREE.MeshStandardMaterial({color:'#687b60',roughness:1}),
+ wall:new THREE.MeshStandardMaterial({color:'#c2b49a',roughness:.95}),
+ sea:new THREE.MeshStandardMaterial({color:'#317a91',roughness:.6}),
+ white:new THREE.MeshStandardMaterial({color:'#f2eee2',roughness:.45}),
+ green:new THREE.MeshStandardMaterial({color:'#36684b',roughness:.8})
+};
+function addBox(parent,w,h,d,material,x,y,z){
+ const m=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),material);
+ m.position.set(x,y,z);m.castShadow=false;m.receiveShadow=true;parent.add(m);return m;
 }
-function cyl(parent,r1,r2,len,m,x,y,z,rx=0){
- const o=new THREE.Mesh(new THREE.CylinderGeometry(r1,r2,len,16),m);
- o.position.set(x,y,z);o.rotation.x=rx;parent.add(o);return o;
+function addCylinder(parent,r1,r2,len,material,x,y,z,rotationX=0,segments=16){
+ const m=new THREE.Mesh(new THREE.CylinderGeometry(r1,r2,len,segments),material);
+ m.position.set(x,y,z);m.rotation.x=rotationX;parent.add(m);return m;
 }
-function buildScooter(name){
- const root=new THREE.Group();
- const body=new THREE.Group();root.add(body);
- // Both scooters use the same body and paint scheme.
- cyl(body,.43,.43,.20,rubber,0,.43,0,Math.PI/2);
- cyl(body,.43,.43,.20,rubber,0,.43,-1.12,Math.PI/2);
- for(const z of [0,-1.12]){
-  const rim=cyl(body,.24,.24,.205,bronze,0,.43,z,Math.PI/2);
-  const hub=cyl(body,.07,.07,.22,black,0,.43,z,Math.PI/2);
- }
- box(body,.62,.46,.86,black,0,.91,-.48);
- box(body,.54,.42,.55,bronze,0,1.08,-.26);
- box(body,.60,.12,.48,black,0,1.28,-.31);
- box(body,.56,.13,.60,brown,0,1.19,.22);
- box(body,.50,.06,.26,brown,0,1.28,.27);
- box(body,.40,.17,.34,black,0,.68,-.89);
- box(body,.43,.10,.35,black,0,.65,.08);
- // Front fairing and headlight
- box(body,.67,.60,.25,black,0,1.17,-.80);
- box(body,.42,.39,.07,bronze,0,1.18,-.945);
- box(body,.30,.25,.075,white,0,1.19,-.994);
- box(body,.12,.13,.08,black,0,1.19,-1.04);
- for(const x of [-.29,.29]){
-  box(body,.10,.33,.10,white,x,1.03,-.94);
-  cyl(body,.035,.035,.12,black,x,1.49,-.20,Math.PI/2);
-  box(body,.06,.055,.70,black,x*1.4,1.47,-.05);
-  box(body,.17,.08,.23,brown,x*1.45,1.43,.18);
-  const mirror=new THREE.Group();mirror.position.set(x*1.45,1.49,-.08);body.add(mirror);
-  box(mirror,.22,.30,.09,black,0,.16,-.17);
-  box(mirror,.15,.22,.025,mat('#33363d',.2,.2),0,.16,-.215);
- }
- // windshield
- const screen=new THREE.Mesh(new THREE.BoxGeometry(.67,.40,.045),mat('#747b82',.22,.4));
- screen.position.set(0,1.67,-.53);screen.rotation.x=-.16;body.add(screen);
- // Side panels with bronze detail
- for(const s of [-1,1]){
-  const side=box(body,.06,.48,.55,black,s*.32,.76,-.30);
-  side.rotation.z=s*.08;
-  box(body,.025,.24,.35,bronze,s*.36,.76,-.33).rotation.z=s*.08;
-  cyl(body,.045,.045,.28,black,s*.36,.53,-.44,Math.PI/2);
- }
- // rider silhouette
- const riderGroup=new THREE.Group();body.add(riderGroup);
- cyl(riderGroup,.17,.17,.36,black,0,1.45,.15);
- const head=new THREE.Mesh(new THREE.SphereGeometry(.15,16,12),black);
- head.position.set(0,1.72,.05);riderGroup.add(head);
- const visor=box(riderGroup,.20,.07,.06,bronze,0,1.73,-.08);
- // small windscreen logo text via canvas texture
- const c=document.createElement('canvas');c.width=256;c.height=64;
- const ctx=c.getContext('2d');ctx.fillStyle='#f5f1e8';ctx.font='bold 32px Arial';ctx.textAlign='center';ctx.fillText(name,128,42);
- const texture=new THREE.CanvasTexture(c);
- const label=new THREE.Mesh(new THREE.PlaneGeometry(.40,.10),new THREE.MeshBasicMaterial({map:texture,transparent:true}));
- label.position.set(0,1.37,-.965);body.add(label);
- root.userData.body=body;
- root.userData.rider=riderGroup;
- scene.add(root);return root;
+function textTexture(text){
+ const c=document.createElement('canvas');c.width=512;c.height=128;
+ const ctx=c.getContext('2d');
+ ctx.fillStyle='#141418';ctx.fillRect(0,0,512,128);
+ ctx.strokeStyle='#bd965c';ctx.lineWidth=5;ctx.strokeRect(5,5,502,118);
+ ctx.fillStyle='#f3e6ce';ctx.font='bold 36px Arial';ctx.textAlign='center';ctx.textBaseline='middle';
+ ctx.fillText(text,256,65);
+ const tex=new THREE.CanvasTexture(c);tex.colorSpace=THREE.SRGBColorSpace;return tex;
 }
-function building(x,z,w,d,h,color){
- const g=new THREE.Group();
- box(g,w,h,d,mat(color),0,h/2,0);
- for(let yy=1;yy<h-0.5;yy+=1.1){
-  for(let xx=-w/2+.5;xx<w/2-.2;xx+=1.0){
-   box(g,.35,.42,.035,mat('#8da0a4'),xx,yy,d/2+.02);
+function makeScooter(name){
+ const root=new THREE.Group(),frame=new THREE.Group();root.add(frame);
+ // The model is a stylized 3D approximation, not a scan of the reference scooter.
+ for(const z of [-1.0,.06]){
+  addCylinder(frame,.43,.43,.20,materials.rubber,0,.45,z,Math.PI/2,24);
+  addCylinder(frame,.235,.235,.207,materials.bronze,0,.45,z,Math.PI/2,20);
+  addCylinder(frame,.065,.065,.22,materials.black,0,.45,z,Math.PI/2,16);
+  for(let i=0;i<8;i++){
+   const spoke=addBox(frame,.025,.31,.025,materials.silver,0,.45,z);
+   spoke.rotation.z=i*Math.PI/4;
   }
  }
- g.position.set(x,0,z);worldGroup.add(g);objects.push(g);return g;
-}
-function tree(x,z){
- const g=new THREE.Group();
- cyl(g,.12,.17,1.5,brown,0,.75,0);
- const crown=new THREE.Mesh(new THREE.SphereGeometry(.8,9,7),green);
- crown.position.y=1.8;g.add(crown);
- g.position.set(x,0,z);worldGroup.add(g);objects.push(g);
-}
-function sign(text,x,z,color='#b38a4e'){
- const c=document.createElement('canvas');c.width=512;c.height=128;
- const ctx=c.getContext('2d');ctx.fillStyle='#101116';ctx.fillRect(0,0,512,128);
- ctx.strokeStyle=color;ctx.lineWidth=5;ctx.strokeRect(5,5,502,118);
- ctx.fillStyle='#f2e7d3';ctx.font='bold 36px Arial';ctx.textAlign='center';ctx.fillText(text,256,77);
- const tex=new THREE.CanvasTexture(c);
- const m=new THREE.Mesh(new THREE.PlaneGeometry(7,1.8),new THREE.MeshBasicMaterial({map:tex}));
- m.position.set(x,3,z);worldGroup.add(m);objects.push(m);
-}
-function gate(x,z,n){
- const g=new THREE.Group();
- for(const s of [-1,1]){
-  const p=new THREE.Mesh(new THREE.BoxGeometry(.16,2.8,.16),bronze);p.position.set(s*2,1.4,0);g.add(p);
+ // Fork and front body
+ addCylinder(frame,.075,.09,.68,materials.silver,0,.72,-.88,-.13);
+ addBox(frame,.63,.45,.83,materials.black,0,.91,-.38);
+ addBox(frame,.58,.42,.54,materials.bronze,0,1.05,-.17);
+ addBox(frame,.59,.12,.48,materials.black,0,1.29,-.24);
+ addBox(frame,.57,.46,.25,materials.black,0,1.13,-.81);
+ addBox(frame,.40,.30,.055,materials.white,0,1.18,-.95);
+ addBox(frame,.22,.17,.065,materials.black,0,1.18,-.991);
+ // Rear body, brown saddle and foot area
+ addBox(frame,.46,.18,.48,materials.black,0,.72,.16);
+ addBox(frame,.48,.12,.51,materials.brown,0,1.15,.28);
+ addBox(frame,.40,.055,.29,materials.brown,0,1.23,.28);
+ addBox(frame,.46,.20,.35,materials.black,0,.67,-.88);
+ // Side panels and bronze accent strips
+ for(const side of [-1,1]){
+  const panel=addBox(frame,.075,.40,.59,materials.black,side*.32,.77,-.32);
+  panel.rotation.z=side*.07;
+  const accent=addBox(frame,.022,.18,.34,materials.bronze,side*.365,.77,-.32);
+  accent.rotation.z=side*.07;
+  addCylinder(frame,.045,.045,.30,materials.black,side*.38,.54,-.40,Math.PI/2);
+  addBox(frame,.08,.055,.73,materials.black,side*.34,1.47,-.03);
+  addCylinder(frame,.025,.025,.20,materials.silver,side*.34,1.49,-.03,Math.PI/2);
+  addBox(frame,.20,.23,.075,materials.black,side*.35,1.67,-.10);
+  addBox(frame,.15,.17,.025,materials.glass,side*.35,1.67,-.145);
+  addBox(frame,.17,.07,.23,materials.brown,side*.31,1.41,.18);
  }
- const top=new THREE.Mesh(new THREE.BoxGeometry(4.15,.16,.16),bronze);top.position.y=2.8;g.add(top);
- const c=document.createElement('canvas');c.width=256;c.height=128;
- const ctx=c.getContext('2d');ctx.fillStyle='#fff';ctx.font='bold 70px Arial';ctx.textAlign='center';ctx.fillText(String(n),128,88);
- const label=new THREE.Mesh(new THREE.PlaneGeometry(1,.5),new THREE.MeshBasicMaterial({map:new THREE.CanvasTexture(c),transparent:true}));
- label.position.set(0,2.35,.1);g.add(label);
- g.position.set(x,0,z);worldGroup.add(g);checkpoints.push({x,z,object:g,done:false});
+ const wind=addBox(frame,.62,.40,.04,materials.glass,0,1.59,-.54);
+ wind.rotation.x=-.15;
+ // Handlebar
+ addBox(frame,.78,.055,.055,materials.black,0,1.45,-.12);
+ // Rear light and exhaust
+ addBox(frame,.29,.10,.055,new THREE.MeshStandardMaterial({color:'#b33832',emissive:'#50100c'}),0,.92,.59);
+ addCylinder(frame,.07,.09,.44,materials.silver,.37,.57,-.49,Math.PI/2);
+ // Rider helmet and body
+ const torso=addBox(frame,.32,.40,.25,materials.black,0,1.48,.17);
+ torso.rotation.x=-.24;
+ const helmet=new THREE.Mesh(new THREE.SphereGeometry(.17,16,12),materials.black);
+ helmet.position.set(0,1.77,.07);frame.add(helmet);
+ addBox(frame,.20,.07,.055,materials.bronze,0,1.77,-.075);
+ const logo=new THREE.Mesh(new THREE.PlaneGeometry(.38,.095),new THREE.MeshBasicMaterial({map:textTexture(name),transparent:false}));
+ logo.position.set(0,1.36,-.945);frame.add(logo);
+ root.userData.frame=frame;
+ return root;
 }
 function makeWorld(){
- worldGroup=new THREE.Group();scene.add(worldGroup);objects=[];checkpoints=[];
- scene.background=new THREE.Color('#9db7c7');
- scene.fog=new THREE.Fog('#a8b9c0',70,270);
- const ground=new THREE.Mesh(new THREE.PlaneGeometry(500,1400),mat('#777b75'));
- ground.rotation.x=-Math.PI/2;ground.position.z=-450;worldGroup.add(ground);
- // Long town road and markings
- box(worldGroup,roadWidth,.12,roadLength,mat('#34363a'),0,.03,-450);
- for(let z=100;z>-1100;z-=12)box(worldGroup,.13,.025,5,mat('#d9d2bd'),0,.10,z);
- for(const s of [-1,1]){
-  box(worldGroup,.18,.04,roadLength,white,s*roadWidth/2,.10,-450);
-  for(let z=80;z>-1000;z-=24){
-   building(s* (12+Math.random()*4),z,5+Math.random()*5,5+Math.random()*5,4+Math.random()*9,
-    ['#d1c7b2','#b6b5ad','#d8d1c3','#aaa9a2'][Math.floor(Math.random()*4)]);
-   if(z%48===0)tree(s*20,z-8);
-  }
- }
- // coastal sea and promenade
- box(worldGroup,160,.2,1400,mat('#397f9a',.4),-100,.0,-450);
- box(worldGroup,20,.25,1400,mat('#c8bda5'),-19,.1,-450);
- sign('KELIBIA • CAP BON',-10,-25);
- // Fortress landmark
- const fort=new THREE.Group();
- for(let i=0;i<4;i++){
-  const wall=box(fort,15,7,1.2,mat('#b9aa8c'),0,3.5,i%2?7:-7);
-  wall.position.x=i<2?0:(i===2?-7:7);wall.rotation.y=i<2?0:Math.PI/2;
- }
- for(const x of [-5,5])for(const z of [-5,5]){
-  const tower=box(fort,2,10,2,mat('#998b71'),x,5,z);
-  box(fort,2.5,.6,2.5,mat('#776951'),x,10,z);
- }
- fort.position.set(-10,0,-80);worldGroup.add(fort);objects.push(fort);
- sign('FORT DE KELIBIA',-10,-67);
- // School and Etude area
- building(14,-180,15,12,9,'#d2c8b6');sign('LYCEE LB7HAAR',14,-173);
- building(-14,-290,12,10,6,'#c4b69f');sign('ETUDE • STUDY ZONE',-14,-282);
- // Tennis cafe
- const court=box(worldGroup,13,.12,22,mat('#3b7657'),18,.1,-400);
- for(const x of [12,24])box(worldGroup,.09,.04,22,white,x,.18,-400);
- for(const z of [-411,-389])box(worldGroup,12,.04,.09,white,18,.18,z);
- box(worldGroup,.10,.04,12,white,18,.18,-400);
- building(31,-400,9,8,4,'#c7b9a2');sign('TENNIS CAFE',30,-393);
- // Challenge checkpoints
- if(gameMode!=='free'){
-  const coords=gameMode==='tower'?[[-5,-18],[-13,-48],[-7,-72],[0,-100]]:
-   gameMode==='school'?[[0,-120],[12,-160],[17,-185],[0,-215]]:
-   gameMode==='etude'?[[0,-90],[-10,-160],[-10,-240],[0,-310]]:
-   gameMode==='cafe'?[[0,-330],[10,-370],[20,-400],[10,-430]]:
-   [[0,-30],[0,-100],[0,-200],[0,-300]];
-  coords.forEach((p,i)=>gate(p[0],p[1],i+1));
- }
- // decorative street lamps
- for(let z=70;z>-700;z-=32){
-  for(const s of [-1,1]){
-   cyl(worldGroup,.07,.07,4,black,s*9,2,z);
-   box(worldGroup,.8,.1,.15,bronze,s*9,4,z);
-  }
- }
-}
-function init(){
  scene=new THREE.Scene();
- camera=new THREE.PerspectiveCamera(65,innerWidth/innerHeight,.1,1500);
- renderer=new THREE.WebGLRenderer({antialias:true,alpha:false,powerPreference:'high-performance'});
- renderer.setPixelRatio(Math.min(devicePixelRatio,1.5));
- renderer.setSize(innerWidth,innerHeight);
- renderer.shadowMap.enabled=false;
- renderer.outputColorSpace=THREE.SRGBColorSpace;
- $('game').appendChild(renderer.domElement);
- scene.add(new THREE.HemisphereLight(0xe5edff,0x555044,2));
- const sun=new THREE.DirectionalLight(0xffe5bd,2.4);sun.position.set(-30,60,30);scene.add(sun);
- clock=new THREE.Clock();
-}
-function selectRider(n){selected=n;document.querySelectorAll('.choice').forEach(b=>b.classList.toggle('active',b.textContent===n));}
-window.startGame=function(mode){
- gameMode=mode;running=true;paused=false;finished=false;speed=0;heading=0;steer=0;gas=0;brake=0;elapsed=0;score=0;checkpointIndex=0;
- $('menu').style.display='none';$('hud').style.display='flex';$('controls').style.display='flex';$('pause').style.display='block';$('mission').style.display='block';
- if(player)scene.remove(player);if(rival)scene.remove(rival);
- makeWorld();
- player=buildScooter(selected);rival=buildScooter(selected==='JASSR'?'YASSMINE':'JASSR');
- position.set(0,0,0);aiPosition.set(3,0,-12);
- player.position.copy(position);rival.position.copy(aiPosition);
- const names={free:['FREE RIDE','Explore Kelibia. Ride safely and discover the landmarks.'],tower:['FORT KELIBIA','Pass all 4 gates in order. Stay on the route.'],school:['LYCEE LB7HAAR','Reach the school gates without skipping checkpoints.'],etude:['ETUDE TIME ATTACK','Reach your study destination before the timer expires.'],cafe:['TENNIS CAFE','Navigate the tennis checkpoints accurately.'],rival:['RIVAL DUEL','Complete the course and beat your rival.']};
- $('mode').textContent=names[mode][0];$('missionTitle').textContent=names[mode][0];$('missionText').textContent=names[mode][1];
- $('toast').textContent='3';let n=3;
- const countdown=setInterval(()=>{if(!running||paused){clearInterval(countdown);return}n--;if(n>0)$('toast').textContent=n;else{$('toast').textContent='GO!';setTimeout(()=>$('toast').textContent='',700);clearInterval(countdown)}},700);
-}
-window.togglePause=function(){
- if(!running)return;paused=!paused;$('pause').textContent=paused?'▶':'Ⅱ';
- $('toast').textContent=paused?'PAUSED':'';
- if(!paused)clock.getDelta();
-}
-function bindHold(id,fn){
- const el=$(id);
- el.addEventListener('pointerdown',e=>{e.preventDefault();el.setPointerCapture(e.pointerId);fn(true);});
- ['pointerup','pointercancel','lostpointercapture'].forEach(ev=>el.addEventListener(ev,e=>fn(false)));
-}
-bindHold('left',v=>steer=v?-1:(steer<0?0:steer));
-bindHold('right',v=>steer=v?1:(steer>0?0:steer));
-bindHold('gas',v=>gas=v?1:0);
-bindHold('brake',v=>brake=v?1:0);
-let tiltEnabled=false,lastTilt=0;
-window.addEventListener('deviceorientation',e=>{
- if(!tiltEnabled||e.gamma===null)return;
- if(Math.abs(e.gamma)>5)steer=clamp(e.gamma/22,-1,1);
- else if(!$('left').matches(':active')&&!$('right').matches(':active'))steer=0;
-});
-async function enableTilt(){
- try{
-  if(typeof DeviceOrientationEvent!=='undefined'&&typeof DeviceOrientationEvent.requestPermission==='function'){
-   const r=await DeviceOrientationEvent.requestPermission();if(r!=='granted')throw Error();
+ scene.background=new THREE.Color('#9bb7c6');
+ scene.fog=new THREE.Fog('#9bb7c6',100,430);
+ worldGroup=new THREE.Group();scene.add(worldGroup);
+ scene.add(new THREE.HemisphereLight('#e7f1ff','#635846',2.15));
+ const sun=new THREE.DirectionalLight('#ffe4ba',2.4);sun.position.set(-40,80,30);scene.add(sun);
+ const ground=new THREE.Mesh(new THREE.PlaneGeometry(500,1700),materials.grass);
+ ground.rotation.x=-Math.PI/2;ground.position.set(0,-.12,-690);worldGroup.add(ground);
+ addBox(worldGroup,roadWidth,.10,1600,materials.road,0,0,-700);
+ for(const s of [-1,1])addBox(worldGroup,.15,.025,1600,materials.line,s*roadWidth/2,.07,-700);
+ for(let z=60;z>-1450;z-=13)addBox(worldGroup,.11,.025,5,materials.line,0,.075,z);
+ // Mediterranean sea and sandy promenade
+ addBox(worldGroup,190,.08,1700,materials.sea,-116,-.12,-700);
+ addBox(worldGroup,16,.1,1700,materials.wall,-12,-.05,-700);
+ // A low-poly coastal town
+ for(let z=40;z>-1120;z-=34){
+  for(const s of [-1,1]){
+   const w=4.5+Math.random()*5,d=7+Math.random()*6,h=4+Math.random()*7;
+   const building=new THREE.Group();
+   addBox(building,w,h,d,new THREE.MeshStandardMaterial({color:['#d3c9b6','#c1b6a2','#bcb8ad','#ded4bf'][Math.floor(Math.random()*4)]}),0,h/2,0);
+   for(let y=1.2;y<h-1;y+=1.6)for(let x=-w/2+.6;x<w/2-.2;x+=1.1)
+    addBox(building,.35,.45,.035,materials.silver,x,y,d/2+.025);
+   building.position.set(s*(12+w/2),0,z);worldGroup.add(building);
+   // Flat rooftops with small parapets
+   addBox(building,w,.12,d,materials.wall,0,h+.06,0);
   }
-  tiltEnabled=true;$('toast').textContent='TILT ENABLED';setTimeout(()=>$('toast').textContent='',900);
- }catch(e){tiltEnabled=false;$('toast').textContent='USE TOUCH CONTROLS';setTimeout(()=>$('toast').textContent='',1200)}
+ }
+ // Palm trees
+ for(let z=20;z>-900;z-=45){
+  for(const s of [-1,1]){
+   const x=s*23;
+   addCylinder(worldGroup,.12,.19,2.6,materials.brown,x,1.3,z);
+   const crown=new THREE.Mesh(new THREE.SphereGeometry(.85,8,6),materials.green);
+   crown.position.set(x,2.65,z);worldGroup.add(crown);
+  }
+ }
+ function sign(text,x,z){
+  const mesh=new THREE.Mesh(new THREE.PlaneGeometry(8,1.8),new THREE.MeshBasicMaterial({map:textTexture(text)}));
+  mesh.position.set(x,4,z);worldGroup.add(mesh);
+ }
+ // Fortress silhouette and walls
+ const fortX=-12,fortZ=-100;
+ for(const [x,z,w,d] of [[0,-7,16,1],[0,7,16,1],[-8,0,1,14],[8,0,1,14]])
+  addBox(worldGroup,w,6,d,materials.wall,fortX+x,3,fortZ+z);
+ for(const [x,z] of [[-7,-6],[7,-6],[-7,6],[7,6]]){
+  addBox(worldGroup,2.1,9,2.1,materials.wall,fortX+x,4.5,fortZ+z);
+  addBox(worldGroup,2.5,.45,2.5,materials.brown,fortX+x,9.1,fortZ+z);
+ }
+ sign('FORT KELIBIA',fortX,fortZ-12);
+ // School building
+ function makeBuilding(x,z,w,d,h,color){
+  addBox(worldGroup,w,h,d,new THREE.MeshStandardMaterial({color}),x,h/2,z);
+  addBox(worldGroup,w+.4,.2,d+.4,materials.wall,x,h+.1,z);
+  for(let y=1.2;y<h-1;y+=1.5)for(let xx=-w/2+1;xx<w/2-.5;xx+=1.7)
+   addBox(worldGroup,.55,.55,.04,materials.silver,x+xx,y,z-d/2-.03);
+ }
+ makeBuilding(13,-225,17,12,8,'#cfc5b2');
+ sign('LYCEE LB7HAAR',13,-217);
+ makeBuilding(-13,-375,13,10,5,'#c5b59a');
+ sign('ETUDE',-13,-367);
+ // Tennis court and cafe
+ addBox(worldGroup,17,.12,25,new THREE.MeshStandardMaterial({color:'#387456'}),18,.02,-570);
+ for(const x of [10,26])addBox(worldGroup,.09,.03,25,materials.white,x,.10,-570);
+ for(const z of [-582.5,-557.5])addBox(worldGroup,16,.03,.09,materials.white,18,.10,z);
+ addBox(worldGroup,.10,.03,25,materials.white,18,.10,-570);
+ makeBuilding(32,-570,10,8,4,'#c8b89c');
+ sign('TENNIS CAFE',32,-563);
+ // Decorative street lamps
+ for(let z=50;z>-800;z-=45)for(const s of [-1,1]){
+  addCylinder(worldGroup,.07,.09,4,materials.black,s*9,2,z);
+  addBox(worldGroup,.8,.09,.14,materials.bronze,s*9,4,z);
+ }
+ gates=[];
+ if(mode!=='free'){
+  let coords;
+  if(mode==='tower')coords=[[-5,-24],[-13,-65],[-9,-100],[0,-137]];
+  else if(mode==='school')coords=[[0,-160],[9,-190],[14,-230],[0,-260]];
+  else if(mode==='etude')coords=[[0,-100],[-8,-220],[-13,-340],[-8,-395]];
+  else if(mode==='cafe')coords=[[0,-480],[8,-530],[18,-570],[8,-610]];
+  else coords=[[0,-35],[0,-150],[10,-280],[0,-430]];
+  coords.forEach((p,i)=>makeGate(p[0],p[1],i+1));
+ }
 }
-$('help').insertAdjacentHTML('beforeend','<br><button id="tiltButton" style="margin-top:10px;background:#202127;color:white;border:1px solid #444;border-radius:10px;padding:10px">ENABLE TILT CONTROL</button>');
-$('tiltButton').addEventListener('click',enableTilt);
-function update(dt){
+function makeGate(x,z,n){
+ const group=new THREE.Group();
+ for(const s of [-1,1])addBox(group,.15,2.7,.15,materials.bronze,s*2,1.35,0);
+ addBox(group,4.15,.15,.15,materials.bronze,0,2.7,0);
+ const label=new THREE.Mesh(new THREE.PlaneGeometry(.75,.38),new THREE.MeshBasicMaterial({map:textTexture('GATE '+n)}));
+ label.position.set(0,2.25,.1);group.add(label);
+ group.position.set(x,0,z);worldGroup.add(group);
+ gates.push({x,z,group,passed:false});
+}
+function initRenderer(){
+ renderer=new THREE.WebGLRenderer({canvas:$('world'),antialias:true,alpha:false,powerPreference:'high-performance'});
+ renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,1.5));
+ renderer.setSize(innerWidth,innerHeight);
+ renderer.outputColorSpace=THREE.SRGBColorSpace;
+ renderer.toneMapping=THREE.ACESFilmicToneMapping;
+ renderer.toneMappingExposure=1.1;
+ camera=new THREE.PerspectiveCamera(62,innerWidth/innerHeight,.1,1800);
+ makeWorld();
+ player=makeScooter('JASSR');
+ rival=makeScooter('YASSMINE');
+ scene.add(player,rival);
+ player.position.set(0,0,0);rival.position.set(3,0,-12);
+}
+function initGarage(){
+ garageScene=new THREE.Scene();
+ garageScene.background=new THREE.Color('#111216');
+ garageScene.add(new THREE.HemisphereLight('#e5e8ee','#4c4031',2.2));
+ const key=new THREE.DirectionalLight('#ffe1b4',3);key.position.set(-5,9,7);garageScene.add(key);
+ const fill=new THREE.DirectionalLight('#a6c9ff',1.5);fill.position.set(6,4,-6);garageScene.add(fill);
+ garageCamera=new THREE.PerspectiveCamera(42,1,.1,100);
+ garageCamera.position.set(4,2.7,5);
+ garageRenderer=new THREE.WebGLRenderer({canvas:$('garageCanvas'),antialias:true,alpha:false});
+ garageRenderer.setPixelRatio(Math.min(devicePixelRatio||1,1.5));
+ garageRenderer.outputColorSpace=THREE.SRGBColorSpace;
+ garageBike=makeScooter(riderName);garageScene.add(garageBike);
+ const floor=new THREE.Mesh(new THREE.CircleGeometry(3.5,48),new THREE.MeshStandardMaterial({color:'#25252a',roughness:.85}));
+ floor.rotation.x=-Math.PI/2;floor.position.y=-.08;garageScene.add(floor);
+ const ring=new THREE.Mesh(new THREE.TorusGeometry(2.5,.012,6,90),materials.bronze);
+ ring.rotation.x=Math.PI/2;ring.position.y=-.05;garageScene.add(ring);
+}
+function resize(){
+ if(renderer){renderer.setSize(innerWidth,innerHeight);camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();}
+ if(garageRenderer&&$('garageCanvas').clientWidth>0){
+  const c=$('garageCanvas');garageRenderer.setSize(c.clientWidth,c.clientHeight);
+  garageCamera.aspect=c.clientWidth/c.clientHeight;garageCamera.updateProjectionMatrix();
+ }
+}
+window.addEventListener('resize',resize);
+function showScreen(name){
+ screen=name;
+ document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+ $(name).classList.add('active');
+ if(name!=='race'){running=false;paused=false;Object.keys(input).forEach(k=>input[k]=false);}
+ if(name==='garage'){
+  $('garageName').textContent=riderName+' PISTA';
+  if(garageBike){garageScene.remove(garageBike);}
+  garageBike=makeScooter(riderName);garageScene.add(garageBike);
+  setTimeout(resize,40);
+ }
+ if(name==='home')$('homeRider').textContent=riderName+' PISTA';
+ if(name==='race')setTimeout(resize,40);
+}
+window.showScreen=showScreen;
+window.chooseRider=function(name){
+ riderName=name;$('garageName').textContent=name+' PISTA';$('homeRider').textContent=name+' PISTA';
+ if(garageBike){garageScene.remove(garageBike);garageBike=makeScooter(name);garageScene.add(garageBike);}
+};
+window.rotateGarage=function(){garageAngle+=Math.PI/2;};
+function resetWorld(){
+ makeWorld();
+ scene.remove(player);scene.remove(rival);
+ player=makeScooter(riderName);
+ rival=makeScooter(riderName==='JASSR'?'YASSMINE':'JASSR');
+ scene.add(player,rival);
+}
+window.startRace=function(newMode){
+ mode=newMode;elapsed=0;speed=0;steer=0;gas=0;brake=0;heading=0;px=0;pz=0;aiX=3;aiZ=-12;score=0;cpIndex=0;finished=false;paused=false;discoveries={};
+ resetWorld();
+ player.position.set(px,0,pz);rival.position.set(aiX,0,aiZ);
+ const data=missionData[mode];
+ $('raceModeLabel').textContent=data.name;
+ $('missionName').textContent=data.name;
+ $('missionDescription').textContent=data.desc;
+ $('raceTimer').textContent='00:00';
+ $('raceStatus').textContent='READY';
+ $('positionLabel').textContent=riderName+' PISTA';
+ $('raceProgressFill').style.width='0%';
+ $('raceOverlay').classList.remove('show');
+ $('raceMessage').innerHTML='<span>3</span>';
+ showScreen('race');
+ running=true;
+ let count=3;
+ const countdown=setInterval(()=>{
+  if(!running||paused){clearInterval(countdown);return;}
+  count--;
+  if(count>0)$('raceMessage').innerHTML='<span>'+count+'</span>';
+  else{$('raceMessage').innerHTML='GO!';setTimeout(()=>{$('raceMessage').innerHTML='';},650);clearInterval(countdown);}
+ },650);
+};
+window.restartRace=function(){startRace(mode);};
+window.togglePause=function(){
+ if(!running||finished)return;
+ paused=!paused;
+ $('pauseRace').textContent=paused?'▶':'Ⅱ';
+ $('raceMessage').innerHTML=paused?'PAUSED':'';
+ if(paused){
+  $('raceOverlay').classList.add('show');
+  $('resultKicker').textContent='RACE PAUSED';
+  $('resultTitle').textContent='TAKE A BREAK';
+  $('resultText').textContent='Your progress is paused. Resume to continue the mission.';
+  $('raceOverlay').querySelector('.primary').textContent='RESUME';
+  $('raceOverlay').querySelector('.primary').onclick=()=>{
+   paused=false;$('raceOverlay').classList.remove('show');$('pauseRace').textContent='Ⅱ';$('raceMessage').innerHTML='';
+   $('raceOverlay').querySelector('.primary').textContent='RETRY MISSION';$('raceOverlay').querySelector('.primary').onclick=restartRace;
+  };
+ }else{
+  $('raceOverlay').classList.remove('show');
+ }
+};
+function finishRace(won,title,description){
+ finished=true;speed=0;gas=0;brake=0;running=true;
+ $('raceMessage').innerHTML='';
+ $('resultKicker').textContent=won?'MISSION COMPLETE':'MISSION FAILED';
+ $('resultTitle').textContent=title;
+ $('resultText').textContent=description+' Time: '+formatTime(elapsed)+'. Score: '+score+' points.';
+ $('raceOverlay').querySelector('.primary').textContent='RETRY MISSION';
+ $('raceOverlay').querySelector('.primary').onclick=restartRace;
+ $('raceOverlay').classList.add('show');
+}
+function formatTime(seconds){
+ const s=Math.max(0,Math.floor(seconds));
+ return String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0');
+}
+function updateGame(dt){
  if(!running||paused||finished)return;
  elapsed+=dt;
- const maxSpeed=gameMode==='rival'?75:65;
- if(gas)speed+=23*dt;
- else speed-=5*dt;
- if(brake)speed-=36*dt;
+ const data=missionData[mode];
+ if(mode==='etude'&&elapsed>=data.time){finishRace(false,'TIME UP','You did not reach Étude in time.');return;}
+ const maxSpeed=mode==='rival'?72:65;
+ if(gas)speed+=24*dt;else speed-=4.8*dt;
+ if(brake)speed-=34*dt;
  speed=clamp(speed,0,maxSpeed);
- const v=speed/3.6;
- heading-=steer*dt*(.65+v*.035);
- const forwardX=Math.sin(heading),forwardZ=-Math.cos(heading);
- position.x+=forwardX*v*dt;
- position.z+=forwardZ*v*dt;
- // Keep the scooter inside the playable road; leaving it costs speed.
- if(Math.abs(position.x)>roadWidth/2-1){
-  speed=Math.max(0,speed-18*dt);
-  position.x=clamp(position.x,-roadWidth/2+1,roadWidth/2-1);
+ const velocity=speed/3.6;
+ const steerValue=clamp(steer,-1,1);
+ heading-=steerValue*dt*(.50+velocity*.045);
+ px+=Math.sin(heading)*velocity*dt;
+ pz-=Math.cos(heading)*velocity*dt;
+ // Soft road boundary and gravel penalty
+ if(Math.abs(px)>roadWidth/2-1){
+  speed=Math.max(0,speed-16*dt);
+  px=clamp(px,-roadWidth/2+1,roadWidth/2-1);
  }
- player.position.copy(position);player.rotation.y=heading;
- player.userData.body.rotation.z=-steer*.10*Math.min(1,v/8);
- // AI follows the route and adapts speed near corners.
- const targetX=gameMode==='free'?Math.sin(elapsed*.2)*3:(Math.sin(-aiPosition.z*.045)*3);
- const dx=targetX-aiPosition.x;
- aiPosition.x+=clamp(dx,-1,1)*dt*2.3;
- aiPosition.z-=Math.max(6,v*.90)*dt;
- rival.position.copy(aiPosition);
- rival.rotation.y=Math.atan2(targetX-aiPosition.x,1)*.25;
- rival.userData.body.rotation.z=clamp(dx,-1,1)*-.07;
- // Follow camera
- const desired=new THREE.Vector3(
-  position.x-forwardX*7+Math.cos(heading)*2,
-  4.0,
-  position.z-forwardZ*7+Math.sin(heading)*2
- );
- camera.position.lerp(desired,1-Math.exp(-4*dt));
- camera.lookAt(position.x+forwardX*4,1.1,position.z+forwardZ*4);
- // Checkpoints must be passed in order.
- if(checkpoints.length&&!finished){
-  const cp=checkpoints[checkpointIndex];
-  if(cp){
-   const distance=Math.hypot(position.x-cp.x,position.z-cp.z);
-   if(distance<4.2){
-    cp.done=true;cp.object.children.forEach(o=>{if(o.material&&o.material.color)o.material.color.set('#36d982')});
-    checkpointIndex++;score+=100;
-    $('progress').textContent=`MISSION ${checkpointIndex}/${checkpoints.length} • ${score} PTS`;
-    $('toast').textContent='CHECKPOINT +100';setTimeout(()=>$('toast').textContent='',500);
-    if(checkpointIndex===checkpoints.length){
-     finished=true;speed=0;$('toast').textContent='CHALLENGE COMPLETE • '+score+' PTS';
-     $('missionText').textContent='Completed in '+elapsed.toFixed(1)+' seconds.';
-    }
+ player.position.set(px,0,pz);player.rotation.y=heading;
+ player.userData.frame.rotation.z=-steerValue*.11*clamp(velocity/8,0,1);
+ // AI follows a route, slows down for its turns, and never gets a teleporting speed boost.
+ const targetX=mode==='free'?Math.sin(elapsed*.16)*3.5:Math.sin(-aiZ*.024)*3;
+ aiX+=clamp(targetX-aiX,-1.5,1.5)*dt*1.5;
+ const aiSpeed=mode==='rival'?Math.min(19+elapsed*.08,24):17;
+ aiZ-=aiSpeed*dt;
+ rival.position.set(aiX,0,aiZ);
+ rival.rotation.y=Math.atan2(targetX-aiX,1)*.18;
+ rival.userData.frame.rotation.z=clamp(targetX-aiX,-1,1)*-.05;
+ // Smooth chase camera
+ const fx=Math.sin(heading),fz=-Math.cos(heading);
+ const desired=new THREE.Vector3(px-fx*7,3.5,pz-fz*7+Math.sin(heading)*1.2);
+ camera.position.lerp(desired,1-Math.exp(-3.7*dt));
+ camera.lookAt(px+fx*4,1.1,pz+fz*4);
+ // Checkpoints must be reached in sequence.
+ if(gates.length){
+  const cp=gates[cpIndex];
+  if(cp&&Math.hypot(px-cp.x,pz-cp.z)<3.4){
+   cp.passed=true;cpIndex++;score+=100;
+   cp.group.traverse(o=>{if(o.material&&o.material.color)o.material.color.set('#51d38c');});
+   $('raceProgressFill').style.width=(cpIndex/gates.length*100)+'%';
+   $('missionDescription').textContent='Checkpoint '+cpIndex+' / '+gates.length+' completed.';
+   $('raceMessage').innerHTML='CHECKPOINT <small>+100 POINTS</small>';
+   setTimeout(()=>{if(!paused)$('raceMessage').innerHTML='';},650);
+   if(cpIndex>=gates.length){
+    if(mode==='rival'){
+     const playerDist=Math.abs(pz),aiDist=Math.abs(aiZ);
+     finishRace(playerDist>=aiDist,'COURSE COMPLETE',playerDist>=aiDist?'You finished ahead of your rival.':'Your rival reached farther along the course.');
+    }else finishRace(true,'CHALLENGE COMPLETE','All checkpoints reached successfully.');
+    return;
    }
   }
  }
- // In free ride, award discovery points near landmarks.
- if(gameMode==='free'){
-  const places=[[-10,-80,'FORT DISCOVERED'],[14,-180,'LYCEE LB7HAAR DISCOVERED'],[-14,-290,'ETUDE ZONE DISCOVERED'],[25,-400,'TENNIS CAFE DISCOVERED']];
-  for(const p of places){
-   const key='found'+p[2];
-   if(!window[key]&&Math.hypot(position.x-p[0],position.z-p[1])<9){
-    window[key]=true;score+=100;$('toast').textContent=p[2]+' +100';setTimeout(()=>$('toast').textContent='',900);
+ if(mode==='free'){
+  const places=[
+   {id:'fort',x:-12,z:-100,name:'FORT KÉLIBIA'},
+   {id:'school',x:13,z:-225,name:'LYCÉE LB7HAAR'},
+   {id:'etude',x:-13,z:-375,name:'ÉTUDE'},
+   {id:'cafe',x:32,z:-570,name:'TENNIS CAFÉ'}
+  ];
+  for(const place of places){
+   if(!discoveries[place.id]&&Math.hypot(px-place.x,pz-place.z)<8){
+    discoveries[place.id]=true;score+=100;
+    $('raceMessage').innerHTML=place.name+'<small>DISCOVERED • +100</small>';
+    setTimeout(()=>{if(!paused)$('raceMessage').innerHTML='';},1100);
    }
   }
  }
- $('speed').innerHTML=Math.round(speed)+' <span style="font-size:12px">KM/H</span>';
- $('gear').textContent=speed<1?'READY':speed<20?'GEAR 1':speed<40?'GEAR 2':'GEAR 3';
- $('mapLabel').textContent=position.z>-90?'KÉLIBIA':position.z>-210?'LYCEE LB7HAAR':position.z>-330?'ETUDE':position.z>-450?'TENNIS CAFÉ':'KÉLIBIA COAST';
- if(gameMode==='etude'&&elapsed>100&&!finished){finished=true;speed=0;$('toast').textContent='TIME UP';}
+ if(mode==='free'&&pz<-850){finishRace(true,'COAST EXPLORED','You explored the coastal road.');return;}
+ $('speed').innerHTML=Math.round(speed)+' <span>KM/H</span>';
+ $('raceStatus').textContent=speed<1?'READY':speed<20?'GEAR 1':speed<40?'GEAR 2':'GEAR 3';
+ $('raceTimer').textContent=formatTime(elapsed);
+ $('positionLabel').textContent=mode==='rival'?(Math.abs(pz)<Math.abs(aiZ)?'YOU ARE BEHIND':'YOU ARE AHEAD'):riderName+' PISTA';
+ if(mode==='free')$('raceProgressFill').style.width=(Math.min(100,Math.max(0,-pz/850*100)))+'%';
 }
 function animate(){
  requestAnimationFrame(animate);
  const dt=Math.min(clock.getDelta(),.04);
- update(dt);
+ updateGame(dt);
  if(renderer&&scene&&camera)renderer.render(scene,camera);
+ if(garageRenderer&&garageScene&&garageCamera&&screen==='garage'){
+  garageBike.rotation.y=garageAngle;
+  garageCamera.lookAt(0,.9,0);
+  garageRenderer.render(garageScene,garageCamera);
+ }
 }
-window.addEventListener('resize',()=>{
- if(!camera||!renderer)return;
- camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight);
-});
+function bindHold(id,key){
+ const el=$(id);
+ const down=e=>{e.preventDefault();input[key]=true;el.classList.add('pressed');};
+ const up=e=>{input[key]=false;el.classList.remove('pressed');};
+ el.addEventListener('pointerdown',down);
+ ['pointerup','pointercancel','lostpointercapture'].forEach(evt=>el.addEventListener(evt,up));
+}
+bindHold('left','left');bindHold('right','right');bindHold('gas','gas');bindHold('brake','brake');
+function syncInput(){
+ steer=(input.left?-1:0)+(input.right?1:0);
+ gas=input.gas?1:0;brake=input.brake?1:0;
+}
+['pointerdown','pointerup','pointercancel'].forEach(evt=>document.addEventListener(evt,syncInput));
 window.addEventListener('keydown',e=>{
- if(e.key==='ArrowLeft'||e.key==='a')steer=-1;
- if(e.key==='ArrowRight'||e.key==='d')steer=1;
- if(e.key==='ArrowUp'||e.key==='w')gas=1;
- if(e.key==='ArrowDown'||e.key==='s')brake=1;
- if(e.key==='Escape')togglePause();
+ if(e.key==='ArrowLeft'||e.key==='a')input.left=true;
+ if(e.key==='ArrowRight'||e.key==='d')input.right=true;
+ if(e.key==='ArrowUp'||e.key==='w')input.gas=true;
+ if(e.key==='ArrowDown'||e.key==='s')input.brake=true;
+ if(e.key==='Escape')window.togglePause();
+ syncInput();
 });
 window.addEventListener('keyup',e=>{
- if(['ArrowLeft','a','ArrowRight','d'].includes(e.key))steer=0;
- if(['ArrowUp','w'].includes(e.key))gas=0;
- if(['ArrowDown','s'].includes(e.key))brake=0;
+ if(e.key==='ArrowLeft'||e.key==='a')input.left=false;
+ if(e.key==='ArrowRight'||e.key==='d')input.right=false;
+ if(e.key==='ArrowUp'||e.key==='w')input.gas=false;
+ if(e.key==='ArrowDown'||e.key==='s')input.brake=false;
+ syncInput();
 });
-init();animate();
+window.addEventListener('deviceorientation',e=>{
+ if(!tiltEnabled||e.gamma===null)return;
+ if(Math.abs(e.gamma)>4)steer=clamp(e.gamma/24,-1,1);
+ else if(!input.left&&!input.right)steer=0;
+});
+async function enableTilt(){
+ try{
+  if(typeof DeviceOrientationEvent!=='undefined'&&typeof DeviceOrientationEvent.requestPermission==='function'){
+   const permission=await DeviceOrientationEvent.requestPermission();
+   if(permission!=='granted')throw Error('denied');
+  }
+  tiltEnabled=true;
+  $('missionDescription').textContent='Tilt steering enabled. Touch controls remain available.';
+ }catch(e){
+  $('missionDescription').textContent='Tilt permission unavailable. Use the touch buttons.';
+ }
+}
+$('missionDescription').insertAdjacentHTML('afterend','<button id="tiltEnable" style="margin-top:7px;background:#14151a;border:1px solid #ffffff33;padding:6px 9px;font-size:8px;letter-spacing:1px;color:#e4c18b;pointer-events:auto">ENABLE TILT</button>');
+$('tiltEnable').addEventListener('click',enableTilt);
+$('garageCanvas').addEventListener('pointerdown',e=>{dragging=true;dragX=e.clientX;$('garageCanvas').setPointerCapture(e.pointerId);});
+$('garageCanvas').addEventListener('pointermove',e=>{if(dragging){garageAngle+=(e.clientX-dragX)*.012;dragX=e.clientX;}});
+$('garageCanvas').addEventListener('pointerup',()=>dragging=false);
+$('garageCanvas').addEventListener('pointercancel',()=>dragging=false);
+initRenderer();initGarage();resize();animate();
 </script>
 </body>
 </html>
