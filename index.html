@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#101214">
+<title>MOTO TRACK | PISTA HR 110cc</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<style>
+:root {
+  --bg:#0d0f11; --panel:#181b1e; --line:#30353a;
+  --text:#f5f6f7; --muted:#9da5ac; --lime:#d8ff3e;
+  --red:#ff6868; --orange:#ffb34d;
+}
+*{box-sizing:border-box}
+body {
+  margin:0;background:var(--bg);color:var(--text);
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;
+  padding-bottom:90px;
+}
+button,input,select{font:inherit}
+button{cursor:pointer}
+.app{max-width:800px;margin:auto;padding:15px}
+header{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:18px}
+.logo{background:var(--lime);color:#101214;padding:13px;border-radius:14px;font-weight:900}
+.brand{display:flex;align-items:center;gap:10px}
+.brand h1{font-size:17px;margin:0;letter-spacing:1px}
+.brand p{font-size:10px;color:var(--muted);margin:4px 0 0}
+.badge{font-size:10px;color:var(--lime);border:1px solid #414c25;padding:7px 9px;border-radius:30px}
+.hero{padding:20px;border:1px solid #353a3e;border-radius:22px;background:linear-gradient(135deg,#252a2e,#151719);margin-bottom:13px}
+.eyebrow{font-size:10px;color:var(--lime);letter-spacing:2px;font-weight:bold}
+.hero h2{margin:9px 0;font-size:25px}
+.hero p{font-size:12px;line-height:1.8;color:var(--muted);margin:0}
+.card{background:var(--panel);border:1px solid var(--line);padding:15px;border-radius:18px;margin-bottom:12px}
+h3{font-size:15px;margin:0 0 13px}
+.stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin:12px 0}
+.stat{background:var(--panel);border:1px solid var(--line);padding:13px;border-radius:15px;min-width:0}
+.label{font-size:11px;color:var(--muted);margin-bottom:8px}
+.value{font-size:22px;font-weight:800;overflow-wrap:anywhere}
+.unit{font-size:10px;color:var(--muted);font-weight:400}
+.lime{color:var(--lime)}
+.section{display:flex;justify-content:space-between;align-items:center;margin:20px 2px 10px}
+.section h3{margin:0}
+.small{font-size:11px;color:var(--muted)}
+#map{height:43vh;min-height:300px;max-height:500px;border-radius:17px;z-index:1}
+.mapbox{position:relative;background:#222;border-radius:18px;border:1px solid var(--line);padding:5px}
+.mapbuttons{position:absolute;top:13px;left:13px;z-index:500;display:flex;flex-direction:column;gap:7px}
+.mapbuttons button{background:#171a1e;color:white;border:1px solid #444;border-radius:11px;padding:10px;font-size:11px}
+.btn{border:0;border-radius:13px;padding:13px 10px;font-weight:800;font-size:12px;min-height:44px}
+.primary{background:var(--lime);color:#15170c}
+.secondary{background:#272c30;color:white;border:1px solid #3a4045}
+.danger{background:#351d1e;color:#ffaaaa;border:1px solid #603033}
+.buttons{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin:12px 0}
+.full{grid-column:1/-1}
+.status{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted)}
+.dot{width:8px;height:8px;background:#777;border-radius:50%}
+.dot.live{background:var(--lime)}
+.dot.park{background:var(--orange)}
+.notice{background:#292d1e;border:1px solid #464d2b;color:#e8f7b2;padding:12px;border-radius:13px;font-size:12px;line-height:1.8;margin-bottom:12px}
+.field{display:flex;flex-direction:column;gap:7px;margin-bottom:13px}
+.field label{font-size:12px;color:var(--muted)}
+.field input,.field select{background:#101214;color:white;border:1px solid var(--line);border-radius:11px;padding:12px;width:100%}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.list{display:flex;flex-direction:column;gap:8px}
+.item{display:flex;align-items:center;gap:10px;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:11px}
+.itemicon{background:#292e32;border-radius:11px;padding:10px;font-size:17px}
+.itemmain{flex:1;min-width:0}
+.itemmain strong{font-size:12px;display:block}
+.itemmain p{font-size:11px;color:var(--muted);line-height:1.6;margin:5px 0 0;overflow-wrap:anywhere}
+.mini{background:#292e32;color:white;border:1px solid #41464b;border-radius:9px;padding:8px;font-size:11px}
+.empty{padding:22px;text-align:center;border:1px dashed #40464b;border-radius:13px;color:var(--muted);font-size:12px;line-height:1.8}
+.page{display:none}.page.active{display:block}
+nav{position:fixed;bottom:0;left:0;right:0;z-index:1500;background:#121416f5;border-top:1px solid var(--line);display:grid;grid-template-columns:repeat(4,1fr);padding:9px 5px calc(9px + env(safe-area-inset-bottom));max-width:800px;margin:auto}
+nav button{background:transparent;color:#929ba2;border:0;padding:7px 1px;font-size:10px;border-radius:10px}
+nav button span{display:block;font-size:19px;margin-bottom:4px}
+nav button.active{color:var(--lime);background:#d8ff3e0c}
+.toast{display:none;position:fixed;top:15px;left:15px;right:15px;z-index:3000;background:#f4f5f6;color:#111;padding:13px;border-radius:12px;font-size:13px;max-width:500px;margin:auto;box-shadow:0 5px 25px #0008}
+hr{border:0;border-top:1px solid var(--line);margin:14px 0}
+@media(min-width:650px){.stats{grid-template-columns:repeat(4,1fr)}}
+</style>
+</head>
+<body>
+<div class="app">
+<header>
+  <div class="brand">
+    <div class="logo">MT</div>
+    <div><h1>MOTO TRACK</h1><p>PISTA HR · 110cc GARAGE LOG</p></div>
+  </div>
+  <span class="badge">● MY MOTORCYCLE</span>
+</header>
+
+<section id="home" class="page active">
+  <div class="hero">
+    <div class="eyebrow">YOUR RIDE. YOUR RECORD.</div>
+    <h2>PISTA HR <span class="lime">110cc</span></h2>
+    <p>كراس دراجتك الرقمي: جولات حرة، أماكنك المفضلة، التوقفات ومصاريف البنزين.</p>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><div class="label">المسافة المسجلة</div><div class="value" id="totalKm">0.0 <span class="unit">كم</span></div></div>
+    <div class="stat"><div class="label">البنزين المتوقع</div><div class="value" id="totalLitres">0.00 <span class="unit">لتر</span></div></div>
+    <div class="stat"><div class="label">التكلفة المتوقعة</div><div class="value lime" id="totalMoney">0.00 <span class="unit">د.ت</span></div></div>
+    <div class="stat"><div class="label">التوقفات المسجلة</div><div class="value" id="totalStops">0</div></div>
+  </div>
+
+  <div class="section"><h3>الخريطة الحية</h3><span id="gpsStatus" class="small">GPS غير متصل</span></div>
+  <div class="mapbox">
+    <div id="map"></div>
+    <div class="mapbuttons">
+      <button onclick="locate()">◎ موقعي</button>
+      <button onclick="addMode()">＋ إضافة مكان</button>
+    </div>
+  </div>
+  <p class="small">فعّل «إضافة مكان»، ثم اضغط على موقعه في الخريطة لحفظه.</p>
+
+  <div class="buttons">
+    <button class="btn primary full" id="start" onclick="startRide()">▶ ابدأ جولة حرة</button>
+    <button class="btn secondary" id="park" onclick="parkRide()" disabled>▣ PARK · توقف</button>
+    <button class="btn secondary" id="resume" onclick="resumeRide()" disabled>▶ RESUME</button>
+    <button class="btn danger full" id="saveRide" onclick="saveRide()" disabled>حفظ الجلسة في الكراس</button>
+  </div>
+
+  <div class="card">
+    <div class="status"><span id="dot" class="dot"></span><span id="rideStatus">لا توجد جولة نشطة</span><span id="clock" style="margin-right:auto">00:00:00</span></div>
+    <hr>
+    <div class="grid2">
+      <div><div class="label">السرعة الحالية</div><div class="value" id="speed">0.0 <span class="unit">كم/س</span></div></div>
+      <div><div class="label">متوسط السرعة</div><div class="value" id="average">0.0 <span class="unit">كم/س</span></div></div>
+    </div>
+  </div>
+  <div id="parkNotice" class="notice" style="display:none">
+    🛵 <strong>قبل الابتعاد عن الدراجة:</strong><br>
+    أطفئ المحرك، استعمل الحامل، ثبّت الدراجة، وأغلقها وأزل المفتاح. تأكد بنفسك من تأمينها قبل المغادرة.
+  </div>
+</section>
+
+<section id="places" class="page">
+  <div class="section"><h3>أماكني المحفوظة</h3><button class="btn primary" onclick="addMode()">＋ إضافة</button></div>
+  <div class="notice">احفظ محطات البنزين والمقاهي والميكانيكيين وأي مكان تحب ترجع له.</div>
+  <div class="field"><label>فلترة الأماكن</label>
+    <select id="filter" onchange="renderPlaces()">
+      <option value="all">كل الأماكن</option><option value="fuel">بنزين</option>
+      <option value="rest">راحة / مقهى</option><option value="repair">ميكانيكي</option><option value="other">أماكن أخرى</option>
+    </select>
+  </div>
+  <div id="placesList" class="list"></div>
+</section>
+
+<section id="history" class="page">
+  <div class="section"><h3>كراس الرحلات</h3><span class="small" id="tripCount">0 جلسة</span></div>
+  <div class="stats">
+    <div class="stat"><div class="label">مجموع المسافة</div><div class="value" id="historyKm">0.0</div></div>
+    <div class="stat"><div class="label">متوسط السرعة</div><div class="value" id="historyAvg">0.0</div></div>
+  </div>
+  <div id="historyList" class="list"></div>
+</section>
+
+<section id="settings" class="page">
+  <div class="section"><h3>إعدادات PISTA HR</h3></div>
+  <div class="card">
+    <div class="field"><label>استهلاك البنزين (لتر / 100 كم)</label><input id="consumption" type="number" min="0.1" step="0.1" value="4.3"></div>
+    <div class="field"><label>سعر اللتر (د.ت)</label><input id="fuelPrice" type="number" min="0" step="0.01" value="2.6"></div>
+    <div class="notice">الإعداد المبدئي: 4.3 لتر لكل 100 كم، أي حوالي 11.17 د.ت لكل 100 كم. يمكنك تعديل الرقم حسب الاستهلاك الحقيقي.</div>
+    <button class="btn primary" onclick="saveSettings()">حفظ الإعدادات</button>
+  </div>
+  <div class="card">
+    <h3>حفظ نسخة احتياطية</h3>
+    <p class="small">بياناتك محفوظة في هذا المتصفح. صدّر نسخة احتياطية قبل تغيير الجهاز أو مسح بيانات Safari.</p>
+    <button class="btn secondary" onclick="exportBackup()">⬇ تصدير بياناتي</button>
+    <hr>
+    <label class="btn secondary" for="importFile">⬆ استيراد نسخة</label>
+    <input id="importFile" type="file" accept=".json,application/json" style="display:none" onchange="importBackup(event)">
+    <hr>
+    <button class="btn danger" onclick="clearData()">مسح جميع البيانات</button>
+  </div>
+  <div class="card">
+    <h3>معلومات مهمة</h3>
+    <p class="small" style="line-height:2">
+      • الخريطة تحتاج إلى الإنترنت.<br>
+      • اسمح للموقع باستخدام GPS.<br>
+      • قد يوقف iPhone تحديث GPS في الخلفية أو عند قفل الشاشة.<br>
+      • الاستهلاك والتكلفة تقديريان وليسا قياسًا مباشرًا.<br>
+      • لا تستخدم الشاشة أثناء القيادة.
+    </p>
+  </div>
+</section>
+</div>
+
+<nav>
+  <button class="active" data-page="home" onclick="showPage('home',this)"><span>⌖</span>الخريطة</button>
+  <button data-page="places" onclick="showPage('places',this)"><span>⚑</span>أماكني</button>
+  <button data-page="history" onclick="showPage('history',this)"><span>◷</span>السجل</button>
+  <button data-page="settings" onclick="showPage('settings',this)"><span>⚙</span>الإعدادات</button>
+</nav>
+<div id="toast" class="toast"></div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+const KEY = "motoTrackPistaHR110";
+const DEFAULT = {
+  settings:{consumption:4.3,fuelPrice:2.6},
+  places:[],trips:[],active:null
+};
+let db=loadData(),map,placeLayer,routeLine,watchId=null;
+let currentPosition=null,addingPlace=false,meMarker=null,timer=null;
+
+function loadData(){
+  try {
+    const saved=JSON.parse(localStorage.getItem(KEY)||"null");
+    if(saved) return {...DEFAULT,...saved,settings:{...DEFAULT.settings,...saved.settings}};
+  } catch(e){}
+  return JSON.parse(JSON.stringify(DEFAULT));
+}
+function persist(){localStorage.setItem(KEY,JSON.stringify(db))}
+function el(id){return document.getElementById(id)}
+function n(v){return Number.isFinite(Number(v))?Number(v):0}
+function fmt(v,d=1){return n(v).toLocaleString("en-US",{minimumFractionDigits:d,maximumFractionDigits:d})}
+function escapeHTML(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+function toast(message){
+  const t=el("toast");t.textContent=message;t.style.display="block";
+  clearTimeout(timer);timer=setTimeout(()=>t.style.display="none",3200);
+}
+function showPage(id,button){
+  document.querySelectorAll(".page").forEach(p=>p.classList.toggle("active",p.id===id));
+  document.querySelectorAll("nav button").forEach(b=>b.classList.toggle("active",b.dataset.page===id));
+  if(id==="places")renderPlaces();
+  if(id==="history")renderHistory();
+  if(id==="home"&&map)setTimeout(()=>map.invalidateSize(),150);
+}
+function initMap(){
+  if(!window.L){el("map").innerHTML="تعذّر تحميل الخريطة. تحقق من الإنترنت.";return}
+  map=L.map("map").setView([36.8065,10.1815],12);
+  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{
+    maxZoom:19,attribution:"© OpenStreetMap contributors"
+  }).addTo(map);
+  placeLayer=L.layerGroup().addTo(map);
+  routeLine=L.polyline([],{color:"#d8ff3e",weight:5}).addTo(map);
+  map.on("click",e=>{
+    if(!addingPlace)return;
+    addPlaceAt(e.latlng.lat,e.latlng.lng);
+    addingPlace=false;
+  });
+  refreshMarkers();
+  if(db.active?.points?.length){
+    routeLine.setLatLngs(db.active.points.map(p=>[p.lat,p.lng]));
+  }
+}
+function locate(){
+  if(!navigator.geolocation){toast("GPS غير مدعوم في هذا المتصفح");return}
+  toast("جارٍ تحديد موقعك...");
+  navigator.geolocation.getCurrentPosition(pos=>{
+    currentPosition={
+      lat:pos.coords.latitude,lng:pos.coords.longitude,
+      accuracy:pos.coords.accuracy,speed:pos.coords.speed
+    };
+    map.setView([currentPosition.lat,currentPosition.lng],16);
+    drawMe();
+    el("gpsStatus").textContent="GPS متصل ±"+Math.round(pos.coords.accuracy)+"م";
+  },gpsError,{enableHighAccuracy:true,timeout:15000,maximumAge:5000});
+}
+function gpsError(error){
+  const messages={
+    1:"اسمح للموقع بالوصول إلى GPS.",
+    2:"إشارة GPS غير متوفرة.",
+    3:"انتهت مهلة GPS. حاول مجددًا."
+  };
+  toast(messages[error.code]||"تعذر تحديد الموقع");
+}
+function drawMe(){
+  if(!map||!currentPosition)return;
+  if(!meMarker){
+    meMarker=L.circleMarker([currentPosition.lat,currentPosition.lng],{
+      radius:8,color:"#fff",weight:3,fillColor:"#318bff",fillOpacity:1
+    }).addTo(map);
+  }else meMarker.setLatLng([currentPosition.lat,currentPosition.lng]);
+}
+function addMode(){
+  addingPlace=!addingPlace;
+  if(addingPlace){
+    showPage("home",document.querySelector('[data-page="home"]'));
+    toast("اضغط على الموقع الذي تريد حفظه في الخريطة");
+  }else toast("تم إلغاء إضافة المكان");
+}
+function addPlaceAt(lat,lng){
+  const name=prompt("اسم المكان:","مكاني المفضل");
+  if(!name||!name.trim())return;
+  const type=(prompt("نوع المكان: fuel أو rest أو repair أو other","other")||"other").toLowerCase().trim();
+  const types={
+    fuel:{icon:"⛽",label:"بنزين"},
+    rest:{icon:"☕",label:"راحة / مقهى"},
+    repair:{icon:"🔧",label:"ميكانيكي"},
+    other:{icon:"📍",label:"مكان خاص"}
+  };
+  const info=types[type]||types.other;
+  db.places.push({
+    id:makeId(),name:name.trim(),type:types[type]?type:"other",
+    icon:info.icon,label:info.label,lat,lng,favorite:false,
+    createdAt:Date.now()
+  });
+  persist();refreshMarkers();renderPlaces();updateStats();
+  toast("تم حفظ المكان");
+}
+function makeId(){return Date.now().toString(36)+Math.random().toString(36).slice(2,8)}
+function refreshMarkers(){
+  if(!placeLayer)return;
+  placeLayer.clearLayers();
+  db.places.forEach(p=>{
+    const icon=L.divIcon({
+      className:"",
+      html:`<div style="background:#191d20;border:2px solid #d8ff3e;border-radius:10px;padding:5px;font-size:17px">${p.icon||"📍"}</div>`,
+      iconSize:[34,34],iconAnchor:[17,17]
+    });
+    L.marker([p.lat,p.lng],{icon}).addTo(placeLayer)
+      .bindPopup(`<b>${escapeHTML(p.name)}</b><br>${escapeHTML(p.label)}<br><button onclick="focusPlace('${p.id}')">عرض المكان</button>`);
+  });
+  [...db.trips,...(db.active?[db.active]:[])].forEach(t=>{
+    (t.stops||[]).forEach(s=>{
+      if(s.lat==null||s.lng==null)return;
+      L.circleMarker([s.lat,s.lng],{
+        radius:7,color:"#151515",weight:2,fillColor:"#ffb34d",fillOpacity:1
+      }).addTo(placeLayer).bindPopup("توقف محفوظ");
+    });
+  });
+}
+function focusPlace(id){
+  const p=db.places.find(x=>x.id===id);
+  if(!p)return;
+  showPage("home",document.querySelector('[data-page="home"]'));
+  map.setView([p.lat,p.lng],17);
+}
+function renderPlaces(){
+  const filter=el("filter").value;
+  const items=db.places.filter(p=>filter==="all"||p.type===filter);
+  el("placesList").innerHTML=items.length?items.map(p=>`
+    <div class="item">
+      <div class="itemicon">${p.icon||"📍"}</div>
+      <div class="itemmain">
+        <strong>${escapeHTML(p.name)}</strong>
+        <p>${escapeHTML(p.label)} · ${p.lat.toFixed(5)}, ${p.lng.toFixed(5)}</p>
+      </div>
+      <button class="mini" onclick="focusPlace('${p.id}')">خريطة</button>
+      <button class="mini" onclick="deletePlace('${p.id}')">×</button>
+    </div>`).join(""):'<div class="empty">لا توجد أماكن محفوظة.<br>أضف مكانًا من الخريطة.</div>';
+}
+function deletePlace(id){
+  if(!confirm("حذف هذا المكان؟"))return;
+  db.places=db.places.filter(p=>p.id!==id);
+  persist();renderPlaces();refreshMarkers();updateStats();
+}
+function distance(a,b){
+  const R=6371000,toRad=x=>x*Math.PI/180;
+  const dLat=toRad(b.lat-a.lat),dLon=toRad(b.lng-a.lng);
+  const x=Math.sin(dLat/2)**2+
+    Math.cos(toRad(a.lat))*Math.cos(toRad(b.lat))*Math.sin(dLon/2)**2;
+  return 2*R*Math.asin(Math.sqrt(x));
+}
+function stats(t){
+  const km=n(t.distanceKm),driveMs=n(t.driveMs);
+  const average=driveMs>0?km/(driveMs/3600000):0;
+  const litres=km*n(db.settings.consumption)/100;
+  return {km,driveMs,average,litres,cost:litres*n(db.settings.fuelPrice)};
+}
+function startRide(){
+  if(db.active){toast("هناك جولة نشطة بالفعل");return}
+  db.active={
+    id:makeId(),startedAt:Date.now(),lastResumeAt:Date.now(),
+    parked:false,driveMs:0,distanceKm:0,points:[],stops:[],
+    lastPoint:null,maxSpeed:0
+  };
+  persist();startGPS();updateRideUI();
+  toast("بدأ تسجيل الجولة الحرة");
+}
+function startGPS(){
+  if(!navigator.geolocation){toast("GPS غير مدعوم");return}
+  stopGPS();
+  watchId=navigator.geolocation.watchPosition(onPosition,gpsError,{
+    enableHighAccuracy:true,maximumAge:2000,timeout:15000
+  });
+}
+function stopGPS(){
+  if(watchId!==null){
+    navigator.geolocation.clearWatch(watchId);
+    watchId=null;
+  }
+}
+function onPosition(pos){
+  currentPosition={
+    lat:pos.coords.latitude,lng:pos.coords.longitude,
+    accuracy:pos.coords.accuracy,speed:pos.coords.speed
+  };
+  el("gpsStatus").textContent="GPS متصل ±"+Math.round(pos.coords.accuracy)+"م";
+  drawMe();
+  if(!db.active||db.active.parked)return;
+  const t=db.active,now=Date.now();
+  const point={lat:currentPosition.lat,lng:currentPosition.lng,at:now,accuracy:currentPosition.accuracy};
+  if(t.lastPoint){
+    const metres=distance(t.lastPoint,point);
+    const seconds=(now-t.lastPoint.at)/1000;
+    const accuracy=Math.max(currentPosition.accuracy,t.lastPoint.accuracy||0);
+    if(metres>2&&metres<250&&seconds>0&&metres/seconds<55&&accuracy<100){
+      t.distanceKm+=metres/1000;
+    }
+  }
+  t.points.push({lat:point.lat,lng:point.lng,at:now});
+  if(t.points.length>10000)t.points=t.points.filter((p,i)=>i%2===0);
+  t.lastPoint=point;
+  if(Number.isFinite(pos.coords.speed)&&pos.coords.speed>=0){
+    t.maxSpeed=Math.max(t.maxSpeed,pos.coords.speed*3.6);
+  }
+  routeLine.addLatLng([point.lat,point.lng]);
+  persist();updateRideUI();updateStats();
+}
+function parkRide(){
+  const t=db.active;
+  if(!t||t.parked)return;
+  if(t.lastResumeAt)t.driveMs+=Date.now()-t.lastResumeAt;
+  t.parked=true;t.parkedAt=Date.now();t.lastPoint=null;
+  if(currentPosition){
+    t.stops.push({
+      lat:currentPosition.lat,lng:currentPosition.lng,
+      at:Date.now(),durationMin:0
+    });
+  }
+  persist();stopGPS();
+  el("parkNotice").style.display="block";
+  refreshMarkers();updateRideUI();
+  const safe=confirm(
+    "PARK — تم تسجيل التوقف.\n\n"+
+    "أطفئ المحرك، استعمل الحامل وثبّت الدراجة، وأغلقها وأزل المفتاح.\n\n"+
+    "هل تأكدت من تأمين الدراجة؟"
+  );
+  if(!safe)toast("تأكد من تأمين الدراجة قبل الابتعاد.");
+}
+function resumeRide(){
+  const t=db.active;
+  if(!t||!t.parked)return;
+  if(t.stops.length){
+    const s=t.stops[t.stops.length-1];
+    s.durationMin=(Date.now()-s.at)/60000;
+  }
+  t.parked=false;t.parkedAt=null;t.lastResumeAt=Date.now();t.lastPoint=null;
+  persist();el("parkNotice").style.display="none";
+  startGPS();updateRideUI();refreshMarkers();
+  toast("استؤنف تسجيل الجولة");
+}
+function saveRide(){
+  const t=db.active;
+  if(!t)return;
+  if(!confirm("حفظ الجلسة الحالية في الكراس؟"))return;
+  if(!t.parked&&t.lastResumeAt)t.driveMs+=Date.now()-t.lastResumeAt;
+  if(t.parked&&t.stops.length){
+    t.stops[t.stops.length-1].durationMin=(Date.now()-t.stops[t.stops.length-1].at)/60000;
+  }
+  t.endedAt=Date.now();
+  t.date=new Date(t.startedAt).toLocaleString("ar-TN");
+  db.trips.unshift(t);db.active=null;
+  persist();stopGPS();routeLine.setLatLngs([]);
+  el("parkNotice").style.display="none";
+  updateRideUI();updateStats();refreshMarkers();
+  toast("تم حفظ الجلسة في كراس الدراجة");
+}
+function duration(ms){
+  let s=Math.max(0,Math.floor(ms/1000));
+  const h=Math.floor(s/3600),m=Math.floor(s%3600/60),r=s%60;
+  return [h,m,r].map(v=>String(v).padStart(2,"0")).join(":");
+}
+function updateRideUI(){
+  const t=db.active;
+  el("start").disabled=!!t;
+  el("park").disabled=!t||t.parked;
+  el("resume").disabled=!t||!t.parked;
+  el("saveRide").disabled=!t;
+  el("dot").className="dot "+(t?(t.parked?"park":"live"):"");
+  el("rideStatus").textContent=!t?"لا توجد جولة نشطة":t.parked?"توقف مسجل — PARK":"جولة حرة قيد التسجيل";
+  const speed=currentPosition&&Number.isFinite(currentPosition.speed)&&(!t||!t.parked)
+    ?currentPosition.speed*3.6:0;
+  el("speed").innerHTML=fmt(speed)+" <span class='unit'>كم/س</span>";
+  const s=t?stats(t):{average:0};
+  el("average").innerHTML=fmt(s.average)+" <span class='unit'>كم/س</span>";
+  let ms=t?(t.driveMs+(!t.parked&&t.lastResumeAt?Date.now()-t.lastResumeAt:0)):0;
+  el("clock").textContent=duration(ms);
+}
+function updateStats(){
+  const all=[...db.trips,...(db.active?[db.active]:[])];
+  let km=0,litres=0,cost=0,stops=0;
+  all.forEach(t=>{
+    const s=stats(t);km+=s.km;litres+=s.litres;cost+=s.cost;stops+=(t.stops||[]).length;
+  });
+  el("totalKm").innerHTML=fmt(km)+" <span class='unit'>كم</span>";
+  el("totalLitres").innerHTML=fmt(litres,2)+" <span class='unit'>لتر</span>";
+  el("totalMoney").innerHTML=fmt(cost,2)+" <span class='unit'>د.ت</span>";
+  el("totalStops").textContent=stops;
+  const histKm=db.trips.reduce((a,t)=>a+stats(t).km,0);
+  const time=db.trips.reduce((a,t)=>a+n(t.driveMs),0);
+  el("historyKm").textContent=fmt(histKm)+" كم";
+  el("historyAvg").textContent=fmt(time?histKm/(time/3600000):0)+" كم/س";
+}
+function renderHistory(){
+  el("tripCount").textContent=db.trips.length+" جلسة";
+  el("historyList").innerHTML=db.trips.length?db.trips.map(t=>{
+    const s=stats(t);
+    return `<div class="item">
+      <div class="itemicon">🏍️</div>
+      <div class="itemmain">
+        <strong>${escapeHTML(t.date||new Date(t.startedAt).toLocaleString("ar-TN"))}</strong>
+        <p>${fmt(s.km)} كم · قيادة ${duration(s.driveMs)} · متوسط ${fmt(s.average)} كم/س<br>
+        ${(t.stops||[]).length} توقف · ${fmt(s.litres,2)} لتر · ${fmt(s.cost,2)} د.ت</p>
+      </div>
+      <button class="mini" onclick="viewTrip('${t.id}')">عرض</button>
+      <button class="mini" onclick="deleteTrip('${t.id}')">×</button>
+    </div>`;
+  }).join(""):'<div class="empty">لا توجد جلسات محفوظة بعد.<br>ابدأ جولة ثم احفظها لتظهر هنا.</div>';
+}
+function viewTrip(id){
+  const t=db.trips.find(x=>x.id===id);
+  if(!t)return;
+  showPage("home",document.querySelector('[data-page="home"]'));
+  if(t.points?.length){
+    routeLine.setLatLngs(t.points.map(p=>[p.lat,p.lng]));
+    map.fitBounds(routeLine.getBounds(),{padding:[25,25]});
+    toast("مسار الرحلة ظاهر على الخريطة");
+  }
+}
+function deleteTrip(id){
+  if(!confirm("حذف هذه الجلسة من السجل؟"))return;
+  db.trips=db.trips.filter(t=>t.id!==id);
+  persist();renderHistory();updateStats();refreshMarkers();
+}
+function saveSettings(){
+  const consumption=n(el("consumption").value);
+  const fuelPrice=n(el("fuelPrice").value);
+  if(consumption<=0||fuelPrice<0){toast("تحقق من الأرقام المدخلة");return}
+  db.settings={consumption,fuelPrice};
+  persist();updateStats();renderHistory();toast("تم حفظ إعدادات الدراجة");
+}
+function exportBackup(){
+  const blob=new Blob([JSON.stringify(db,null,2)],{type:"application/json"});
+  const url=URL.createObjectURL(blob),a=document.createElement("a");
+  a.href=url;a.download="moto-track-backup.json";a.click();
+  URL.revokeObjectURL(url);
+}
+function importBackup(event){
+  const file=event.target.files[0];if(!file)return;
+  const reader=new FileReader();
+  reader.onload=()=>{
+    try{
+      const data=JSON.parse(reader.result);
+      if(!data.settings||!Array.isArray(data.places)||!Array.isArray(data.trips))throw Error();
+      if(!confirm("استبدال البيانات الحالية بالنسخة الاحتياطية؟"))return;
+      db={...DEFAULT,...data,settings:{...DEFAULT.settings,...data.settings}};
+      persist();
+      el("consumption").value=db.settings.consumption;
+      el("fuelPrice").value=db.settings.fuelPrice;
+      refreshMarkers();renderPlaces();renderHistory();updateStats();updateRideUI();
+      toast("تم استيراد النسخة الاحتياطية");
+    }catch(e){toast("ملف النسخة الاحتياطية غير صالح")}
+    event.target.value="";
+  };
+  reader.readAsText(file);
+}
+function clearData(){
+  if(!confirm("هل تريد حذف كل الأماكن والرحلات والإعدادات؟"))return;
+  if(!confirm("تأكيد أخير: لا يمكن التراجع عن الحذف."))return;
+  stopGPS();db=JSON.parse(JSON.stringify(DEFAULT));persist();
+  el("consumption").value=4.3;el("fuelPrice").value=2.6;
+  routeLine.setLatLngs([]);refreshMarkers();renderPlaces();renderHistory();updateStats();updateRideUI();
+  el("parkNotice").style.display="none";toast("تم مسح البيانات");
+}
+
+el("consumption").value=db.settings.consumption;
+el("fuelPrice").value=db.settings.fuelPrice;
+initMap();renderPlaces();renderHistory();updateStats();updateRideUI();
+if(db.active){
+  el("parkNotice").style.display=db.active.parked?"block":"none";
+  if(!db.active.parked)startGPS();
+  else toast("لديك جولة متوقفة. اضغط RESUME للمتابعة.");
+}
+setInterval(()=>{if(db.active)updateRideUI()},1000);
+window.addEventListener("beforeunload",()=>{try{persist()}catch(e){}});
+</script>
+</body>
+</html>
