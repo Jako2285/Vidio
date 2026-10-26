@@ -8,141 +8,15 @@
 
 <meta charset="UTF-8">
 
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 
-<meta name="theme-color" content="#0b100d">
-
-<title>FLIP — Property Manager</title>
+<title>FLIP</title>
 
 <style>
 
-:root{--bg:#0b100d;--card:#141c17;--card2:#1b2720;--line:#29382e;--txt:#f2f7f3;--muted:#91a397;--green:#48df91;--red:#ff6974;--yellow:#f5c451}
+:root{--bg:#090c0b;--card:#121816;--line:#26332d;--green:#45e08b;--red:#ff5c68;--yellow:#ffd166;--text:#f2f7f3;--muted:#91a198}
 
-*{box-sizing:border-box}
-
-body{margin:0;background:var(--bg);color:var(--txt);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif}
-
-button,input,select,textarea{font:inherit}
-
-button{cursor:pointer;border:0}
-
-.app{max-width:720px;margin:auto;padding:calc(18px + env(safe-area-inset-top)) 16px calc(100px + env(safe-area-inset-bottom))}
-
-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px}
-
-.brand{display:flex;align-items:center;gap:11px}
-
-.logo{background:var(--green);color:#08130c;width:45px;height:45px;border-radius:16px;display:grid;place-items:center;font-size:24px;font-weight:900}
-
-h1{font-size:19px;letter-spacing:2px;margin:0}
-
-.small{font-size:11px;color:var(--muted);margin-top:4px}
-
-.iconbtn{background:var(--card);color:var(--txt);border:1px solid var(--line);border-radius:14px;padding:11px}
-
-.page{display:none}.page.active{display:block}
-
-h2{font-size:25px;margin:5px 0 7px}
-
-.subtitle{font-size:12px;color:var(--muted);margin:0 0 20px}
-
-.hero{padding:23px;border:1px solid #28553b;border-radius:26px;background:linear-gradient(135deg,#1c3827,#142219);margin-bottom:13px}
-
-.label{font-size:12px;color:#c0d5c6}
-
-.big{font-size:clamp(29px,8vw,40px);font-weight:800;margin:14px 0;direction:ltr;text-align:right;overflow-wrap:anywhere}
-
-.money{direction:ltr;text-align:right;overflow-wrap:anywhere;font-variant-numeric:tabular-nums}
-
-.green{color:var(--green)}.red{color:var(--red)}.yellow{color:var(--yellow)}
-
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:13px 0 22px}
-
-.stat{background:var(--card);border:1px solid var(--line);border-radius:19px;padding:15px;min-width:0}
-
-.stat label{font-size:11px;color:var(--muted)}
-
-.stat strong{display:block;font-size:18px;margin-top:11px;overflow-wrap:anywhere}
-
-.heading{display:flex;justify-content:space-between;align-items:center;margin:23px 2px 12px}
-
-.heading h3{font-size:16px;margin:0}
-
-.quick{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}
-
-.quick button{background:var(--card);border:1px solid var(--line);color:var(--txt);border-radius:17px;padding:15px 5px;font-size:12px}
-
-.quick span{display:block;font-size:23px;color:var(--green);margin-bottom:8px}
-
-.primary{background:var(--green);color:#07140c;font-weight:800;border-radius:15px;padding:14px;width:100%;margin-bottom:12px}
-
-.secondary{background:var(--card2);color:var(--txt);border:1px solid var(--line);border-radius:13px;padding:10px 13px}
-
-.list{display:grid;gap:10px}
-
-.item{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:14px;display:flex;align-items:center;gap:11px}
-
-.itemicon{width:42px;height:42px;flex-shrink:0;background:var(--card2);border-radius:14px;display:grid;place-items:center;font-size:21px}
-
-.itembody{flex:1;min-width:0}
-
-.itemtitle{font-size:14px;font-weight:700;overflow-wrap:anywhere}
-
-.itemmeta{font-size:11px;color:var(--muted);margin-top:6px;line-height:1.6}
-
-.itemright{text-align:left;min-width:0}
-
-.itemright strong{font-size:13px;display:block;direction:ltr}
-
-.itemright button{margin-top:7px}
-
-.empty{border:1px dashed var(--line);border-radius:18px;padding:24px;text-align:center;color:var(--muted);font-size:13px}
-
-.box{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:17px;margin-bottom:13px}
-
-.field{display:flex;flex-direction:column;gap:7px;margin-bottom:13px}
-
-.field label{font-size:12px;color:#b7c8bd}
-
-.field input,.field select,.field textarea{width:100%;min-width:0;background:#0d140f;color:var(--txt);border:1px solid var(--line);border-radius:13px;padding:13px;outline:none}
-
-.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--green)}
-
-.formgrid{display:grid;grid-template-columns:1fr 1fr;gap:0 11px}
-
-.full{grid-column:1/-1}
-
-.note{padding:12px;border-radius:13px;background:#292519;color:var(--yellow);font-size:12px;line-height:1.8;margin:10px 0}
-
-.goodnote{background:#152b1d;color:var(--green)}
-
-.badnote{background:#30191c;color:var(--red)}
-
-.nav{position:fixed;bottom:0;left:0;right:0;background:#0b100df2;backdrop-filter:blur(18px);border-top:1px solid var(--line);padding:9px 8px calc(9px + env(safe-area-inset-bottom));z-index:4}
-
-.navinner{max-width:600px;margin:auto;display:grid;grid-template-columns:repeat(5,1fr);gap:4px}
-
-.nav button{background:transparent;color:var(--muted);border-radius:13px;padding:7px 2px;font-size:10px}
-
-.nav button span{display:block;font-size:20px;margin-bottom:4px}
-
-.nav button.active{background:#1a3021;color:var(--green)}
-
-.modalbg{display:none;position:fixed;inset:0;background:#000b;z-index:8;align-items:flex-end;justify-content:center;padding:10px}
-
-.modalbg.show{display:flex}
-
-.modal{background:#111914;border:1px solid var(--line);border-radius:25px 25px 18px 18px;padding:19px;width:100%;max-width:650px;max-height:88vh;overflow:auto}
-
-.modalhead{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
-
-.modalhead h3{margin:0;font-size:19px}
-
-.toast{position:fixed;z-index:20;bottom:100px;left:50%;transform:translateX(-50%);background:#e7fff0;color:#102017;border-radius:13px;padding:12px 18px;font-size:12px;font-weight:700;display:none;white-space:nowrap}
-
-.toast.show{display:block}
-
-@media(min-width:600px){.modalbg{align-items:center}.app{padding-left:24px;padding-right:24px}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;padding-bottom:85px}header{padding:25px 18px 15px;display:flex;justify-content:space-between;align-items:center}h1{font-size:27px;margin:0;letter-spacing:2px}small,.muted{color:var(--muted)}button,input,select,textarea{font:inherit}button{border:0;border-radius:12px;padding:12px;background:var(--green);color:#07120b;font-weight:700;cursor:pointer}button:active{transform:scale(.97)}.secondary{background:#24332b;color:var(--text)}.danger{background:#401e22;color:var(--red)}.wrap{padding:0 15px}.balance{background:linear-gradient(135deg,#183a2a,#101c16);border:1px solid #2d5a40;border-radius:22px;padding:22px;margin-bottom:15px}.balance strong{display:block;font-size:32px;margin:12px 0}.stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px}.stat,.card{background:var(--card);border:1px solid var(--line);border-radius:17px;padding:15px}.stat strong{display:block;font-size:19px;margin-top:9px;overflow-wrap:anywhere}.green{color:var(--green)}.red{color:var(--red)}.yellow{color:var(--yellow)}h2{font-size:18px;margin:22px 0 12px}.tabs{position:fixed;bottom:0;left:0;right:0;background:#101512;border-top:1px solid var(--line);display:flex;justify-content:space-around;padding:10px 4px calc(10px + env(safe-area-inset-bottom));z-index:5}.tabs button{background:transparent;color:var(--muted);padding:9px 10px;font-size:12px}.tabs button.active{color:var(--green)}.page{display:none}.page.active{display:block}.field{margin-bottom:12px}.field label{display:block;font-size:13px;color:var(--muted);margin-bottom:7px}.field input,.field select,.field textarea{width:100%;padding:13px;background:#0b100d;color:var(--text);border:1px solid var(--line);border-radius:11px;outline:none}.field input:focus,.field select:focus{border-color:var(--green)}.formgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.wide{grid-column:1/-1}.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.actions button{flex:1}.item{padding:14px 0;border-bottom:1px solid var(--line)}.item:last-child{border-bottom:0}.itemtop{display:flex;justify-content:space-between;gap:10px}.item strong{display:block;margin-bottom:5px}.item p{font-size:12px;color:var(--muted);margin:6px 0}.empty{text-align:center;color:var(--muted);padding:24px 5px}.pill{font-size:11px;border-radius:20px;padding:5px 8px;background:#26332c;color:var(--green)}.hidden{display:none!important}
 
 </style>
 
@@ -150,355 +24,273 @@ h2{font-size:25px;margin:5px 0 7px}
 
 <body>
 
-<div class="app">
+<header><div><h1>FLIP<span class="green">.</span></h1><small>REAL ESTATE MANAGER</small></div><button class="secondary" onclick="showPage('profile')">☻</button></header>
 
-<header>
+<main class="wrap">
 
-<div class="brand"><div class="logo">F</div><div><h1>FLIP<span class="green">.</span></h1><div class="small">PROPERTY INVESTMENT</div></div></div>
+<section id="dashboard" class="page active">
 
-<button class="iconbtn" onclick="go('profile')">⚙</button>
+<div class="balance"><small>الرصيد الحالي</small><strong id="balance">0.000 د.ت</strong><small id="balanceNote">سجّل رصيد البداية من الملف الشخصي</small></div>
 
-</header>
+<div class="stats">
 
-<section id="home" class="page active">
+<div class="stat"><small>صافي الأرباح المحققة</small><strong class="green" id="netProfit">0.000 د.ت</strong></div>
 
-<p class="subtitle">لوحة التحكم المالية</p>
+<div class="stat"><small>قيمة العقارات الحالية</small><strong id="propertyValue">0.000 د.ت</strong></div>
 
-<div class="hero">
+<div class="stat"><small>إجمالي الأرباح</small><strong class="green" id="totalWins">0.000 د.ت</strong></div>
 
-<div class="label">رصيدك الحالي</div>
+<div class="stat"><small>إجمالي الخسائر</small><strong class="red" id="totalLosses">0.000 د.ت</strong></div>
 
-<div class="big" id="balance">0.000 DT</div>
+<div class="stat"><small>صفقات مكتملة</small><strong id="soldCount">0</strong></div>
 
-<div class="label" id="balanceStatus">أدخل رصيد البداية من الملف الشخصي</div>
-
-</div>
-
-<div class="grid">
-
-<div class="stat"><label>إجمالي الأرباح المحققة</label><strong id="totalProfit" class="green">+0.000 DT</strong></div>
-
-<div class="stat"><label>إجمالي الخسائر المحققة</label><strong id="totalLoss" class="red">−0.000 DT</strong></div>
-
-<div class="stat"><label>صافي أرباح الصفقات</label><strong id="netProfit">0.000 DT</strong></div>
-
-<div class="stat"><label>مصاريف التجديد والأعمال</label><strong id="expensesTotal" class="red">0.000 DT</strong></div>
-
-<div class="stat"><label>قيمة العقارات المملوكة</label><strong id="ownedValue">0.000 DT</strong></div>
-
-<div class="stat"><label>عدد الصفقات المباعة</label><strong id="soldCount">0</strong></div>
+<div class="stat"><small>عقارات قيد العمل</small><strong id="activeCount">0</strong></div>
 
 </div>
 
-<div class="heading"><h3>إجراءات سريعة</h3></div>
-
-<div class="quick">
-
-<button onclick="openProperty()"><span>⌂</span>عقار جديد</button>
-
-<button onclick="openExpense()"><span>↘</span>مصروف جديد</button>
-
-<button onclick="openJob()"><span>＋</span>عمل جانبي</button>
-
-</div>
-
-<div class="heading"><h3>آخر الصفقات</h3><button class="secondary" onclick="go('deals')">عرض الكل</button></div>
-
-<div class="list" id="recentDeals"></div>
-
-<div id="alertBox"></div>
+<h2>آخر النشاطات</h2><div class="card" id="recent"></div>
 
 </section>
 
-<section id="deals" class="page">
+<section id="properties" class="page">
 
-<h2>الصفقات العقارية</h2><p class="subtitle">كل منزل وصفقته وأرباحه بصورة مستقلة.</p>
+<h2>العقارات</h2>
 
-<button class="primary" onclick="openProperty()">＋ إضافة صفقة / عقار</button>
+<div class="card">
 
-<div class="list" id="dealsList"></div>
+<form id="propertyForm">
+
+<div class="formgrid">
+
+<div class="field wide"><label>اسم العقار</label><input name="name" required placeholder="مثال: منزل وسط المدينة"></div>
+
+<div class="field"><label>سعر الشراء (د.ت)</label><input name="buy" type="number" min="0" step=".001" required></div>
+
+<div class="field"><label>سعر البيع المتوقع</label><input name="expected" type="number" min="0" step=".001" value="0"></div>
+
+<div class="field"><label>تاريخ الشراء</label><input name="date" type="date" required></div>
+
+<div class="field"><label>الحالة</label><select name="status"><option value="active">قيد التجديد</option><option value="ready">جاهز للبيع</option></select></div>
+
+<div class="field wide"><label>ملاحظات</label><input name="notes" placeholder="اختياري"></div>
+
+</div><button type="submit">＋ إضافة العقار</button>
+
+</form></div>
+
+<div id="propertyList"></div>
 
 </section>
 
 <section id="expenses" class="page">
 
-<h2>المصاريف والتجديد</h2><p class="subtitle">تابع تكاليف الإصلاح والمواد والأثاث والعمال.</p>
+<h2>المصاريف والتجديد</h2>
 
-<button class="primary" onclick="openExpense()">＋ إضافة مصروف</button>
+<div class="card"><form id="expenseForm"><div class="formgrid">
 
-<div class="grid"><div class="stat"><label>إجمالي المصاريف</label><strong id="expensesPageTotal" class="red">0.000 DT</strong></div><div class="stat"><label>عدد العمليات</label><strong id="expenseCount">0</strong></div></div>
+<div class="field wide"><label>وصف المصروف</label><input name="name" required placeholder="دهان، سباكة، أثاث..."></div>
 
-<div class="list" id="expensesList"></div>
+<div class="field"><label>المبلغ (د.ت)</label><input name="amount" type="number" min=".001" step=".001" required></div>
+
+<div class="field"><label>النوع</label><select name="type"><option value="general">مصروف عام</option><option value="renovation">تجديد</option></select></div>
+
+<div class="field wide"><label>العقار المرتبط (اختياري)</label><select name="property" id="expenseProperty"><option value="">مصروف عام غير مرتبط</option></select></div>
+
+<div class="field"><label>التاريخ</label><input name="date" type="date" required></div>
+
+</div><button type="submit">＋ تسجيل المصروف</button></form></div>
+
+<div id="expenseList"></div>
 
 </section>
 
-<section id="jobs" class="page">
+<section id="business" class="page">
 
-<h2>الأعمال الجانبية</h2><p class="subtitle">دخل إضافي وتكاليف أي عمل خارج العقارات.</p>
+<h2>الأعمال الجانبية</h2>
 
-<button class="primary" onclick="openJob()">＋ إضافة عمل جانبي</button>
+<div class="card"><form id="businessForm"><div class="formgrid">
 
-<div class="grid"><div class="stat"><label>دخل الأعمال</label><strong id="jobIncome" class="green">0.000 DT</strong></div><div class="stat"><label>تكاليف الأعمال</label><strong id="jobCost" class="red">0.000 DT</strong></div></div>
+<div class="field wide"><label>اسم العمل</label><input name="name" required placeholder="مثال: إصلاحات أو خدمات"></div>
 
-<div class="list" id="jobsList"></div>
+<div class="field"><label>الدخل (د.ت)</label><input name="income" type="number" min="0" step=".001" value="0" required></div>
+
+<div class="field"><label>التكلفة (د.ت)</label><input name="cost" type="number" min="0" step=".001" value="0" required></div>
+
+<div class="field"><label>التاريخ</label><input name="date" type="date" required></div>
+
+</div><button type="submit">＋ إضافة العمل</button></form></div>
+
+<div id="businessList"></div>
 
 </section>
 
 <section id="profile" class="page">
 
-<h2>الملف الشخصي</h2><p class="subtitle">حدد رأس المال الذي بدأت به لتكون جميع الحسابات صحيحة.</p>
+<h2>الملف الشخصي</h2>
 
-<div class="box">
+<div class="card"><form id="profileForm">
 
-<div class="field"><label>رصيدي الأول عند بداية المشروع (DT)</label><input id="startingBalance" type="number" step="0.001" min="0" placeholder="مثال: 10000"></div>
+<div class="field"><label>اسم المستخدم</label><input id="username" placeholder="اسمك"></div>
 
-<button class="primary" onclick="saveStartingBalance()">حفظ رصيد البداية</button>
+<div class="field"><label>رصيد البداية (د.ت)</label><input id="startingBalance" type="number" min="0" step=".001" required></div>
 
-<div class="note goodnote">رصيد البداية هو نقطة الانطلاق. يُضاف إليه الربح أو يُخصم منه ما دفعته فعلياً عند الشراء والمصاريف، ثم تُضاف حصيلة البيع والدخول الأخرى.</div>
+<button type="submit">حفظ الإعدادات</button></form></div>
 
-</div>
+<h2>البيانات</h2>
 
-<div class="box">
+<div class="card"><p class="muted">احتفظ بنسخة احتياطية من بياناتك لتجنب فقدانها.</p>
 
-<div class="heading"><h3>البيانات والنسخ الاحتياطي</h3></div>
+<div class="actions"><button onclick="exportData()">تصدير نسخة</button><button class="secondary" onclick="document.getElementById('importFile').click()">استيراد نسخة</button><input id="importFile" type="file" accept="application/json" class="hidden"></div>
 
-<button class="secondary" onclick="exportData()">تصدير نسخة احتياطية</button>
-
-<button class="secondary" onclick="document.getElementById('importFile').click()">استيراد نسخة</button>
-
-<input id="importFile" type="file" accept=".json,application/json" hidden onchange="importData(event)">
-
-<button class="secondary" onclick="toggleSound()" id="soundBtn">الأصوات: مفعّلة</button>
-
-<button class="secondary" onclick="resetData()" style="color:var(--red);margin-top:10px">حذف جميع البيانات</button>
-
-</div>
+<div class="actions"><button class="danger" onclick="resetData()">مسح جميع البيانات</button></div></div>
 
 </section>
 
-</div>
+</main>
 
-<nav class="nav"><div class="navinner">
+<nav class="tabs">
 
-<button class="active" data-page="home" onclick="go('home')"><span>⌂</span>الرئيسية</button>
+<button class="active" data-page="dashboard" onclick="showPage('dashboard')">⌂<br>الرئيسية</button>
 
-<button data-page="deals" onclick="go('deals')"><span>▦</span>الصفقات</button>
+<button data-page="properties" onclick="showPage('properties')">⌂<br>العقارات</button>
 
-<button data-page="expenses" onclick="go('expenses')"><span>↘</span>المصاريف</button>
+<button data-page="expenses" onclick="showPage('expenses')">↘<br>المصاريف</button>
 
-<button data-page="jobs" onclick="go('jobs')"><span>⌁</span>الأعمال</button>
+<button data-page="business" onclick="showPage('business')">↗<br>الأعمال</button>
 
-<button data-page="profile" onclick="go('profile')"><span>◉</span>ملفي</button>
+<button data-page="profile" onclick="showPage('profile')">☻<br>حسابي</button>
 
-</div></nav>
-
-<div class="modalbg" id="modalbg"><div class="modal"><div class="modalhead"><h3 id="modalTitle"></h3><button class="iconbtn" onclick="closeModal()">✕</button></div><div id="modalContent"></div></div></div>
-
-<div class="toast" id="toast"></div>
+</nav>
 
 <script>
 
-const $=s=>document.querySelector(s);
+'use strict';
 
-const $$=s=>document.querySelectorAll(s);
-
-const KEY='flip_real_estate_v2';
-
-let db={starting:0,deals:[],expenses:[],jobs:[],sound:true};
-
-try{db={...db,...JSON.parse(localStorage.getItem(KEY)||'{}')}}catch(e){}
-
-const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,7);
-
-const n=x=>Number(x)||0;
-
-const fmt=x=>n(x).toLocaleString('en-US',{minimumFractionDigits:3,maximumFractionDigits:3})+' DT';
+const KEY='flip_manager_data_v2';
 
 const today=()=>new Date().toISOString().slice(0,10);
 
-const datefmt=d=>d?new Date(d+'T12:00:00').toLocaleDateString('ar-TN'):'—';
+const fresh=()=>({profile:{name:'',starting:0},properties:[],expenses:[],business:[]});
 
-const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+let db;
 
-let audio;
+try{db=JSON.parse(localStorage.getItem(KEY))||fresh()}catch(e){db=fresh()}
 
 function save(){localStorage.setItem(KEY,JSON.stringify(db));render()}
 
-function beep(){if(!db.sound)return;try{audio=audio||new(window.AudioContext||window.webkitAudioContext)();let o=audio.createOscillator(),g=audio.createGain();o.connect(g);g.connect(audio.destination);o.frequency.value=720;g.gain.value=.035;o.start();o.stop(audio.currentTime+.065)}catch(e){}}
+function money(n){return (Number(n)||0).toLocaleString('fr-TN',{minimumFractionDigits:3,maximumFractionDigits:3})+' د.ت'}
 
-document.addEventListener('click',e=>{if(e.target.closest('button'))beep()});
+function num(v){return Number(v)||0}
 
-function toast(s){let t=$('#toast');t.textContent=s;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2100)}
+function esc(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 
-function go(id){$$('.page').forEach(p=>p.classList.toggle('active',p.id===id));$$('.nav [data-page]').forEach(b=>b.classList.toggle('active',b.dataset.page===id));if(id==='profile')$('#startingBalance').value=db.starting;render();window.scrollTo({top:0,behavior:'smooth'})}
+function showPage(id){document.querySelectorAll('.page').forEach(x=>x.classList.toggle('active',x.id===id));document.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('active',x.dataset.page===id));render()}
 
-function sums(){
+function propertyExpenses(id){return db.expenses.filter(e=>e.property===id).reduce((s,e)=>s+num(e.amount),0)}
 
-let buy=db.deals.reduce((s,d)=>s+n(d.buy),0);
+function propertyProfit(p){return num(p.sell)-num(p.buy)-propertyExpenses(p.id)}
 
-let sold=db.deals.filter(d=>d.status==='sold');
+function totals(){
 
-let sell=sold.reduce((s,d)=>s+n(d.sell),0);
+const sold=db.properties.filter(p=>p.status==='sold');
 
-let dealProfit=sold.reduce((s,d)=>s+n(d.sell)-n(d.buy)-n(d.renovation),0);
+const wins=sold.reduce((s,p)=>s+Math.max(0,propertyProfit(p)),0);
 
-let grossProfit=sold.reduce((s,d)=>s+Math.max(0,n(d.sell)-n(d.buy)-n(d.renovation)),0);
+const losses=sold.reduce((s,p)=>s+Math.max(0,-propertyProfit(p)),0);
 
-let grossLoss=sold.reduce((s,d)=>s+Math.max(0,n(d.buy)+n(d.renovation)-n(d.sell)),0);
+const expenses=db.expenses.reduce((s,e)=>s+num(e.amount),0);
 
-let exp=db.expenses.reduce((s,e)=>s+n(e.amount),0);
+const businessNet=db.business.reduce((s,b)=>s+num(b.income)-num(b.cost),0);
 
-let extraIncome=db.jobs.reduce((s,j)=>s+n(j.income),0);
+const propertyCash=db.properties.reduce((s,p)=>s+(p.status==='sold'?num(p.sell)-num(p.buy): -num(p.buy)),0);
 
-let extraCost=db.jobs.reduce((s,j)=>s+n(j.cost),0);
+const balance=num(db.profile.starting)+propertyCash-expenses+businessNet;
 
-let renovation=db.deals.reduce((s,d)=>s+n(d.renovation),0);
+const value=db.properties.filter(p=>p.status!=='sold').reduce((s,p)=>s+num(p.expected),0);
 
-let balance=n(db.starting)-buy+sell-exp-renovation+extraIncome-extraCost;
-
-let owned=db.deals.filter(d=>d.status!=='sold').reduce((s,d)=>s+n(d.buy)+n(d.renovation),0);
-
-return {buy,sell,dealProfit,grossProfit,grossLoss,exp,extraIncome,extraCost,renovation,balance,owned,sold:sold.length};
+return {sold,wins,losses,net:wins-losses,expenses,businessNet,balance,value}
 
 }
-
-function empty(s){return `<div class="empty">${s}</div>`}
 
 function render(){
 
-let t=sums();
+const t=totals();
 
-$('#balance').textContent=fmt(t.balance);
+document.getElementById('balance').textContent=money(t.balance);
 
-$('#balance').className='big '+(t.balance<0?'red':'');
+document.getElementById('balanceNote').textContent='رصيد البداية: '+money(db.profile.starting);
 
-$('#balanceStatus').textContent=t.balance<0?'تنبيه: رصيدك الحالي بالسالب':'رأس المال الأول: '+fmt(db.starting);
+document.getElementById('netProfit').textContent=money(t.net);
 
-$('#totalProfit').textContent='+'+fmt(t.grossProfit);
+document.getElementById('totalWins').textContent=money(t.wins);
 
-$('#totalLoss').textContent='−'+fmt(t.grossLoss);
+document.getElementById('totalLosses').textContent=money(t.losses);
 
-$('#netProfit').textContent=(t.dealProfit>=0?'+':'−')+fmt(Math.abs(t.dealProfit));
+document.getElementById('propertyValue').textContent=money(t.value);
 
-$('#netProfit').className=t.dealProfit>=0?'green':'red';
+document.getElementById('soldCount').textContent=t.sold.length;
 
-$('#expensesTotal').textContent=fmt(t.exp+t.renovation+t.extraCost);
+document.getElementById('activeCount').textContent=db.properties.filter(p=>p.status!=='sold').length;
 
-$('#ownedValue').textContent=fmt(t.owned);
+document.getElementById('username').value=db.profile.name||'';
 
-$('#soldCount').textContent=t.sold;
+document.getElementById('startingBalance').value=db.profile.starting||0;
 
-$('#expensesPageTotal').textContent=fmt(t.exp);
+const select=document.getElementById('expenseProperty');
 
-$('#expenseCount').textContent=db.expenses.length;
+const selected=select.value;
 
-$('#jobIncome').textContent=fmt(t.extraIncome);
+select.innerHTML='<option value="">مصروف عام غير مرتبط</option>'+db.properties.filter(p=>p.status!=='sold').map(p=>`<option value="${esc(p.id)}">${esc(p.name)}</option>`).join('');
 
-$('#jobCost').textContent=fmt(t.extraCost);
+select.value=selected;
 
-let deals=db.deals.slice().reverse();
+document.getElementById('propertyList').innerHTML=db.properties.length?db.properties.slice().reverse().map(p=>`
 
-$('#dealsList').innerHTML=deals.length?deals.map(dealCard).join(''):empty('لا توجد صفقات بعد');
+<div class="card" style="margin-top:10px"><div class="itemtop"><div><strong>${esc(p.name)}</strong><small>${esc(p.date)} · ${p.status==='sold'?'مباع':p.status==='ready'?'جاهز للبيع':'قيد التجديد'}</small></div><span class="pill">${p.status==='sold'?'مكتمل':'نشط'}</span></div>
 
-$('#recentDeals').innerHTML=deals.length?deals.slice(0,3).map(dealCard).join(''):empty('أضف أول منزل تبدأ به');
+<div class="stats" style="margin:12px 0 0"><div class="stat"><small>سعر الشراء</small><strong>${money(p.buy)}</strong></div><div class="stat"><small>${p.status==='sold'?'سعر البيع':'السعر المتوقع'}</small><strong>${money(p.status==='sold'?p.sell:p.expected)}</strong></div></div>
 
-$('#expensesList').innerHTML=db.expenses.length?db.expenses.slice().reverse().map(e=>`<div class="item"><div class="itemicon">↘</div><div class="itembody"><div class="itemtitle">${esc(e.title)}</div><div class="itemmeta">${esc(e.category)} · ${datefmt(e.date)}</div></div><div class="itemright"><strong class="red">−${fmt(e.amount)}</strong><button class="secondary" onclick="deleteItem('expenses','${e.id}')">حذف</button></div></div>`).join(''):empty('لا توجد مصاريف مسجلة');
+<p class="muted">مصاريف العقار: ${money(propertyExpenses(p.id))}${p.status==='sold'?` · الربح/الخسارة: <b class="${propertyProfit(p)>=0?'green':'red'}">${money(propertyProfit(p))}</b>`:''}</p>
 
-$('#jobsList').innerHTML=db.jobs.length?db.jobs.slice().reverse().map(j=>`<div class="item"><div class="itemicon">⌁</div><div class="itembody"><div class="itemtitle">${esc(j.title)}</div><div class="itemmeta">${datefmt(j.date)} · دخل ${fmt(j.income)} · تكلفة ${fmt(j.cost)}</div></div><div class="itemright"><strong class="${j.income-j.cost>=0?'green':'red'}">${j.income-j.cost>=0?'+':'−'}${fmt(Math.abs(j.income-j.cost))}</strong><button class="secondary" onclick="deleteItem('jobs','${j.id}')">حذف</button></div></div>`).join(''):empty('لا توجد أعمال جانبية');
+${p.notes?`<p>${esc(p.notes)}</p>`:''}
 
-$('#alertBox').innerHTML=db.starting===0?'<div class="note">أدخل رصيد البداية من قسم «ملفي» حتى يظهر حسابك المالي بصورة صحيحة.</div>':t.balance<0?'<div class="note badnote">رصيدك الحالي بالسالب. راجع مشترياتك ومصاريفك.</div>':'';
+<div class="actions">${p.status!=='sold'?`<button onclick="sellProperty('${p.id}')">تسجيل البيع</button><button class="secondary" onclick="editProperty('${p.id}')">تعديل</button>`:''}<button class="danger" onclick="deleteProperty('${p.id}')">حذف</button></div></div>`).join(''):'<div class="empty">لا توجد عقارات بعد</div>';
 
-$('#soundBtn').textContent='الأصوات: '+(db.sound?'مفعّلة':'متوقفة');
+document.getElementById('expenseList').innerHTML=db.expenses.length?db.expenses.slice().reverse().map(e=>{const p=db.properties.find(x=>x.id===e.property);return `<div class="card" style="margin-top:10px"><div class="itemtop"><div><strong>${esc(e.name)}</strong><small>${esc(e.date)} · ${e.type==='renovation'?'تجديد':'مصروف عام'}${p?' · '+esc(p.name):''}</small></div><b class="red">−${money(e.amount)}</b></div><div class="actions"><button class="danger" onclick="deleteExpense('${e.id}')">حذف المصروف</button></div></div>`}).join(''):'<div class="empty">لا توجد مصاريف مسجلة</div>';
 
-}
+document.getElementById('businessList').innerHTML=db.business.length?db.business.slice().reverse().map(b=>`<div class="card" style="margin-top:10px"><div class="itemtop"><div><strong>${esc(b.name)}</strong><small>${esc(b.date)}</small></div><b class="${num(b.income)-num(b.cost)>=0?'green':'red'}">${money(num(b.income)-num(b.cost))}</b></div><p class="muted">دخل ${money(b.income)} · تكلفة ${money(b.cost)}</p><div class="actions"><button class="danger" onclick="deleteBusiness('${b.id}')">حذف</button></div></div>`).join(''):'<div class="empty">لا توجد أعمال جانبية مسجلة</div>';
 
-function dealCard(d){
+const recent=[...db.properties.map(p=>({date:p.date,name:'عقار: '+p.name,amount:-num(p.buy)})),...db.expenses.map(e=>({date:e.date,name:'مصروف: '+e.name,amount:-num(e.amount)})),...db.business.map(b=>({date:b.date,name:'عمل: '+b.name,amount:num(b.income)-num(b.cost)}))].sort((a,b)=>b.date.localeCompare(a.date)).slice(0,5);
 
-let profit=d.status==='sold'?n(d.sell)-n(d.buy)-n(d.renovation):null;
-
-return `<div class="item"><div class="itemicon">⌂</div><div class="itembody"><div class="itemtitle">${esc(d.name)}</div><div class="itemmeta">${d.status==='sold'?'تم البيع':'قيد العمل'} · شراء ${fmt(d.buy)}${d.status==='sold'?' · بيع '+fmt(d.sell):''}<br>مصاريف التجديد ${fmt(d.renovation)}${d.status==='sold'?'<br>رصيد الربح لهذه الصفقة: '+fmt(profit):''}</div></div><div class="itemright">${d.status==='sold'?`<strong class="${profit>=0?'green':'red'}">${profit>=0?'+':'−'}${fmt(Math.abs(profit))}</strong>`:'<strong class="yellow">قيد العمل</strong>'}<button class="secondary" onclick="openProperty('${d.id}')">التفاصيل</button></div></div>`;
+document.getElementById('recent').innerHTML=recent.length?recent.map(x=>`<div class="itemtop item"><div><strong>${esc(x.name)}</strong><small>${esc(x.date)}</small></div><b class="${x.amount>=0?'green':'red'}">${x.amount>=0?'+':'−'}${money(Math.abs(x.amount))}</b></div>`).join(''):'<div class="empty">ستظهر هنا أحدث العمليات</div>';
 
 }
 
-function openModal(title,html){$('#modalTitle').textContent=title;$('#modalContent').innerHTML=html;$('#modalbg').classList.add('show')}
+document.getElementById('profileForm').addEventListener('submit',e=>{e.preventDefault();db.profile.name=document.getElementById('username').value.trim();db.profile.starting=num(document.getElementById('startingBalance').value);save();alert('تم حفظ الإعدادات')});
 
-function closeModal(){$('#modalbg').classList.remove('show')}
+document.getElementById('propertyForm').addEventListener('submit',e=>{e.preventDefault();const f=new FormData(e.target);db.properties.push({id:crypto.randomUUID(),name:f.get('name').trim(),buy:num(f.get('buy')),expected:num(f.get('expected')),date:f.get('date'),status:f.get('status'),notes:f.get('notes').trim(),sell:0});e.target.reset();e.target.elements.date.value=today();save();alert('تمت إضافة العقار')});
 
-$('#modalbg').addEventListener('click',e=>{if(e.target.id==='modalbg')closeModal()});
+document.getElementById('expenseForm').addEventListener('submit',e=>{e.preventDefault();const f=new FormData(e.target);db.expenses.push({id:crypto.randomUUID(),name:f.get('name').trim(),amount:num(f.get('amount')),type:f.get('type'),property:f.get('property'),date:f.get('date')});e.target.reset();e.target.elements.date.value=today();save();alert('تم تسجيل المصروف')});
 
-function field(label,name,value='',type='text',required=false,attrs=''){return `<div class="field"><label>${label}</label><input name="${name}" type="${type}" value="${esc(value)}" ${required?'required':''} ${attrs}></div>`}
+document.getElementById('businessForm').addEventListener('submit',e=>{e.preventDefault();const f=new FormData(e.target);db.business.push({id:crypto.randomUUID(),name:f.get('name').trim(),income:num(f.get('income')),cost:num(f.get('cost')),date:f.get('date')});e.target.reset();e.target.elements.date.value=today();save();alert('تم تسجيل العمل')});
 
-function openProperty(id){
+function sellProperty(id){const p=db.properties.find(x=>x.id===id);if(!p)return;const v=prompt('أدخل سعر البيع النهائي بالدينار التونسي',p.expected||'');if(v===null)return;const price=Number(v);if(!Number.isFinite(price)||price<0){alert('أدخل سعر بيع صحيحًا');return}if(!confirm('تأكيد بيع العقار بسعر '+money(price)+'؟'))return;p.sell=price;p.status='sold';p.soldDate=today();save();alert('ربح/خسارة الصفقة: '+money(propertyProfit(p)))}
 
-let d=db.deals.find(x=>x.id===id)||{};
+function editProperty(id){const p=db.properties.find(x=>x.id===id);if(!p)return;const name=prompt('اسم العقار',p.name);if(name===null)return;const buy=prompt('سعر الشراء',p.buy);if(buy===null)return;const expected=prompt('سعر البيع المتوقع',p.expected);if(expected===null)return;if(!name.trim()||!Number.isFinite(Number(buy))||Number(buy)<0||!Number.isFinite(Number(expected))||Number(expected)<0){alert('تحقق من البيانات');return}p.name=name.trim();p.buy=Number(buy);p.expected=Number(expected);save()}
 
-openModal(id?'تفاصيل الصفقة':'إضافة عقار جديد',`<form id="dealForm"><div class="formgrid">
+function deleteProperty(id){if(!confirm('حذف العقار؟ سيتم حذف مصاريفه المرتبطة أيضًا.'))return;db.properties=db.properties.filter(p=>p.id!==id);db.expenses=db.expenses.filter(e=>e.property!==id);save()}
 
-${field('اسم المنزل *','name',d.name||'','text',true)}
+function deleteExpense(id){if(confirm('حذف هذا المصروف؟')){db.expenses=db.expenses.filter(e=>e.id!==id);save()}}
 
-<div class="field"><label>حالة العقار</label><select name="status"><option value="owned">قيد العمل / أملكه</option><option value="sold">تم البيع</option></select></div>
+function deleteBusiness(id){if(confirm('حذف هذا العمل؟')){db.business=db.business.filter(b=>b.id!==id);save()}}
 
-${field('سعر الشراء (DT) *','buy',d.buy??'','number',true,'step="0.001" min="0"')}
+function exportData(){const blob=new Blob([JSON.stringify(db,null,2)],{type:'application/json'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='FLIP-backup.json';a.click();URL.revokeObjectURL(url)}
 
-${field('رصيدك وقت الشراء (DT)','balanceBuy',d.balanceBuy??'','number',false,'step="0.001"')}
+document.getElementById('importFile').addEventListener('change',async e=>{const file=e.target.files[0];if(!file)return;try{const x=JSON.parse(await file.text());if(!x.profile||!Array.isArray(x.properties)||!Array.isArray(x.expenses)||!Array.isArray(x.business))throw Error();if(!confirm('سيتم استبدال البيانات الحالية. متابعة؟'))return;db=x;save();alert('تم استيراد البيانات')}catch(err){alert('ملف النسخة الاحتياطية غير صالح')}e.target.value=''});
 
-${field('سعر البيع (DT)','sell',d.sell??'','number',false,'step="0.001" min="0"')}
+function resetData(){if(!confirm('تحذير: سيتم حذف جميع البيانات نهائيًا.'))return;if(!confirm('تأكيد أخير لمسح كل شيء؟'))return;db=fresh();save()}
 
-${field('رصيدك بعد البيع (DT)','balanceSell',d.balanceSell??'','number',false,'step="0.001"')}
-
-${field('مصاريف التجديد (DT)','renovation',d.renovation??0,'number',false,'step="0.001" min="0"')}
-
-${field('تاريخ الشراء','buyDate',d.buyDate||today(),'date')}
-
-${field('تاريخ البيع','sellDate',d.sellDate||'','date')}
-
-<div class="field full"><label>ملاحظات</label><textarea name="note" rows="2">${esc(d.note||'')}</textarea></div></div>
-
-<div id="dealPreview" class="note goodnote">يظهر ربح الصفقة بعد إدخال سعر البيع ووضع الحالة «تم البيع».</div>
-
-<button class="primary" type="submit">حفظ الصفقة</button>${id?'<button type="button" class="secondary" style="width:100%" onclick="deleteItem(\\'deals\\',\\''+id+'\\');closeModal()">حذف الصفقة</button>':''}</form>`);
-
-let form=$('#dealForm');form.elements.status.value=d.status||'owned';
-
-function preview(){let buy=n(form.elements.buy.value),sell=n(form.elements.sell.value),ren=n(form.elements.renovation.value),status=form.elements.status.value;$('#dealPreview').textContent=status==='sold'?'صافي ربح الصفقة = سعر البيع − سعر الشراء − مصاريف التجديد = '+fmt(sell-buy-ren):'تكلفة الاستثمار الحالية = '+fmt(buy+ren)+' · سيتم حساب ربح الصفقة عند البيع.'}
-
-form.addEventListener('input',preview);form.addEventListener('change',preview);preview();
-
-form.onsubmit=e=>{e.preventDefault();let f=Object.fromEntries(new FormData(form));if(!f.name.trim()){toast('أدخل اسم المنزل');return}['buy','sell','balanceBuy','balanceSell','renovation'].forEach(k=>f[k]=n(f[k]));if(f.status==='sold'&&f.sellDate==='')f.sellDate=today();f.id=id||undefined;f.id=d.id||uid();db.deals=db.deals.filter(x=>x.id!==f.id);db.deals.push(f);save();closeModal();toast('تم حفظ الصفقة')};
-
-}
-
-function openExpense(){
-
-openModal('إضافة مصروف',`<form id="expenseForm"><div class="formgrid">${field('عنوان المصروف *','title','','text',true)}${field('المبلغ (DT) *','amount','','number',true,'step="0.001" min="0.001"')}
-
-<div class="field"><label>التصنيف</label><select name="category"><option>تصليح</option><option>مواد بناء</option><option>أثاث</option><option>أجور عمال</option><option>فواتير</option><option>رسوم</option><option>أخرى</option></select></div>
-
-<div class="field"><label>العقار المرتبط</label><select name="deal"><option value="">بدون عقار</option>${db.deals.map(d=>`<option value="${d.id}">${esc(d.name)}</option>`).join('')}</select></div>${field('التاريخ','date',today(),'date')}</div><button class="primary" type="submit">حفظ المصروف</button></form>`);
-
-$('#expenseForm').onsubmit=e=>{e.preventDefault();let f=Object.fromEntries(new FormData(e.target));f.id=uid();f.amount=n(f.amount);db.expenses.push(f);save();closeModal();toast('تم تسجيل المصروف')};
-
-}
-
-function openJob(){
-
-openModal('إضافة عمل جانبي',`<form id="jobForm"><div class="formgrid">${field('اسم العمل *','title','','text',true)}<div class="field"><label>نوع العمل</label><select name="type"><option>إصلاح</option><option>تنظيف</option><option>بيع أغراض</option><option>خدمة</option><option>أخرى</option></select></div>${field('الدخل (DT)','income',0,'number',false,'step="0.001" min="0"')}${field('التكلفة (DT)','cost',0,'number',false,'step="0.001" min="0"')}${field('التاريخ','date',today(),'date')}</div><button class="primary" type="submit">حفظ العمل</button></form>`);
-
-$('#jobForm').onsubmit=e=>{e.preventDefault();let f=Object.fromEntries(new FormData(e.target));f.id=uid();f.income=n(f.income);f.cost=n(f.cost);db.jobs.push(f);save();closeModal();toast('تم تسجيل العمل')};
-
-}
-
-function saveStartingBalance(){let v=$('#startingBalance').value;if(v===''||n(v)<0){toast('أدخل رصيد بداية صحيحاً');return}db.starting=n(v);save();toast('تم حفظ رصيد البداية')}
-
-function deleteItem(type,id){if(!confirm('هل تريد حذف هذا السجل؟'))return;db[type]=db[type].filter(x=>x.id!==id);save();toast('تم الحذف')}
-
-function toggleSound(){db.sound=!db.sound;save()}
-
-function exportData(){let a=document.createElement('a'),u=URL.createObjectURL(new Blob([JSON.stringify(db,null,2)],{type:'application/json'}));a.href=u;a.download='FLIP-backup.json';a.click();URL.revokeObjectURL(u)}
-
-function importData(e){let f=e.target.files[0];if(!f)return;let r=new FileReader();r.onload=()=>{try{let x=JSON.parse(r.result);if(!Array.isArray(x.deals)||!Array.isArray(x.expenses)||!Array.isArray(x.jobs))throw 0;if(confirm('استبدال البيانات الحالية؟')){db={...db,...x};save();toast('تم استيراد البيانات')}}catch(err){toast('ملف النسخة غير صالح')}};r.readAsText(f);e.target.value=''}
-
-function resetData(){if(confirm('حذف كل بياناتك؟ لا يمكن التراجع عن ذلك.')&&confirm('تأكيد نهائي للحذف؟')){db={starting:0,deals:[],expenses:[],jobs:[],sound:true};save();toast('تم حذف البيانات')}}
+document.querySelectorAll('form').forEach(f=>{if(f.elements.date)f.elements.date.value=today()});
 
 render();
 
