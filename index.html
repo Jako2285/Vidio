@@ -1,84 +1,298 @@
-
-
 <!DOCTYPE html>
 
-<html lang="ar" dir="rtl">
+<html lang="en">
 
 <head>
 
 <meta charset="UTF-8">
 
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 
-<title>FLIP — Property Profit</title>
+<meta name="theme-color" content="#090811">
+
+<title>PRIORA — Smart Purchase Manager</title>
 
 <style>
 
-:root{--bg:#090d0b;--card:#131a16;--border:#29372f;--green:#48e18c;--red:#ff626d;--yellow:#ffd166;--text:#f3f7f4;--muted:#95a69b}
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+
+:root{
+
+ --bg:#090811;
+
+ --panel:#12101e;
+
+ --panel2:#191629;
+
+ --purple:#9364ff;
+
+ --purple2:#7040df;
+
+ --text:#f5f2ff;
+
+ --muted:#9690a9;
+
+ --line:#29243a;
+
+ --green:#35d69a;
+
+ --orange:#ffad48;
+
+ --red:#ff5577;
+
+}
 
 *{box-sizing:border-box}
 
-body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;padding:20px 15px 40px}
+body{
 
-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:24px}
+ margin:0;background:var(--bg);color:var(--text);
 
-h1{margin:0;font-size:29px;letter-spacing:2px}h1 span{color:var(--green)}
+ font-family:Inter,Arial,sans-serif;
 
-small,.muted{color:var(--muted)}
+ min-height:100vh;padding-bottom:95px;
 
-.card{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:17px;margin-bottom:14px}
+}
 
-.balance{background:linear-gradient(140deg,#163a28,#101813);border-color:#2c6242;padding:22px}
+button,input,select{font:inherit}
 
-.balance strong{display:block;font-size:32px;margin:12px 0;color:var(--green);overflow-wrap:anywhere}
+button{cursor:pointer}
 
-h2{font-size:18px;margin:22px 0 12px}
+.app{max-width:650px;margin:auto;padding:20px 17px}
 
-label{display:block;font-size:13px;color:var(--muted);margin:0 0 7px}
+header{display:flex;justify-content:space-between;align-items:center;margin-bottom:27px}
 
-input{width:100%;padding:13px;border-radius:11px;border:1px solid var(--border);background:#0a100c;color:var(--text);font-size:16px;outline:none}
+.logo{font-size:23px;font-weight:900;letter-spacing:3px}
 
-input:focus{border-color:var(--green)}
+.logo span{color:var(--purple)}
 
-.field{margin-bottom:14px}
+.avatar{
 
-button{border:0;border-radius:12px;padding:13px 15px;background:var(--green);color:#07130b;font-weight:750;font-size:15px;cursor:pointer}
+ width:42px;height:42px;border-radius:50%;
 
-button:active{opacity:.8}
+ background:linear-gradient(135deg,#a27aff,#5425b9);
 
-.secondary{background:#29362e;color:var(--text)}
+ display:grid;place-items:center;font-weight:800;
 
-.danger{background:#402126;color:var(--red)}
+ overflow:hidden
 
-.full{width:100%}
+}
 
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.avatar img{width:100%;height:100%;object-fit:cover}
 
-.result{padding:14px 0;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;gap:12px;align-items:center}
+h1{font-size:28px;margin:0 0 7px;font-weight:800}
 
-.result:last-child{border-bottom:0}
+.subtitle{color:var(--muted);font-size:13px}
 
-.result strong{font-size:16px;text-align:left;overflow-wrap:anywhere}
+.page{display:none;animation:appear .25s ease}
 
-.big{font-size:25px!important}
+.page.active{display:block}
 
-.green{color:var(--green)}.red{color:var(--red)}.yellow{color:var(--yellow)}
+@keyframes appear{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
 
-.item{padding:14px 0;border-bottom:1px solid var(--border)}
+.card{
 
-.item:last-child{border-bottom:0}
+ background:var(--panel);border:1px solid var(--line);
 
-.itemtop{display:flex;justify-content:space-between;gap:12px;align-items:start}
+ border-radius:19px;padding:17px;margin-top:15px
 
-.item p{font-size:13px;color:var(--muted);margin:7px 0}
+}
 
-.item strong{overflow-wrap:anywhere}
+.balance{
 
-.actions{display:flex;gap:8px;margin-top:12px}
+ background:linear-gradient(135deg,#251648,#151025);
 
-.actions button{flex:1}
+ border:1px solid #493276;border-radius:22px;padding:22px;
 
-.empty{text-align:center;color:var(--muted);padding:18px 0}
+ margin:22px 0 18px;position:relative;overflow:hidden
+
+}
+
+.balance:after{
+
+ content:"";position:absolute;width:150px;height:150px;
+
+ border-radius:50%;background:#9865ff18;right:-40px;top:-50px
+
+}
+
+.balance-label{font-size:12px;color:#c3b5df}
+
+.balance-value{font-size:34px;font-weight:900;margin:12px 0}
+
+.balance-bottom{display:flex;justify-content:space-between;align-items:center}
+
+.btn{
+
+ border:0;border-radius:12px;padding:12px 16px;
+
+ background:var(--purple);color:white;font-weight:700
+
+}
+
+.btn:hover{filter:brightness(1.1)}
+
+.btn.secondary{background:#29233b;color:#e7ddff}
+
+.btn.danger{background:#48202c;color:#ff8aa0}
+
+.btn.small{padding:9px 12px;font-size:12px}
+
+.btn:disabled{opacity:.35;cursor:not-allowed}
+
+.section-title{display:flex;justify-content:space-between;align-items:center;margin:23px 0 12px}
+
+.section-title h2{font-size:17px;margin:0}
+
+.section-title span{color:var(--muted);font-size:12px}
+
+.product{
+
+ display:flex;gap:13px;padding:13px;background:var(--panel);
+
+ border:1px solid var(--line);border-radius:17px;margin-bottom:11px
+
+}
+
+.product-img{
+
+ width:82px;height:88px;border-radius:12px;
+
+ background:var(--panel2);object-fit:cover;flex-shrink:0
+
+}
+
+.product-info{flex:1;min-width:0}
+
+.product-name{font-weight:800;font-size:14px;margin:3px 0 7px;overflow-wrap:anywhere}
+
+.product-price{font-weight:800;font-size:16px}
+
+.muted{color:var(--muted);font-size:11px}
+
+.product-meta{display:flex;gap:8px;flex-wrap:wrap;margin-top:9px}
+
+.tag{font-size:10px;padding:5px 8px;border-radius:7px;background:#252035;color:#c6b9e9}
+
+.score{font-size:13px;font-weight:800;color:var(--purple)}
+
+.scorebar{height:5px;background:#29243a;border-radius:10px;margin-top:8px;overflow:hidden}
+
+.scorebar div{height:100%;background:linear-gradient(90deg,#7141dc,#bd9cff)}
+
+.product-actions{display:flex;flex-direction:column;gap:7px;justify-content:center}
+
+.status{font-size:10px;font-weight:800;padding:6px 8px;border-radius:8px;text-align:center}
+
+.status.green{color:var(--green);background:#17372d}
+
+.status.orange{color:var(--orange);background:#3b2b19}
+
+.status.red{color:var(--red);background:#3c1c2a}
+
+.bottom-nav{
+
+ position:fixed;bottom:0;left:0;right:0;
+
+ background:#100e19f5;backdrop-filter:blur(18px);
+
+ border-top:1px solid var(--line);display:flex;
+
+ justify-content:center;gap:8px;padding:12px 8px calc(12px + env(safe-area-inset-bottom));
+
+ z-index:10
+
+}
+
+.nav-btn{
+
+ flex:1;max-width:140px;background:transparent;border:0;
+
+ color:var(--muted);font-size:11px;padding:8px 4px;
+
+ border-radius:12px;font-weight:700
+
+}
+
+.nav-btn.active{background:#29203e;color:#b99aff}
+
+.nav-icon{display:block;font-size:19px;margin-bottom:4px}
+
+.field{margin:13px 0}
+
+.field label{display:block;color:#b8b1c9;font-size:12px;margin-bottom:7px}
+
+.field input,.field select{
+
+ width:100%;background:#0e0c17;border:1px solid var(--line);
+
+ border-radius:11px;padding:13px;color:white;outline:none
+
+}
+
+.field input:focus,.field select:focus{border-color:var(--purple)}
+
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+
+.empty{text-align:center;padding:30px 12px;color:var(--muted);font-size:13px}
+
+.empty b{display:block;color:white;font-size:16px;margin-bottom:8px}
+
+.modal{
+
+ display:none;position:fixed;inset:0;background:#000b;
+
+ z-index:20;align-items:center;justify-content:center;padding:15px
+
+}
+
+.modal.open{display:flex}
+
+.modal-content{
+
+ background:var(--panel);border:1px solid var(--line);
+
+ border-radius:22px;padding:21px;width:100%;max-width:440px;
+
+ max-height:88vh;overflow:auto
+
+}
+
+.modal-content h2{font-size:19px;margin:0 0 15px}
+
+.close{float:right;background:none;border:0;color:white;font-size:22px}
+
+.range{width:100%;accent-color:var(--purple)}
+
+.progress{height:5px;background:#29243a;border-radius:10px;margin:12px 0}
+
+.progress div{height:100%;background:var(--purple);border-radius:10px}
+
+.question{font-size:17px;font-weight:800;line-height:1.5;margin:20px 0}
+
+.answer{
+
+ width:100%;text-align:left;background:#1c192a;border:1px solid var(--line);
+
+ color:white;padding:15px;border-radius:12px;margin:6px 0
+
+}
+
+.answer.selected{border-color:var(--purple);background:#302148}
+
+.stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+
+.stat{background:#191627;padding:14px;border-radius:13px}
+
+.stat strong{font-size:21px;display:block;margin-top:6px}
+
+hr{border:0;border-top:1px solid var(--line);margin:16px 0}
+
+.history-item{display:flex;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--line);font-size:12px}
+
+.history-item strong{display:block;margin-bottom:5px}
+
+.image-preview{width:100%;height:140px;object-fit:contain;background:#0e0c17;border-radius:12px;margin-top:8px}
 
 </style>
 
@@ -86,273 +300,1299 @@ button:active{opacity:.8}
 
 <body>
 
-<header><div><h1>FLIP<span>.</span></h1><small>PROPERTY PROFIT TRACKER</small></div></header>
+<div class="app">
 
-<div class="card balance">
+<header>
 
-<small>رصيدك الحالي</small>
+ <div class="logo">PRI<span>O</span>RA.</div>
 
-<strong id="balance">0.000 د.ت</strong>
+ <div class="avatar" id="avatar">P</div>
 
-<small>يتحدث تلقائيًا بعد تسجيل كل صفقة</small>
+</header>
+
+<!-- HOME -->
+
+<section class="page active" id="home">
+
+ <h1 id="greeting">Welcome back.</h1>
+
+ <div class="subtitle" id="homeSubtitle">Your money. Your priorities. Your decisions.</div>
+
+ <div class="balance">
+
+  <div class="balance-label" id="balanceLabel">AVAILABLE BALANCE</div>
+
+  <div class="balance-value"><span id="balanceValue">0.000</span> <small style="font-size:14px">DT</small></div>
+
+  <div class="balance-bottom">
+
+   <span class="muted" id="balanceHint">Your current budget</span>
+
+   <button class="btn small" onclick="openBalance()" id="editBalanceBtn">Edit balance</button>
+
+  </div>
+
+ </div>
+
+ <div class="stat-grid">
+
+  <div class="stat"><span class="muted" id="totalProductsLabel">Products</span><strong id="totalProducts">0</strong></div>
+
+  <div class="stat"><span class="muted" id="affordableLabel">Affordable</span><strong id="affordable">0</strong></div>
+
+ </div>
+
+ <div class="section-title">
+
+  <h2 id="rankingTitle">Your smart ranking</h2>
+
+  <span id="rankingCount">0 products</span>
+
+ </div>
+
+ <div id="productsList"></div>
+
+ <div class="section-title">
+
+  <h2 id="insightTitle">Smart insight</h2>
+
+ </div>
+
+ <div class="card" id="insight">Add products to receive personalized recommendations.</div>
+
+ <div class="section-title">
+
+  <h2 id="historyTitle">Recent activity</h2>
+
+  <span onclick="showPage('settings')" style="cursor:pointer;color:var(--purple)" id="viewAll">View all</span>
+
+ </div>
+
+ <div class="card" id="recentHistory"></div>
+
+</section>
+
+<!-- PROFILE -->
+
+<section class="page" id="profile">
+
+ <h1 id="profileTitle">Your profile</h1>
+
+ <div class="subtitle" id="profileSubtitle">Tell PRIORA about yourself.</div>
+
+ <div class="card">
+
+  <h2 style="font-size:16px" id="personalInfo">Personal information</h2>
+
+  <div class="field">
+
+   <label id="nameLabel">Your name</label>
+
+   <input id="userName" placeholder="Enter your name" maxlength="40">
+
+  </div>
+
+  <div class="field">
+
+   <label id="avatarLabel">Profile picture</label>
+
+   <input type="file" id="avatarInput" accept="image/*">
+
+  </div>
+
+  <button class="btn" onclick="saveProfile()" id="saveProfileBtn">Save profile</button>
+
+ </div>
+
+ <div class="card">
+
+  <div class="section-title" style="margin-top:0">
+
+   <h2 id="questionsTitle">Personality questions</h2>
+
+   <span id="questionsStatus">0 / 15</span>
+
+  </div>
+
+  <p class="muted" id="questionsDescription">Your answers help personalize product recommendations. They cannot be changed after submission.</p>
+
+  <div class="progress"><div id="questionProgress" style="width:0%"></div></div>
+
+  <button class="btn secondary" style="width:100%" id="startQuestionsBtn" onclick="startQuestions()">Start questionnaire</button>
+
+  <div id="answersSummary"></div>
+
+ </div>
+
+ <div class="card">
+
+  <div class="section-title" style="margin-top:0">
+
+   <h2 id="wishlistTitle">My wishlist</h2>
+
+   <span id="wishlistCount">0 / 10</span>
+
+  </div>
+
+  <button class="btn" style="width:100%" onclick="openProduct()" id="addProductBtn">+ Add product</button>
+
+  <div id="wishlistList" style="margin-top:14px"></div>
+
+ </div>
+
+ <div class="card">
+
+  <h2 style="font-size:16px" id="financialTitle">Financial activity</h2>
+
+  <p class="muted" id="financialDescription">Record expenses that are not wishlist purchases.</p>
+
+  <button class="btn secondary" style="width:100%" onclick="openExpense()" id="addExpenseBtn">+ Record expense</button>
+
+  <hr>
+
+  <button class="btn secondary" style="width:100%" onclick="openIncome()" id="addIncomeBtn">+ Add money</button>
+
+ </div>
+
+</section>
+
+<!-- SETTINGS -->
+
+<section class="page" id="settings">
+
+ <h1 id="settingsTitle">Settings</h1>
+
+ <div class="subtitle" id="settingsSubtitle">Customize your experience.</div>
+
+ <div class="card">
+
+  <h2 style="font-size:16px" id="languageTitle">Language</h2>
+
+  <div class="field">
+
+   <select id="languageSelect" onchange="changeLanguage(this.value)">
+
+    <option value="en">English</option>
+
+    <option value="ar">العربية</option>
+
+   </select>
+
+  </div>
+
+ </div>
+
+ <div class="card">
+
+  <h2 style="font-size:16px" id="overviewTitle">Financial overview</h2>
+
+  <div class="stat-grid">
+
+   <div class="stat"><span class="muted" id="spentLabel">Total spent</span><strong id="totalSpent">0 DT</strong></div>
+
+   <div class="stat"><span class="muted" id="transactionsLabel">Transactions</span><strong id="transactionsCount">0</strong></div>
+
+  </div>
+
+  <hr>
+
+  <h2 style="font-size:15px" id="historyFullTitle">Full history</h2>
+
+  <div id="fullHistory"></div>
+
+ </div>
+
+ <div class="card">
+
+  <h2 style="font-size:16px" id="dataTitle">Data management</h2>
+
+  <p class="muted" id="dataDescription">Your data is stored locally on this device.</p>
+
+  <button class="btn secondary" style="width:100%;margin-bottom:9px" onclick="exportData()" id="exportBtn">Export backup</button>
+
+  <button class="btn secondary" style="width:100%;margin-bottom:9px" onclick="document.getElementById('importFile').click()" id="importBtn">Import backup</button>
+
+  <input id="importFile" type="file" accept=".json" hidden onchange="importData(event)">
+
+  <button class="btn danger" style="width:100%" onclick="resetData()" id="resetBtn">Reset all data</button>
+
+ </div>
+
+ <div class="muted" style="text-align:center;padding:22px">PRIORA v1.0 · Smart decisions, personal priorities.</div>
+
+</section>
 
 </div>
 
-<div class="card">
+<nav class="bottom-nav">
 
-<label>رصيد البداية</label>
+ <button class="nav-btn active" data-page="home" onclick="showPage('home')"><span class="nav-icon">⌂</span><span id="navHome">HOME</span></button>
 
-<div class="field"><input id="startingBalance" type="number" min="0" step=".001" placeholder="أدخل رصيد البداية بالدينار"></div>
+ <button class="nav-btn" data-page="profile" onclick="showPage('profile')"><span class="nav-icon">◉</span><span id="navProfile">PROFILE</span></button>
 
-<button class="full" onclick="setStarting()">حفظ رصيد البداية</button>
+ <button class="nav-btn" data-page="settings" onclick="showPage('settings')"><span class="nav-icon">⚙</span><span id="navSettings">SETTINGS</span></button>
 
-</div>
+</nav>
 
-<h2>تسجيل صفقة عقارية</h2>
+<!-- MODAL -->
 
-<div class="card">
+<div class="modal" id="modal" onclick="if(event.target===this)closeModal()">
 
-<form id="dealForm">
-
-<div class="field">
-
-<label>اسم العقار</label>
-
-<input name="name" placeholder="مثال: المنزل الأول" required>
+ <div class="modal-content" id="modalContent"></div>
 
 </div>
-
-<div class="grid">
-
-<div class="field">
-
-<label>سعر الشراء (د.ت)</label>
-
-<input name="buy" type="number" min="0" step=".001" required placeholder="0.000">
-
-</div>
-
-<div class="field">
-
-<label>سعر البيع (د.ت)</label>
-
-<input name="sell" type="number" min="0" step=".001" required placeholder="0.000">
-
-</div>
-
-</div>
-
-<div class="field">
-
-<label>كم كان عندك عندما اشتريت العقار؟</label>
-
-<input id="cashBefore" name="cashBefore" type="number" min="0" step=".001" required placeholder="رصيدك قبل التجديد">
-
-</div>
-
-<div class="field">
-
-<label>كم أصبح عندك بعد إكمال التجديد؟</label>
-
-<input name="cashAfter" type="number" min="0" step=".001" required placeholder="رصيدك بعد التجديد">
-
-</div>
-
-<div class="card" style="margin:5px 0 15px;background:#0b110d">
-
-<div class="result"><span>الربح الأولي</span><strong id="initialProfit">0.000 د.ت</strong></div>
-
-<div class="result"><span>مصاريف التجديد</span><strong id="renovationCost">0.000 د.ت</strong></div>
-
-<div class="result"><span>الربح الصافي</span><strong id="netPreview" class="big green">0.000 د.ت</strong></div>
-
-</div>
-
-<button type="submit" class="full">＋ تسجيل الصفقة وإضافة الربح الصافي للرصيد</button>
-
-</form>
-
-</div>
-
-<h2>ملخص الأرباح</h2>
-
-<div class="grid">
-
-<div class="card"><small>مجموع الأرباح الصافية</small><h2 id="totalNet" class="green">0.000 د.ت</h2></div>
-
-<div class="card"><small>مجموع المصاريف</small><h2 id="totalCosts" class="yellow">0.000 د.ت</h2></div>
-
-<div class="card"><small>عدد الصفقات</small><h2 id="dealCount">0</h2></div>
-
-<div class="card"><small>مجموع الأرباح الأولية</small><h2 id="totalInitial">0.000 د.ت</h2></div>
-
-</div>
-
-<h2>سجل الصفقات</h2>
-
-<div class="card" id="history"><div class="empty">لا توجد صفقات مسجلة</div></div>
-
-<div class="actions">
-
-<button class="secondary" onclick="exportData()">تصدير نسخة احتياطية</button>
-
-<button class="secondary" onclick="document.getElementById('importFile').click()">استيراد نسخة</button>
-
-<input id="importFile" type="file" accept="application/json" hidden>
-
-</div>
-
-<div style="margin-top:12px"><button class="danger full" onclick="resetAll()">مسح جميع البيانات</button></div>
 
 <script>
 
-const STORAGE_KEY='FLIP_simple_profit_v1';
+const KEY='priora_data_v1';
 
-const emptyData=()=>({startingBalance:0,deals:[]});
+const defaultData={
 
-let data;
+ name:'',avatar:'',balance:0,products:[],answers:null,
 
-try{data=JSON.parse(localStorage.getItem(STORAGE_KEY))||emptyData()}catch(e){data=emptyData()}
+ transactions:[],language:'en'
 
-if(!Array.isArray(data.deals))data.deals=[];
+};
 
-if(!Number.isFinite(Number(data.startingBalance)))data.startingBalance=0;
+let data=loadData();
 
-const fmt=n=>(Number(n)||0).toLocaleString('fr-TN',{minimumFractionDigits:3,maximumFractionDigits:3})+' د.ت';
+let tempImage='';
 
-const val=n=>Number(n)||0;
+let questionIndex=0;
 
-const safe=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+let tempAnswers=[];
 
-function calc(d){
+function loadData(){
 
-const initial=val(d.sell)-val(d.buy);
+ try{
 
-const costs=val(d.cashBefore)-val(d.cashAfter);
+  const saved=JSON.parse(localStorage.getItem(KEY));
 
-return {initial,costs,net:initial-costs};
+  return saved?{...defaultData,...saved}:structuredClone(defaultData);
+
+ }catch(e){return structuredClone(defaultData)}
 
 }
 
-function currentBalance(){return val(data.startingBalance)+data.deals.reduce((s,d)=>s+calc(d).net,0)}
+function save(){
 
-function persist(){localStorage.setItem(STORAGE_KEY,JSON.stringify(data));render()}
+ localStorage.setItem(KEY,JSON.stringify(data));
 
-function setStarting(){
+ render();
 
-const x=document.getElementById('startingBalance').value;
+}
 
-if(x===''||!Number.isFinite(Number(x))||Number(x)<0){alert('أدخل رصيد بداية صحيحًا');return}
+function money(n){return Number(n||0).toLocaleString('en-US',{minimumFractionDigits:3,maximumFractionDigits:3})}
 
-data.startingBalance=Number(x);persist();alert('تم حفظ رصيد البداية')
+const questions=[
+
+ {
+
+ en:"How do you usually spend your free time?",
+
+ ar:"كيف تقضي وقت فراغك عادة؟",
+
+ a:["I prefer relaxing at home","I prefer going out and exploring"],
+
+ b:["أفضل الاسترخاء في المنزل","أفضل الخروج والاستكشاف"]
+
+ },
+
+ {
+
+ en:"When you receive money, what do you usually do?",
+
+ ar:"عندما تحصل على المال، ماذا تفعل عادة؟",
+
+ a:["I save most of it","I enjoy spending some of it"],
+
+ b:["أدخر معظم المال","أستمتع بإنفاق جزء منه"]
+
+ },
+
+ {
+
+ en:"What matters more when buying something?",
+
+ ar:"ما الأهم عند شراء شيء؟",
+
+ a:["Quality and durability","Appearance and style"],
+
+ b:["الجودة وطول مدة الاستخدام","المظهر والأناقة"]
+
+ },
+
+ {
+
+ en:"How do you make important decisions?",
+
+ ar:"كيف تتخذ القرارات المهمة؟",
+
+ a:["I think carefully for a long time","I trust my first impression"],
+
+ b:["أفكر جيداً ولفترة طويلة","أثق بانطباعي الأول"]
+
+ },
+
+ {
+
+ en:"Which describes your lifestyle?",
+
+ ar:"أي وصف يناسب نمط حياتك؟",
+
+ a:["Simple and organized","Active and full of experiences"],
+
+ b:["بسيط ومنظم","نشط ومليء بالتجارب"]
+
+ },
+
+ {
+
+ en:"How often do you buy things you did not plan for?",
+
+ ar:"كم مرة تشتري أشياء لم تخطط لها؟",
+
+ a:["Rarely","Quite often"],
+
+ b:["نادراً","غالباً"]
+
+ },
+
+ {
+
+ en:"What motivates you more?",
+
+ ar:"ما الذي يحفزك أكثر؟",
+
+ a:["Achieving long-term goals","Enjoying the present"],
+
+ b:["تحقيق الأهداف البعيدة","الاستمتاع بالحاضر"]
+
+ },
+
+ {
+
+ en:"How important is technology in your daily life?",
+
+ ar:"ما أهمية التكنولوجيا في حياتك اليومية؟",
+
+ a:["Very important","Not particularly important"],
+
+ b:["مهمة جداً","ليست مهمة كثيراً"]
+
+ },
+
+ {
+
+ en:"When you want something expensive, what do you do?",
+
+ ar:"عندما تريد شيئاً باهظ الثمن، ماذا تفعل؟",
+
+ a:["I save until I can afford it","I look for alternatives"],
+
+ b:["أدخر حتى أستطيع شراءه","أبحث عن بدائل"]
+
+ },
+
+ {
+
+ en:"What kind of products attract you?",
+
+ ar:"ما نوع المنتجات التي تجذبك؟",
+
+ a:["Practical products","Unique and attractive products"],
+
+ b:["المنتجات العملية","المنتجات المميزة والجذابة"]
+
+ },
+
+ {
+
+ en:"How do you feel about planning your spending?",
+
+ ar:"ما رأيك في التخطيط لمصاريفك؟",
+
+ a:["I like planning everything","I prefer flexibility"],
+
+ b:["أحب التخطيط لكل شيء","أفضل المرونة"]
+
+ },
+
+ {
+
+ en:"What do you value most in your purchases?",
+
+ ar:"ما الذي تقدّره أكثر في مشترياتك؟",
+
+ a:["Getting the best value","Getting what I really want"],
+
+ b:["الحصول على أفضل قيمة","الحصول على ما أريده فعلاً"]
+
+ },
+
+ {
+
+ en:"How do you react when something catches your attention?",
+
+ ar:"كيف تتصرف عندما يلفت شيء انتباهك؟",
+
+ a:["I compare it with other options","I immediately want to own it"],
+
+ b:["أقارنه بالخيارات الأخرى","أرغب فوراً في امتلاكه"]
+
+ },
+
+ {
+
+ en:"What is your main financial priority?",
+
+ ar:"ما أولويتك المالية الأساسية؟",
+
+ a:["Keeping money for the future","Enjoying what I have now"],
+
+ b:["الاحتفاظ بالمال للمستقبل","الاستمتاع بما أملك الآن"]
+
+ },
+
+ {
+
+ en:"How do you prefer to choose products?",
+
+ ar:"كيف تفضل اختيار المنتجات؟",
+
+ a:["Based on facts and usefulness","Based on personal preference"],
+
+ b:["بناءً على الحقائق والفائدة","بناءً على ذوقي الشخصي"]
+
+ }
+
+];
+
+const translations={
+
+ en:{
+
+ greeting:"Welcome back.",homeSubtitle:"Your money. Your priorities. Your decisions.",
+
+ balanceLabel:"AVAILABLE BALANCE",balanceHint:"Your current budget",editBalanceBtn:"Edit balance",
+
+ totalProductsLabel:"Products",affordableLabel:"Affordable",rankingTitle:"Your smart ranking",
+
+ insightTitle:"Smart insight",historyTitle:"Recent activity",viewAll:"View all",
+
+ profileTitle:"Your profile",profileSubtitle:"Tell PRIORA about yourself.",
+
+ personalInfo:"Personal information",nameLabel:"Your name",avatarLabel:"Profile picture",
+
+ saveProfileBtn:"Save profile",questionsTitle:"Personality questions",
+
+ questionsDescription:"Your answers help personalize product recommendations. They cannot be changed after submission.",
+
+ startQuestionsBtn:"Start questionnaire",wishlistTitle:"My wishlist",addProductBtn:"+ Add product",
+
+ financialTitle:"Financial activity",financialDescription:"Record expenses that are not wishlist purchases.",
+
+ addExpenseBtn:"+ Record expense",addIncomeBtn:"+ Add money",
+
+ settingsTitle:"Settings",settingsSubtitle:"Customize your experience.",languageTitle:"Language",
+
+ overviewTitle:"Financial overview",spentLabel:"Total spent",transactionsLabel:"Transactions",
+
+ historyFullTitle:"Full history",dataTitle:"Data management",
+
+ dataDescription:"Your data is stored locally on this device.",
+
+ exportBtn:"Export backup",importBtn:"Import backup",resetBtn:"Reset all data",
+
+ navHome:"HOME",navProfile:"PROFILE",navSettings:"SETTINGS",
+
+ noProducts:"Your wishlist is empty.",noProductsSub:"Add a product to start your smart ranking.",
+
+ affordable:"Affordable",notAffordable:"Not affordable",buy:"Buy",edit:"Edit",delete:"Delete",
+
+ score:"Score",priority:"Priority",love:"Love",addTitle:"Add product",editTitle:"Edit product",
+
+ productName:"Product name",productPrice:"Price (DT)",productPriority:"Importance (1 = highest)",
+
+ productLove:"Love (1–10)",productImage:"Product image",save:"Save",cancel:"Cancel",
+
+ insufficient:"Insufficient balance",buyConfirm:"Confirm purchase?",expenseTitle:"Record expense",
+
+ expenseName:"Expense description",amount:"Amount (DT)",incomeTitle:"Add money",
+
+ balanceTitle:"Update balance",newBalance:"New balance (DT)",confirm:"Confirm",
+
+ emptyHistory:"No transactions yet.",question:"Question",next:"Next",finish:"Finish",
+
+ answersLocked:"Your answers are locked.",questionsDone:"Questionnaire completed.",
+
+ deleteConfirm:"Delete this product?",resetConfirm:"Delete all your data? This cannot be undone.",
+
+ spent:"Spent",purchase:"Purchase",expense:"Expense",income:"Deposit",
+
+ personality:"Personality",rankingInsight:"Your top recommendation is",
+
+ allDone:"All questions answered",scoreDetails:"Score breakdown",
+
+ currency:"DT",purchaseDone:"Purchase completed successfully.",
+
+ expenseDone:"Expense recorded.",incomeDone:"Money added.",
+
+ productLimit:"You can add up to 10 products.",priorityUsed:"This priority is already used.",
+
+ noInsight:"Add products to receive personalized recommendations.",
+
+ pricePoints:"Price",importancePoints:"Importance",lovePoints:"Love",
+
+ personalityPoints:"Personality",affordableCount:"Affordable products",
+
+ editPriority:"Priority cannot be duplicated."
+
+ },
+
+ ar:{
+
+ greeting:"مرحباً بعودتك.",homeSubtitle:"مالك. أولوياتك. قراراتك.",
+
+ balanceLabel:"الرصيد المتاح",balanceHint:"ميزانيتك الحالية",editBalanceBtn:"تعديل الرصيد",
+
+ totalProductsLabel:"المنتجات",affordableLabel:"يمكن شراؤها",rankingTitle:"ترتيبك الذكي",
+
+ insightTitle:"تحليل ذكي",historyTitle:"آخر العمليات",viewAll:"عرض الكل",
+
+ profileTitle:"ملفك الشخصي",profileSubtitle:"دع PRIORA يتعرف عليك.",
+
+ personalInfo:"المعلومات الشخصية",nameLabel:"اسمك",avatarLabel:"صورتك الشخصية",
+
+ saveProfileBtn:"حفظ الملف",questionsTitle:"أسئلة الشخصية",
+
+ questionsDescription:"تساعد إجاباتك على تخصيص التوصيات ولا يمكن تغييرها بعد الإرسال.",
+
+ startQuestionsBtn:"ابدأ الاستبيان",wishlistTitle:"قائمة مشترياتي",addProductBtn:"+ إضافة منتج",
+
+ financialTitle:"النشاط المالي",financialDescription:"سجل المصاريف خارج قائمة المشتريات.",
+
+ addExpenseBtn:"+ تسجيل مصروف",addIncomeBtn:"+ إضافة مال",
+
+ settingsTitle:"الإعدادات",settingsSubtitle:"خصص تجربتك.",languageTitle:"اللغة",
+
+ overviewTitle:"الملخص المالي",spentLabel:"إجمالي المصاريف",transactionsLabel:"العمليات",
+
+ historyFullTitle:"السجل الكامل",dataTitle:"إدارة البيانات",
+
+ dataDescription:"بياناتك محفوظة محلياً على هذا الجهاز.",
+
+ exportBtn:"تصدير نسخة احتياطية",importBtn:"استيراد نسخة",resetBtn:"إعادة ضبط التطبيق",
+
+ navHome:"الرئيسية",navProfile:"الملف",navSettings:"الإعدادات",
+
+ noProducts:"قائمة مشترياتك فارغة.",noProductsSub:"أضف منتجاً لبدء الترتيب الذكي.",
+
+ affordable:"يمكن شراؤه",notAffordable:"الرصيد غير كافٍ",buy:"شراء",edit:"تعديل",delete:"حذف",
+
+ score:"النتيجة",priority:"الأهمية",love:"الحب",addTitle:"إضافة منتج",editTitle:"تعديل منتج",
+
+ productName:"اسم المنتج",productPrice:"السعر (د.ت)",productPriority:"الأهمية (1 = الأعلى)",
+
+ productLove:"الحب (1–10)",productImage:"صورة المنتج",save:"حفظ",cancel:"إلغاء",
+
+ insufficient:"الرصيد غير كافٍ",buyConfirm:"تأكيد عملية الشراء؟",expenseTitle:"تسجيل مصروف",
+
+ expenseName:"وصف المصروف",amount:"المبلغ (د.ت)",incomeTitle:"إضافة مال",
+
+ balanceTitle:"تحديث الرصيد",newBalance:"الرصيد الجديد (د.ت)",confirm:"تأكيد",
+
+ emptyHistory:"لا توجد عمليات بعد.",question:"السؤال",next:"التالي",finish:"إنهاء",
+
+ answersLocked:"إجاباتك مقفلة.",questionsDone:"اكتمل الاستبيان.",
+
+ deleteConfirm:"حذف هذا المنتج؟",resetConfirm:"حذف جميع بياناتك؟ لا يمكن التراجع.",
+
+ spent:"مصروف",purchase:"شراء",expense:"مصروف",income:"إيداع",
+
+ personality:"الشخصية",rankingInsight:"أفضل اقتراح لك هو",
+
+ allDone:"تمت الإجابة عن كل الأسئلة",scoreDetails:"تفاصيل التقييم",
+
+ pricePoints:"السعر",importancePoints:"الأهمية",lovePoints:"الحب",
+
+ personalityPoints:"الشخصية",affordableCount:"منتجات يمكن شراؤها",
+
+ editPriority:"الأولوية لا يمكن تكرارها."
+
+ }
+
+};
+
+function t(key){return translations[data.language][key]||key}
+
+function isAr(){return data.language==='ar'}
+
+function txt(en,ar){return isAr()?ar:en}
+
+function escapeHTML(s){
+
+ return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+}
+
+function showPage(page){
+
+ document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+
+ document.getElementById(page).classList.add('active');
+
+ document.querySelectorAll('.nav-btn').forEach(b=>b.classList.toggle('active',b.dataset.page===page));
+
+ render();
+
+ window.scrollTo({top:0,behavior:'smooth'});
+
+}
+
+function addTransaction(type,description,amount){
+
+ data.transactions.unshift({
+
+ id:Date.now()+Math.random(),type,description,amount,
+
+ date:new Date().toISOString()
+
+ });
+
+}
+
+function calculatePricePoints(price){
+
+ if(price<=0)return 0;
+
+ if(data.balance<=0)return 0;
+
+ const ratio=price/data.balance;
+
+ if(ratio<=.2)return 20;
+
+ if(ratio<=.4)return 15;
+
+ if(ratio<=.6)return 10;
+
+ if(ratio<=.8)return 5;
+
+ return 1;
+
+}
+
+function importancePoints(priority){
+
+ return Math.round((11-priority)*50/10);
+
+}
+
+function lovePoints(love){
+
+ if(love===1)return 10;
+
+ return Math.round((11-love)*10/10);
+
+}
+
+function personalityPoints(product){
+
+ if(!data.answers)return 10;
+
+ let result=0;
+
+ const a=data.answers;
+
+ const keywords={
+
+  en:[
+
+   ["practical","quality","durable","useful","work","study"],
+
+   ["style","fashion","beautiful","unique","design"],
+
+   ["technology","phone","computer","electronic","gaming"],
+
+   ["sport","football","fitness","training"],
+
+   ["save","future","budget"]
+
+  ],
+
+  ar:[
+
+   ["عملي","جودة","متين","مفيد","عمل","دراسة"],
+
+   ["أناقة","موضة","جميل","مميز","تصميم"],
+
+   ["تقنية","هاتف","حاسوب","إلكترونيات","ألعاب"],
+
+   ["رياضة","كرة","لياقة","تدريب"],
+
+   ["ادخار","مستقبل","ميزانية"]
+
+  ]
+
+ };
+
+ const name=product.name.toLowerCase();
+
+ const groups=keywords[data.language];
+
+ let total=0;
+
+ let matched=0;
+
+ groups.forEach((group,i)=>{
+
+  const hit=group.some(k=>name.includes(k));
+
+  if(hit){matched++;total+=4;}
+
+ });
+
+ result=matched?Math.min(20,total):10;
+
+ return result;
+
+}
+
+function evaluate(product){
+
+ const price=calculatePricePoints(product.price);
+
+ const importance=importancePoints(product.priority);
+
+ const love=lovePoints(product.love);
+
+ const personality=personalityPoints(product);
+
+ return {price,importance,love,personality,total:price+importance+love+personality};
+
+}
+
+function getSortedProducts(){
+
+ return [...data.products].map(p=>({...p,result:evaluate(p)}))
+
+ .sort((a,b)=>b.result.total-a.result.total);
+
+}
+
+function statusClass(product){
+
+ const ratio=data.balance>0?product.price/data.balance:Infinity;
+
+ if(ratio<=.4)return 'green';
+
+ if(ratio<=.6)return 'orange';
+
+ return 'red';
+
+}
+
+function productHTML(p,showActions=true){
+
+ const r=p.result||evaluate(p);
+
+ const canBuy=data.balance>=p.price&&p.price>0;
+
+ const img=p.image||'';
+
+ return `
+
+ <div class="product">
+
+  <img class="product-img" src="${img||'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2280%22 height=%2280%22%3E%3Crect width=%22100%25%22 height=%22100%25%22 fill=%22%23191629%22/%3E%3Ctext x=%2250%25%22 y=%2255%25%22 fill=%22%239364ff%22 text-anchor=%22middle%22 font-size=%2230%22%3E✦%3C/text%3E%3C/svg%3E'}">
+
+  <div class="product-info">
+
+   <div class="product-name">${escapeHTML(p.name)}</div>
+
+   <div class="product-price">${money(p.price)} DT</div>
+
+   <div class="product-meta">
+
+    <span class="tag">${t('priority')}: ${p.priority}</span>
+
+    <span class="tag">${t('love')}: ${p.love}/10</span>
+
+    <span class="status ${statusClass(p)}">${canBuy?t('affordable'):t('notAffordable')}</span>
+
+   </div>
+
+   <div style="display:flex;justify-content:space-between;margin-top:10px">
+
+    <span class="muted">${t('score')}</span><span class="score">${r.total}/100</span>
+
+   </div>
+
+   <div class="scorebar"><div style="width:${r.total}%"></div></div>
+
+  </div>
+
+  ${showActions?`<div class="product-actions">
+
+   <button class="btn small" ${canBuy?'':'disabled'} onclick="buyProduct('${p.id}')">${t('buy')}</button>
+
+   <button class="btn secondary small" onclick="editProduct('${p.id}')">${t('edit')}</button>
+
+  </div>`:''}
+
+ </div>`;
 
 }
 
 function render(){
 
-document.getElementById('startingBalance').value=data.startingBalance;
+ document.documentElement.dir=isAr()?'rtl':'ltr';
 
-document.getElementById('balance').textContent=fmt(currentBalance());
+ document.documentElement.lang=data.language;
 
-const sums=data.deals.reduce((a,d)=>{const c=calc(d);a.initial+=c.initial;a.costs+=c.costs;a.net+=c.net;return a},{initial:0,costs:0,net:0});
+ document.body.style.textAlign=isAr()?'right':'left';
 
-document.getElementById('totalNet').textContent=fmt(sums.net);
+ document.getElementById('languageSelect').value=data.language;
 
-document.getElementById('totalCosts').textContent=fmt(sums.costs);
+ applyTranslations();
 
-document.getElementById('totalInitial').textContent=fmt(sums.initial);
+ document.getElementById('greeting').textContent=data.name?
 
-document.getElementById('dealCount').textContent=data.deals.length;
+ (isAr()?'مرحباً، '+data.name:'Welcome back, '+data.name+'.'):t('greeting');
 
-document.getElementById('history').innerHTML=data.deals.length?data.deals.slice().reverse().map(d=>{
+ document.getElementById('balanceValue').textContent=money(data.balance);
 
-const c=calc(d);
+ document.getElementById('totalProducts').textContent=data.products.length;
 
-return `<div class="item"><div class="itemtop"><div><strong>${safe(d.name)}</strong><p>${safe(d.date)}</p></div><strong class="${c.net>=0?'green':'red'}">${c.net<0?'−':''}${fmt(Math.abs(c.net))}</strong></div>
+ document.getElementById('affordable').textContent=data.products.filter(p=>data.balance>=p.price).length;
 
-<div class="result"><span>سعر الشراء</span><strong>${fmt(d.buy)}</strong></div>
+ document.getElementById('rankingCount').textContent=data.products.length+' '+txt('products','منتجات');
 
-<div class="result"><span>سعر البيع</span><strong>${fmt(d.sell)}</strong></div>
+ document.getElementById('avatar').innerHTML=data.avatar?`<img src="${data.avatar}">`:escapeHTML(data.name?.[0]||'P');
 
-<div class="result"><span>الربح الأولي</span><strong>${fmt(c.initial)}</strong></div>
+ const sorted=getSortedProducts();
 
-<div class="result"><span>المصاريف</span><strong>${fmt(c.costs)}</strong></div>
+ document.getElementById('productsList').innerHTML=sorted.length?
 
-<div class="result"><span>الربح الصافي</span><strong class="${c.net>=0?'green':'red'}">${fmt(c.net)}</strong></div>
+ sorted.map(p=>productHTML(p)).join(''):
 
-<div class="actions"><button class="danger" onclick="deleteDeal('${d.id}')">حذف الصفقة</button></div></div>`
+ `<div class="card empty"><b>${t('noProducts')}</b>${t('noProductsSub')}</div>`;
 
-}).join(''):'<div class="empty">لا توجد صفقات مسجلة</div>';
+ const insight=document.getElementById('insight');
+
+ if(sorted.length){
+
+  const top=sorted[0];
+
+  insight.innerHTML=`<div class="muted">${t('rankingInsight')}</div>
+
+  <div style="font-size:19px;font-weight:900;margin:9px 0">${escapeHTML(top.name)}</div>
+
+  <div class="score">${top.result.total}/100</div>
+
+  <div class="muted" style="margin-top:8px">${t('scoreDetails')}: ${t('pricePoints')} ${top.result.price} · ${t('importancePoints')} ${top.result.importance} · ${t('lovePoints')} ${top.result.love} · ${t('personalityPoints')} ${top.result.personality}</div>`;
+
+ }else insight.textContent=t('noInsight');
+
+ const recent=data.transactions.slice(0,3);
+
+ document.getElementById('recentHistory').innerHTML=recent.length?recent.map(historyHTML).join(''):`<div class="empty">${t('emptyHistory')}</div>`;
+
+ document.getElementById('userName').value=data.name||'';
+
+ document.getElementById('wishlistCount').textContent=data.products.length+' / 10';
+
+ document.getElementById('wishlistList').innerHTML=data.products.length?
+
+ data.products.map(p=>productHTML(p,false)).join(''):`<div class="empty">${t('noProducts')}</div>`;
+
+ document.getElementById('questionsStatus').textContent=data.answers?'15 / 15': '0 / 15';
+
+ document.getElementById('questionProgress').style.width=data.answers?'100%':'0%';
+
+ document.getElementById('startQuestionsBtn').disabled=!!data.answers;
+
+ document.getElementById('startQuestionsBtn').textContent=data.answers?t('answersLocked'):t('startQuestionsBtn');
+
+ document.getElementById('answersSummary').innerHTML=data.answers?`<p class="muted">${t('questionsDone')}</p>`:'';
+
+ const spent=data.transactions.filter(x=>x.type==='expense'||x.type==='purchase').reduce((s,x)=>s+x.amount,0);
+
+ document.getElementById('totalSpent').textContent=money(spent)+' DT';
+
+ document.getElementById('transactionsCount').textContent=data.transactions.length;
+
+ document.getElementById('fullHistory').innerHTML=data.transactions.length?data.transactions.map(historyHTML).join(''):`<div class="empty">${t('emptyHistory')}</div>`;
 
 }
 
-function preview(){
+function applyTranslations(){
 
-const f=document.getElementById('dealForm');
+ const ids=Object.keys(translations.en);
 
-const buy=val(f.elements.buy.value),sell=val(f.elements.sell.value);
+ ids.forEach(id=>{
 
-const before=val(f.elements.cashBefore.value),after=val(f.elements.cashAfter.value);
+  const el=document.getElementById(id);
 
-const initial=sell-buy,costs=before-after,net=initial-costs;
+  if(el)el.textContent=t(id);
 
-document.getElementById('initialProfit').textContent=fmt(initial);
-
-document.getElementById('renovationCost').textContent=fmt(costs);
-
-const el=document.getElementById('netPreview');
-
-el.textContent=fmt(net);el.className='big '+(net>=0?'green':'red');
+ });
 
 }
 
-document.getElementById('dealForm').addEventListener('input',preview);
+function historyHTML(x){
 
-document.getElementById('dealForm').addEventListener('submit',e=>{
+ const date=new Date(x.date).toLocaleDateString(data.language==='ar'?'ar':'en');
 
-e.preventDefault();
+ const sign=x.type==='income'?'+':'−';
 
-const f=e.currentTarget;
+ const color=x.type==='income'?'var(--green)':'var(--red)';
 
-const buy=Number(f.elements.buy.value),sell=Number(f.elements.sell.value);
+ const type=t(x.type);
 
-const before=Number(f.elements.cashBefore.value),after=Number(f.elements.cashAfter.value);
+ return `<div class="history-item">
 
-if([buy,sell,before,after].some(n=>!Number.isFinite(n)||n<0)){alert('تحقق من جميع الأرقام');return}
+ <div><strong>${escapeHTML(x.description||type)}</strong><span class="muted">${type} · ${date}</span></div>
 
-if(after>before){if(!confirm('الرصيد بعد التجديد أكبر من الرصيد قبله؛ ستصبح المصاريف سالبة. هل تريد المتابعة؟'))return}
+ <strong style="color:${color}">${sign}${money(x.amount)} DT</strong>
 
-const deal={id:Date.now().toString()+'_'+Math.random().toString(36).slice(2),name:f.elements.name.value.trim(),buy,sell,cashBefore:before,cashAfter:after,date:new Date().toLocaleDateString('fr-TN')};
+ </div>`;
 
-if(!deal.name){alert('أدخل اسم العقار');return}
+}
 
-data.deals.push(deal);persist();f.reset();preview();alert('تم تسجيل الصفقة وتحديث الرصيد تلقائيًا');
+function openModal(html){
+
+ document.getElementById('modalContent').innerHTML=html;
+
+ document.getElementById('modal').classList.add('open');
+
+}
+
+function closeModal(){document.getElementById('modal').classList.remove('open')}
+
+function openBalance(){
+
+ openModal(`<button class="close" onclick="closeModal()">×</button><h2>${t('balanceTitle')}</h2>
+
+ <div class="field"><label>${t('newBalance')}</label><input id="balanceInput" type="number" min="0" step=".001" value="${data.balance}"></div>
+
+ <button class="btn" style="width:100%" onclick="saveBalance()">${t('confirm')}</button>`);
+
+}
+
+function saveBalance(){
+
+ const n=Number(document.getElementById('balanceInput').value);
+
+ if(!Number.isFinite(n)||n<0)return alert('Invalid balance');
+
+ const diff=n-data.balance;
+
+ data.balance=n;
+
+ addTransaction('income',txt('Balance adjustment','تعديل الرصيد'),Math.abs(diff));
+
+ save();closeModal();
+
+}
+
+function openProduct(id=null){
+
+ if(!id&&data.products.length>=10)return alert(t('productLimit'));
+
+ const p=id?data.products.find(x=>x.id===id):null;
+
+ tempImage=p?.image||'';
+
+ openModal(`
+
+ <button class="close" onclick="closeModal()">×</button>
+
+ <h2>${p?t('editTitle'):t('addTitle')}</h2>
+
+ <div class="field"><label>${t('productName')}</label><input id="pName" maxlength="60" value="${escapeHTML(p?.name||'')}"></div>
+
+ <div class="field"><label>${t('productPrice')}</label><input id="pPrice" type="number" min=".001" step=".001" value="${p?.price||''}"></div>
+
+ <div class="grid2">
+
+  <div class="field"><label>${t('productPriority')}</label><select id="pPriority">${Array.from({length:10},(_,i)=>i+1).map(n=>`<option value="${n}" ${p?.priority===n?'selected':''}>${n}</option>`).join('')}</select></div>
+
+  <div class="field"><label>${t('productLove')}</label><select id="pLove">${Array.from({length:10},(_,i)=>i+1).map(n=>`<option value="${n}" ${p?.love===n?'selected':''}>${n}</option>`).join('')}</select></div>
+
+ </div>
+
+ <div class="field"><label>${t('productImage')}</label><input type="file" id="pImage" accept="image/*" onchange="readProductImage(event)"></div>
+
+ <img id="imagePreview" class="image-preview" style="display:${tempImage?'block':'none'}" src="${tempImage}">
+
+ <div style="display:flex;gap:9px;margin-top:15px">
+
+  <button class="btn" style="flex:1" onclick="saveProduct('${id||''}')">${t('save')}</button>
+
+  <button class="btn secondary" onclick="closeModal()">${t('cancel')}</button>
+
+ </div>`);
+
+}
+
+function readProductImage(event){
+
+ const file=event.target.files[0];
+
+ if(!file)return;
+
+ if(file.size>2*1024*1024)return alert('Image must be under 2MB.');
+
+ const reader=new FileReader();
+
+ reader.onload=e=>{
+
+  tempImage=e.target.result;
+
+  const img=document.getElementById('imagePreview');
+
+  img.src=tempImage;img.style.display='block';
+
+ };
+
+ reader.readAsDataURL(file);
+
+}
+
+function saveProduct(id){
+
+ const name=document.getElementById('pName').value.trim();
+
+ const price=Number(document.getElementById('pPrice').value);
+
+ const priority=Number(document.getElementById('pPriority').value);
+
+ const love=Number(document.getElementById('pLove').value);
+
+ if(!name||!Number.isFinite(price)||price<=0)return alert('Please enter a valid name and price.');
+
+ if(data.products.some(p=>p.priority===priority&&p.id!==id))return alert(t('priorityUsed'));
+
+ if(id){
+
+  const p=data.products.find(x=>x.id===id);
+
+  Object.assign(p,{name,price,priority,love,image:tempImage});
+
+ }else{
+
+  data.products.push({id:String(Date.now()),name,price,priority,love,image:tempImage});
+
+ }
+
+ save();closeModal();tempImage='';
+
+}
+
+function editProduct(id){openProduct(id)}
+
+function buyProduct(id){
+
+ const p=data.products.find(x=>x.id===id);
+
+ if(!p||data.balance<p.price)return alert(t('insufficient'));
+
+ if(!confirm(t('buyConfirm')+' '+p.name+'?'))return;
+
+ data.balance-=p.price;
+
+ addTransaction('purchase',p.name,p.price);
+
+ data.products=data.products.filter(x=>x.id!==id);
+
+ save();
+
+ alert(t('purchaseDone'));
+
+}
+
+function openExpense(){
+
+ openModal(`<button class="close" onclick="closeModal()">×</button><h2>${t('expenseTitle')}</h2>
+
+ <div class="field"><label>${t('expenseName')}</label><input id="expenseName" maxlength="60"></div>
+
+ <div class="field"><label>${t('amount')}</label><input id="expenseAmount" type="number" min=".001" step=".001"></div>
+
+ <button class="btn" style="width:100%" onclick="saveExpense()">${t('confirm')}</button>`);
+
+}
+
+function saveExpense(){
+
+ const name=document.getElementById('expenseName').value.trim()||t('expense');
+
+ const amount=Number(document.getElementById('expenseAmount').value);
+
+ if(!Number.isFinite(amount)||amount<=0)return;
+
+ if(amount>data.balance&&!confirm(t('insufficient')+'. Continue?'))return;
+
+ data.balance-=amount;addTransaction('expense',name,amount);save();closeModal();
+
+}
+
+function openIncome(){
+
+ openModal(`<button class="close" onclick="closeModal()">×</button><h2>${t('incomeTitle')}</h2>
+
+ <div class="field"><label>${t('amount')}</label><input id="incomeAmount" type="number" min=".001" step=".001"></div>
+
+ <button class="btn" style="width:100%" onclick="saveIncome()">${t('confirm')}</button>`);
+
+}
+
+function saveIncome(){
+
+ const amount=Number(document.getElementById('incomeAmount').value);
+
+ if(!Number.isFinite(amount)||amount<=0)return;
+
+ data.balance+=amount;addTransaction('income',t('income'),amount);save();closeModal();
+
+}
+
+function saveProfile(){
+
+ data.name=document.getElementById('userName').value.trim();
+
+ save();
+
+}
+
+document.getElementById('avatarInput').addEventListener('change',e=>{
+
+ const f=e.target.files[0];if(!f)return;
+
+ if(f.size>2*1024*1024)return alert('Image must be under 2MB.');
+
+ const reader=new FileReader();
+
+ reader.onload=x=>{data.avatar=x.target.result;save()};
+
+ reader.readAsDataURL(f);
 
 });
 
-function deleteDeal(id){if(!confirm('حذف هذه الصفقة وإعادة حساب الرصيد؟'))return;data.deals=data.deals.filter(d=>d.id!==id);persist()}
+function startQuestions(){
+
+ if(data.answers)return;
+
+ questionIndex=0;tempAnswers=[];
+
+ showQuestion();
+
+}
+
+function showQuestion(){
+
+ const q=questions[questionIndex];
+
+ const a=isAr()?q.a:q.a;
+
+ const b=isAr()?q.b:q.b;
+
+ const choices=isAr()?q.b:q.a;
+
+ const choice2=isAr()?q.a:q.b;
+
+ const options=isAr()?[q.b[0],q.b[1]]:q.a;
+
+ const other=isAr()?q.a:q.b;
+
+ openModal(`
+
+ <button class="close" onclick="closeModal()">×</button>
+
+ <div class="muted">${t('question')} ${questionIndex+1} / 15</div>
+
+ <div class="progress"><div style="width:${(questionIndex+1)/15*100}%"></div></div>
+
+ <div class="question">${isAr()?q.ar:q.en}</div>
+
+ <button class="answer" onclick="answerQuestion(0)">${options[0]}</button>
+
+ <button class="answer" onclick="answerQuestion(1)">${options[1]}</button>
+
+ `);
+
+}
+
+function answerQuestion(choice){
+
+ tempAnswers[questionIndex]=choice;
+
+ questionIndex++;
+
+ if(questionIndex<15){showQuestion();return}
+
+ data.answers=tempAnswers.slice();
+
+ save();closeModal();
+
+ alert(t('questionsDone'));
+
+}
+
+function changeLanguage(lang){
+
+ data.language=lang;save();
+
+}
 
 function exportData(){
 
-const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+ const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
 
-const url=URL.createObjectURL(blob),a=document.createElement('a');
+ const url=URL.createObjectURL(blob);
 
-a.href=url;a.download='FLIP-backup.json';a.click();URL.revokeObjectURL(url)
+ const a=document.createElement('a');a.href=url;a.download='priora-backup.json';a.click();
+
+ URL.revokeObjectURL(url);
 
 }
 
-document.getElementById('importFile').addEventListener('change',async e=>{
+function importData(event){
 
-const file=e.target.files[0];if(!file)return;
+ const file=event.target.files[0];if(!file)return;
 
-try{const x=JSON.parse(await file.text());if(!Array.isArray(x.deals)||!Number.isFinite(Number(x.startingBalance)))throw Error();if(!confirm('استبدال البيانات الحالية بالنسخة المستوردة؟'))return;data=x;persist();alert('تم استيراد البيانات بنجاح')}catch(err){alert('ملف النسخة غير صالح')}e.target.value=''
+ const reader=new FileReader();
 
-});
+ reader.onload=e=>{
 
-function resetAll(){if(!confirm('هل تريد حذف جميع الصفقات ورصيد البداية؟'))return;data=emptyData();persist();preview()}
+  try{
 
-render();preview();
+   const imported=JSON.parse(e.target.result);
+
+   if(!imported||!Array.isArray(imported.products)||!Array.isArray(imported.transactions))throw Error();
+
+   data={...defaultData,...imported};save();alert('Backup imported.');
+
+  }catch(err){alert('Invalid backup file.')}
+
+ };
+
+ reader.readAsText(file);
+
+}
+
+function resetData(){
+
+ if(!confirm(t('resetConfirm')))return;
+
+ localStorage.removeItem(KEY);data=structuredClone(defaultData);save();showPage('home');
+
+}
+
+// Initialize
+
+render();
 
 </script>
 
